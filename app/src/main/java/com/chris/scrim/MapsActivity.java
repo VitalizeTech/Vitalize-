@@ -12,10 +12,12 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -31,6 +33,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
     }
 
+    private ScrimArea getScrimArea(List<ScrimArea> scrimAreas, LatLng pointOfInterest) {
+
+        for (ScrimArea a : scrimAreas) {
+            if (a.showIfInCircle(pointOfInterest)) {
+                return a;
+            }
+        }
+        return null;
+    }
 
     /**
      * Manipulates the map once available.
@@ -49,16 +60,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.addMarker(new MarkerOptions().position(startLocation).title("Pickup").draggable(true).snippet("For Group")
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
         moveToCurrentLocation(startLocation);
+       final List<ScrimArea> scremAreas = new ArrayList<ScrimArea>();
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
-                mMap.addMarker(new MarkerOptions().position(latLng).title("new").draggable(true).snippet("New bubble")
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)));
-                mMap.addCircle(new CircleOptions()
-                        .center(latLng)
-                        .radius(10000)
-                        .strokeColor(Color.RED)
-                        .fillColor(Color.BLUE));
+                ScrimArea scrimA = getScrimArea(scremAreas, latLng);
+                if(scrimA == null) {
+                    scremAreas.add(new ScrimArea(mMap, latLng));
+                } else {
+                    scrimA.showMarkerMessage();
+                }
+
             }
         });
 
