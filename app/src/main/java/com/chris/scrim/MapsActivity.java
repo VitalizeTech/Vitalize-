@@ -1,6 +1,8 @@
 package com.chris.scrim;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
@@ -23,6 +25,7 @@ import SlidingMenu.SlidingMenu;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    private List<ScrimArea> myAreas;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +37,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        myAreas = new ArrayList<>();
     }
 
     private ScrimArea getScrimArea(List<ScrimArea> scrimAreas, LatLng pointOfInterest) {
@@ -63,13 +67,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.addMarker(new MarkerOptions().position(startLocation).title("Pickup").draggable(true).snippet("For Group")
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
         moveToCurrentLocation(startLocation);
-       final List<ScrimArea> scremAreas = new ArrayList<ScrimArea>();
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
-                ScrimArea scrimA = getScrimArea(scremAreas, latLng);
+                ScrimArea scrimA = getScrimArea(myAreas, latLng);
                 if(scrimA == null) {
-                    scremAreas.add(new ScrimArea(mMap, latLng));
+                    myAreas.add(new ScrimArea(mMap, latLng));
                 } else {
                     scrimA.showMarkerMessage();
                 }
@@ -82,8 +85,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
-            public boolean onMarkerClick(Marker marker) {
-                marker.remove();
+            public boolean onMarkerClick(final Marker marker) {
+                //find which scrim area corresponds to marker
+                final ScrimArea temp = getScrimArea(myAreas, marker.getPosition());
+
+                //marker.remove();
+                //show a dialog that prompts the user if he/she wants to delete
+                new AlertDialog.Builder(MapsActivity.this)
+                        .setTitle("Delete entry")
+                        .setMessage("Are you sure you want to delete this entry?")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // continue with delete
+                                temp.remove();
+                                myAreas.remove(temp);
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
                 return false;
             }
         });
