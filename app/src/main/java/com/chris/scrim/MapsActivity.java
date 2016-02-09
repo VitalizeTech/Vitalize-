@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.view.View;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -69,10 +70,30 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         moveToCurrentLocation(startLocation);
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
-            public void onMapClick(LatLng latLng) {
+            public void onMapClick(final LatLng latLng) {
                 ScrimArea scrimA = getScrimArea(myAreas, latLng);
                 if(scrimA == null) {
-                    myAreas.add(new ScrimArea(mMap, latLng));
+                    //inflate layout we want
+                    View view = MapsActivity.this.getLayoutInflater().inflate(R.layout.new_scrim_area, null);
+                    // ask the alert dialog to use our layout
+                    //prompt for dialog
+                    //show a dialog that prompts the user if he/she wants to delete
+                    AlertDialog.Builder addBuild = new AlertDialog.Builder(MapsActivity.this)
+                            .setTitle("New")
+                            .setMessage("Add new scrim area")
+                            .setPositiveButton("Create", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    myAreas.add(new ScrimArea(mMap, latLng));
+                                }
+                            })
+                            .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // do nothing
+                                }
+                            })
+                            .setIcon(android.R.drawable.ic_dialog_alert);
+                    addBuild.setView(view);
+                    addBuild.show();
                 } else {
                     scrimA.showMarkerMessage();
                 }
