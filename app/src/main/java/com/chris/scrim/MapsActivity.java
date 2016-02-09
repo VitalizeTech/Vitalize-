@@ -18,6 +18,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 import java.util.List;
+import SlidingMenu.SlidingMenu;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -27,6 +28,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        SlidingMenu menu = new SlidingMenu(this);
+        menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
