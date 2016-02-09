@@ -17,10 +17,14 @@ public class ScrimArea {
     private Circle myCircle;
     private Marker centerOfCircle;
     private GoogleMap mMap;
-    public ScrimArea(GoogleMap mMap, LatLng  center ){
+    private String name;
+    private String Description;
+    public ScrimArea(GoogleMap mMap, LatLng  center, String theName, String theDescription ){
         this.mMap = mMap;
-        centerOfCircle=mMap.addMarker(new MarkerOptions().position(center).title("new").
-                draggable(true).snippet("New bubble")
+        name = theName;
+        Description = theDescription;
+        centerOfCircle=mMap.addMarker(new MarkerOptions().position(center).title(name).
+                draggable(true).snippet(Description)
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)));
 
         CircleOptions       circleAroundMarker = new CircleOptions()

@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
+import android.widget.EditText;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -74,7 +75,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 ScrimArea scrimA = getScrimArea(myAreas, latLng);
                 if(scrimA == null) {
                     //inflate layout we want
-                    View view = MapsActivity.this.getLayoutInflater().inflate(R.layout.new_scrim_area, null);
+                    final View view = MapsActivity.this.getLayoutInflater().inflate(R.layout.new_scrim_area, null);
                     // ask the alert dialog to use our layout
                     //prompt for dialog
                     //show a dialog that prompts the user if he/she wants to delete
@@ -83,7 +84,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             .setMessage("Add new scrim area")
                             .setPositiveButton("Create", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
-                                    myAreas.add(new ScrimArea(mMap, latLng));
+                                    //retrieve our data
+                                    String title = ((EditText)view.findViewById(R.id.editText)).getText().toString();
+                                    String description = ((EditText)view.findViewById(R.id.editText2)).getText().toString();
+                                    myAreas.add(new ScrimArea(mMap, latLng, title, description));
                                 }
                             })
                             .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
