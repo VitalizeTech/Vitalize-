@@ -4,12 +4,15 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.EditText;
+import android.support.design.widget.NavigationView;
+
+import android.util.Log;
+import android.view.MenuItem;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -24,22 +27,38 @@ import java.util.ArrayList;
 import java.util.List;
 import SlidingMenu.SlidingMenu;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
+        NavigationView.OnNavigationItemSelectedListener {
 
+    private final static String TAG = MapsActivity.class.getName();
     private GoogleMap mMap;
     private List<ScrimArea> myAreas;
+    private SlidingMenu mySlidingMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        SlidingMenu menu = new SlidingMenu(this);
-        menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         myAreas = new ArrayList<>();
+
+
+        // configure the SlidingMenu
+        mySlidingMenu = new SlidingMenu(this);
+        mySlidingMenu.setMode(SlidingMenu.LEFT);
+        mySlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
+        mySlidingMenu.setShadowWidthRes(R.dimen.shadow_width);
+        // Need to add shadow.
+        // mySlidingMenu.setShadowDrawable(R.drawable.common_plus_signin_btn_icon_dark);
+        mySlidingMenu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
+        mySlidingMenu.setFadeDegree(0.35f);
+        mySlidingMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
+        mySlidingMenu.setMenu(R.layout.sliding_menu);
+        ((NavigationView) mySlidingMenu.getMenu().findViewById(R.id.nav_view))
+                .setNavigationItemSelectedListener(this);
     }
 
     private ScrimArea getScrimArea(List<ScrimArea> scrimAreas, LatLng pointOfInterest) {
@@ -145,5 +164,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.animateCamera(CameraUpdateFactory.zoomIn());
         // Zoom out to zoom level 10, animating with a duration of 2 seconds.
         mMap.animateCamera(CameraUpdateFactory.zoomTo(13), 2000, null);
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.profile:
+                Log.d(TAG, "Profile");
+                break;
+            case R.id.settings:
+                Log.d(TAG, "Settings");
+                break;
+            case R.id.about:
+                Log.d(TAG, "About");
+                break;
+            case R.id.home:
+            default:
+                Log.d(TAG, "Home");
+                break;
+        }
+        return false;
     }
 }
