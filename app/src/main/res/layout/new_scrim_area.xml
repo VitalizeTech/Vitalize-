@@ -35,4 +35,23 @@
         android:layout_below="@+id/textView2"
         android:layout_alignLeft="@id/newTitle"
        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/num_people"
+        android:id="@+id/textView3"
+        android:layout_below="@+id/editText2"
+        android:layout_alignLeft="@id/newTitle"
+        />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="5"
+        android:id="@+id/editText3"
+        android:layout_below="@+id/textView3"
+        android:layout_alignLeft="@id/newTitle"
+        />
 </RelativeLayout>
