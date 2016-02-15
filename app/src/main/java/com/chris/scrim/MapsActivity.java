@@ -14,7 +14,6 @@ import android.support.design.widget.NavigationView;
 import android.util.Log;
 import android.view.MenuItem;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -42,8 +41,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         myAreas = new ArrayList<>();
-
-
         // configure the SlidingMenu
         mySlidingMenu = new SlidingMenu(this);
         mySlidingMenu.setMode(SlidingMenu.LEFT);
@@ -57,10 +54,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mySlidingMenu.setMenu(R.layout.sliding_menu);
         ((NavigationView) mySlidingMenu.getMenu().findViewById(R.id.nav_view))
                 .setNavigationItemSelectedListener(this);
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(mMap != null && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            mMap.setMyLocationEnabled(true);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        /* Disable the my-location layer (this causes our LocationSource to be automatically deactivated.) */
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            mMap.setMyLocationEnabled(false);
+        }
     }
 
     private ScrimArea getScrimArea(List<ScrimArea> scrimAreas, LatLng pointOfInterest) {
-
         for (ScrimArea a : scrimAreas) {
             if (a.showIfInCircle(pointOfInterest)) {
                 return a;
@@ -82,11 +96,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         // Replace the (default) location source of the my-location layer with our custom LocationSource
+        new FollowMeLocationListener(this, googleMap);
         //mMap.setLocationSource(followMeLocationListener);
-
-        // Set default zoom
-        //mMap.moveCamera(CameraUpdateFactory.zoomTo(15f));
-        //followMeLocationListener = new FollowMeLocationListener(this, googleMap);
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(final LatLng latLng) {
@@ -121,7 +132,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             }
         });
-
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
         }
@@ -151,15 +161,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 return false;
             }
         });
-    }
-
-
-    private void moveToCurrentLocation(LatLng currentLocation) {
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation,15));
-        // Zoom in, animating the camera.
-        mMap.animateCamera(CameraUpdateFactory.zoomIn());
-        // Zoom out to zoom level 10, animating with a duration of 2 seconds.
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(13), 2000, null);
     }
 
     @Override
