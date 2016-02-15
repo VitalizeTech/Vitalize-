@@ -18,10 +18,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,29 +81,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        LatLng startLocation = new LatLng(47.5626337, -122.1344056);
-        // Add a marker in Sydney and move the camera
-        mMap.addMarker(new MarkerOptions().position(startLocation).title("Pickup").draggable(true).snippet("For Group")
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
-        moveToCurrentLocation(startLocation);
+        // Replace the (default) location source of the my-location layer with our custom LocationSource
+        //mMap.setLocationSource(followMeLocationListener);
+
+        // Set default zoom
+        //mMap.moveCamera(CameraUpdateFactory.zoomTo(15f));
+        //followMeLocationListener = new FollowMeLocationListener(this, googleMap);
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(final LatLng latLng) {
                 ScrimArea scrimA = getScrimArea(myAreas, latLng);
-                if(scrimA == null) {
+                if (scrimA == null) {
                     //inflate layout we want
                     final View view = MapsActivity.this.getLayoutInflater().inflate(R.layout.new_scrim_area, null);
                     // ask the alert dialog to use our layout
                     //prompt for dialog
                     //show a dialog that prompts the user if he/she wants to delete
                     AlertDialog.Builder addBuild = new AlertDialog.Builder(MapsActivity.this)
-                            .setTitle("New")
-                            .setMessage("Add new scrim area")
+                            .setTitle(getResources().getString(R.string.new_scrim_title))
                             .setPositiveButton("Create", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     //retrieve our data
-                                    String title = ((EditText)view.findViewById(R.id.editText)).getText().toString();
-                                    String description = ((EditText)view.findViewById(R.id.editText2)).getText().toString();
+                                    String title = ((EditText) view.findViewById(R.id.editText)).getText().toString();
+                                    String description = ((EditText) view.findViewById(R.id.editText2)).getText().toString();
                                     myAreas.add(new ScrimArea(mMap, latLng, title, description));
                                 }
                             })
@@ -132,8 +130,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public boolean onMarkerClick(final Marker marker) {
                 //find which scrim area corresponds to marker
                 final ScrimArea temp = getScrimArea(myAreas, marker.getPosition());
-
-                //marker.remove();
                 //show a dialog that prompts the user if he/she wants to delete
                 new AlertDialog.Builder(MapsActivity.this)
                         .setTitle("Delete entry")
