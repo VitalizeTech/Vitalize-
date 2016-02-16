@@ -113,8 +113,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             .setPositiveButton("Create", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     //retrieve our data
-                                    String title = ((EditText) view.findViewById(R.id.editText)).getText().toString();
-                                    String description = ((EditText) view.findViewById(R.id.editText2)).getText().toString();
+                                    String title = ((EditText) view.findViewById(R.id.editPpl)).getText().toString();
+                                    String description = ((EditText) view.findViewById(R.id.titleEdit)).getText().toString();
                                     myAreas.add(new ScrimArea(mMap, latLng, title, description));
                                 }
                             })
