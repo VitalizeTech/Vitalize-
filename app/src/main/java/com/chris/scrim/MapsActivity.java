@@ -10,6 +10,7 @@ import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.support.design.widget.NavigationView;
 
@@ -116,8 +117,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             R.drawable.basketball, R.drawable.xboxone,R.drawable.ps4,
                             R.drawable.chess};
 
-                   //Button cancelButton = (Button) rightView.findViewById(R.id.cancelBtn);
-                    //Button createButton = (Button) rightView.findViewById(R.id.createBtn);
+                    Button cancelButton = (Button) rightView.findViewById(R.id.cancelBtn);
+                    Button createButton = (Button) rightView.findViewById(R.id.createBtn);
                     ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(MapsActivity.this,
                             android.R.layout.simple_spinner_item, types);
                     dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -137,28 +138,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     // ask the alert dialog to use our layout
                     //prompt for dialog
                     //show a dialog that prompts the user if he/she wants to delete
-                    AlertDialog.Builder addBuild = new AlertDialog.Builder(MapsActivity.this)
-                            .setTitle(getResources().getString(R.string.new_scrim_title))
-                            .setPositiveButton("Create", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    //retrieve our data
-                                    String title = ((EditText) rightView.findViewById(R.id.editPpl)).getText().toString();
-                                    String description = ((EditText) rightView.findViewById(R.id.titleEdit)).getText().toString();
-                                    myAreas.add(new ScrimArea(mMap, latLng, title, description));
-                                }
-                            })
-                            .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    // do nothing
-                                }
-                            })
-                            .setIcon(android.R.drawable.ic_dialog_alert);
-                    addBuild.setView(view);
-                    addBuild.show();
+                    AlertDialog.Builder addBuild = new AlertDialog.Builder(MapsActivity.this);
+                    addBuild.setView(rightView);
+                    final AlertDialog alertDialog = addBuild.create();
+                    cancelButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            alertDialog.dismiss();
+                        }
+                    });
+                    createButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            String title = ((EditText) rightView.findViewById(R.id.editPpl)).getText().toString();
+                            String description = ((EditText) rightView.findViewById(R.id.titleEdit)).getText().toString();
+                            myAreas.add(new ScrimArea(mMap, latLng, title, description));
+                            alertDialog.dismiss();
+                        }
+                    });
+                    alertDialog.show();
                 } else {
                     scrimA.showMarkerMessage();
                 }
-
             }
         });
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {

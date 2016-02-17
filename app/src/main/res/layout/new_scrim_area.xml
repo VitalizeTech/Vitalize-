@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    >
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -37,17 +39,17 @@
         android:layout_toRightOf="@+id/typeTitle"
         android:layout_below="@id/titleEdit"
         android:layout_marginRight="30dp"
+        android:layout_marginLeft="30dp"
          />
 
     <ImageView
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:id="@+id/imageForType"
-        android:layout_toRightOf="@id/typeSpinner"
         android:src="@drawable/football"
-        android:layout_below="@id/titleEdit"
-        android:layout_marginTop="10dp"
-        />
+        android:layout_alignTop="@+id/typeTitle"
+        android:layout_alignRight="@+id/pickNow"
+        android:layout_alignEnd="@+id/pickNow" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -55,7 +57,7 @@
         android:text="@string/color"
         android:id="@+id/colorText"
         android:layout_below="@+id/typeSpinner"
-        android:layout_alignRight="@+id/typeTitle"
+        android:layout_marginLeft="40dp"
         android:layout_marginTop="10dp"
          />
 
@@ -63,9 +65,17 @@
         android:layout_width="70dp"
         android:layout_height="40dp"
         android:id="@+id/colorSpinner"
-        android:layout_below="@+id/typeSpinner"
-        android:layout_toRightOf="@id/colorText"
-        android:layout_marginRight="15dp"
+        android:layout_marginLeft="10dp"
+        android:layout_below="@+id/colorText"
+        />
+
+
+    <ImageView
+        android:layout_width="35dp"
+        android:layout_height="40dp"
+        android:id="@+id/colorImage"
+        android:layout_below="@id/colorText"
+        android:layout_toRightOf="@id/colorSpinner"
         />
 
     <TextView
@@ -75,7 +85,8 @@
         android:id="@+id/numPplTxt"
         android:gravity="center"
         android:layout_below="@id/typeSpinner"
-        android:layout_toRightOf="@id/colorSpinner" />
+        android:layout_toRightOf="@id/colorText"
+        android:layout_marginLeft="50dp"/>
 
     <EditText
         android:layout_width="75dp"
@@ -121,19 +132,36 @@
         android:layout_height="wrap_content"
         android:text="@string/addit_info"
         android:id="@+id/textView2"
-        android:layout_below="@+id/editPpl"
-        android:layout_alignLeft="@+id/typeTitle"
-        android:layout_alignStart="@+id/typeTitle" />
+        android:layout_marginTop="20dp"
+        android:layout_below="@id/editPpl"
+        android:layout_alignLeft="@id/typeTitle"
+        android:layout_alignStart="@id/typeTitle" />
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/editText"
+        android:id="@+id/editAdditInfo"
         android:layout_below="@+id/textView2"
-        android:layout_alignLeft="@+id/colorText"
+        android:layout_alignLeft="@+id/colorSpinner"
+        android:layout_marginLeft="20dp"
         android:layout_marginRight="40dp" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cancel"
+        android:id="@+id/cancelBtn"
+        android:layout_alignLeft="@id/numPplTxt"
+        android:layout_marginTop="20dp"
+        android:layout_below="@id/editAdditInfo"/>
 
-
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create"
+        android:id="@+id/createBtn"
+        android:layout_marginTop="20dp"
+        android:layout_toRightOf="@id/cancelBtn"
+        android:layout_below="@id/editAdditInfo"/>
 
 </RelativeLayout>
