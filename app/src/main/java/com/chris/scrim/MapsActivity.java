@@ -8,11 +8,15 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.support.design.widget.NavigationView;
 
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.Spinner;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -104,7 +108,32 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 ScrimArea scrimA = getScrimArea(myAreas, latLng);
                 if (scrimA == null) {
                     //inflate layout we want
-                    final View view = MapsActivity.this.getLayoutInflater().inflate(R.layout.new_scrim_area, null);
+                    final View rightView = MapsActivity.this.getLayoutInflater().inflate(R.layout.new_scrim_area, null);
+
+                    Spinner typeSpinner = (Spinner) rightView.findViewById(R.id.typeSpinner);
+                    String[] types = {"Football", "Tennis", "Basketball", "Xbox One", "PS4", "Chess"};
+                    final int[] typeImages = {R.drawable.football, R.drawable.tennis,
+                            R.drawable.basketball, R.drawable.xboxone,R.drawable.ps4,
+                            R.drawable.chess};
+
+                   //Button cancelButton = (Button) rightView.findViewById(R.id.cancelBtn);
+                    //Button createButton = (Button) rightView.findViewById(R.id.createBtn);
+                    ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(MapsActivity.this,
+                            android.R.layout.simple_spinner_item, types);
+                    dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    typeSpinner.setAdapter(dataAdapter);
+                    typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            ImageView imageForType = (ImageView) rightView.findViewById(R.id.imageForType);
+                            imageForType.setImageResource(typeImages[position]);
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+
+                        }
+                    });
                     // ask the alert dialog to use our layout
                     //prompt for dialog
                     //show a dialog that prompts the user if he/she wants to delete
@@ -113,8 +142,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             .setPositiveButton("Create", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     //retrieve our data
-                                    String title = ((EditText) view.findViewById(R.id.editPpl)).getText().toString();
-                                    String description = ((EditText) view.findViewById(R.id.titleEdit)).getText().toString();
+                                    String title = ((EditText) rightView.findViewById(R.id.editPpl)).getText().toString();
+                                    String description = ((EditText) rightView.findViewById(R.id.titleEdit)).getText().toString();
                                     myAreas.add(new ScrimArea(mMap, latLng, title, description));
                                 }
                             })
