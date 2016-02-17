@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -110,19 +111,35 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if (scrimA == null) {
                     //inflate layout we want
                     final View rightView = MapsActivity.this.getLayoutInflater().inflate(R.layout.new_scrim_area, null);
-
+                    final Spinner colorSpinner = (Spinner) rightView.findViewById(R.id.colorSpinner);
+                    String[] colors = {"Green", "Violet", "Pink", "Yellow", "Blue", "Silver"};
+                    final int[] colorsInHex = {0x4000ff00, 0x400000ff, 0x40ff69b4, 0x60FFFF00, 0x800000ff, 0x90c0c0c0};
                     Spinner typeSpinner = (Spinner) rightView.findViewById(R.id.typeSpinner);
                     String[] types = {"Football", "Tennis", "Basketball", "Xbox One", "PS4", "Chess"};
                     final int[] typeImages = {R.drawable.football, R.drawable.tennis,
                             R.drawable.basketball, R.drawable.xboxone,R.drawable.ps4,
                             R.drawable.chess};
+                    ArrayAdapter<String> colorAdapter = new ArrayAdapter<String>(MapsActivity.this,
+                            android.R.layout.simple_spinner_item, colors);
+                    colorAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    colorSpinner.setAdapter(colorAdapter);
+                    colorSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            rightView.findViewById(R.id.colorImage).setBackgroundColor(colorsInHex[position]);
+                        }
 
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+
+                        }
+                    });
                     Button cancelButton = (Button) rightView.findViewById(R.id.cancelBtn);
                     Button createButton = (Button) rightView.findViewById(R.id.createBtn);
-                    ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(MapsActivity.this,
+                    ArrayAdapter<String> typeAdapter = new ArrayAdapter<String>(MapsActivity.this,
                             android.R.layout.simple_spinner_item, types);
-                    dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    typeSpinner.setAdapter(dataAdapter);
+                    typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    typeSpinner.setAdapter(typeAdapter);
                     typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -152,7 +169,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         public void onClick(View v) {
                             String title = ((EditText) rightView.findViewById(R.id.editPpl)).getText().toString();
                             String description = ((EditText) rightView.findViewById(R.id.titleEdit)).getText().toString();
-                            myAreas.add(new ScrimArea(mMap, latLng, title, description));
+                            myAreas.add(new ScrimArea(mMap, latLng, title, description,
+                                    colorsInHex[ colorSpinner.getSelectedItemPosition()]
+                                    ));
                             alertDialog.dismiss();
                         }
                     });

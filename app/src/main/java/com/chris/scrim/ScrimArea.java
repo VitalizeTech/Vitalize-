@@ -19,19 +19,20 @@ public class ScrimArea {
     private GoogleMap mMap;
     private String name;
     private String Description;
-    public ScrimArea(GoogleMap mMap, LatLng  center, String theName, String theDescription ){
+    public ScrimArea(GoogleMap mMap, LatLng  center, String theName, String theDescription, int circleColor){
         this.mMap = mMap;
         name = theName;
         Description = theDescription;
         centerOfCircle=mMap.addMarker(new MarkerOptions().position(center).title(name).
                 draggable(true).snippet(Description)
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)));
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)));
+
 
         CircleOptions       circleAroundMarker = new CircleOptions()
                 .center(center)
                 .radius(1000)
-                .strokeColor(Color.RED)
-                .fillColor(Color.BLUE);
+                .strokeColor(Color.TRANSPARENT)
+                .fillColor(circleColor);
         myCircle = mMap.addCircle(circleAroundMarker);
     }
 
