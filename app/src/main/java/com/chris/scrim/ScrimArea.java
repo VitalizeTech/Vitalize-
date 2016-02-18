@@ -19,7 +19,8 @@ public class ScrimArea {
     private GoogleMap mMap;
     private String name;
     private String Description;
-    public ScrimArea(GoogleMap mMap, LatLng  center, String theName, String theDescription, int circleColor){
+    public ScrimArea(GoogleMap mMap, LatLng  center, String theName, String theDescription, int circleColor,
+                     int scale){
         this.mMap = mMap;
         name = theName;
         Description = theDescription;
@@ -30,7 +31,7 @@ public class ScrimArea {
 
         CircleOptions       circleAroundMarker = new CircleOptions()
                 .center(center)
-                .radius(1000)
+                .radius(200 * ((double)scale / 100))
                 .strokeColor(Color.TRANSPARENT)
                 .fillColor(circleColor);
         myCircle = mMap.addCircle(circleAroundMarker);

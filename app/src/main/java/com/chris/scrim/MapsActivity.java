@@ -18,6 +18,7 @@ import android.support.design.widget.NavigationView;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.Spinner;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -169,9 +170,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         public void onClick(View v) {
                             String title = ((EditText) rightView.findViewById(R.id.editPpl)).getText().toString();
                             String description = ((EditText) rightView.findViewById(R.id.titleEdit)).getText().toString();
+                            ((SeekBar)rightView.findViewById(R.id.sizeSeekBar)).getProgress();
                             myAreas.add(new ScrimArea(mMap, latLng, title, description,
-                                    colorsInHex[ colorSpinner.getSelectedItemPosition()]
-                                    ));
+                                    colorsInHex[ colorSpinner.getSelectedItemPosition()],
+                            ((SeekBar)rightView.findViewById(R.id.sizeSeekBar)).getProgress()
+                             +50));
                             alertDialog.dismiss();
                         }
                     });

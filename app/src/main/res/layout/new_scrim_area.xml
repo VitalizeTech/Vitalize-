@@ -58,7 +58,6 @@
         android:id="@+id/colorText"
         android:layout_below="@+id/typeSpinner"
         android:layout_marginLeft="40dp"
-        android:layout_marginTop="10dp"
          />
 
     <Spinner
@@ -76,6 +75,25 @@
         android:id="@+id/colorImage"
         android:layout_below="@id/colorSpinner"
         android:layout_marginLeft="30dp"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/size"
+        android:id="@+id/sizeText"
+        android:layout_below="@id/colorImage"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="30dp"
+        android:layout_alignLeft="@id/colorText"
+         />
+
+    <SeekBar
+        android:layout_width="170dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/sizeSeekBar"
+        android:layout_below="@id/sizeText"
+        android:max="20"
+        android:layout_marginLeft="5dp"
         />
 
     <TextView
@@ -131,9 +149,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/addit_info"
-        android:id="@+id/textView2"
+        android:id="@+id/additInfoView"
         android:layout_marginTop="20dp"
-        android:layout_below="@id/editPpl"
+        android:layout_below="@id/sizeSeekBar"
         android:layout_alignLeft="@id/typeTitle"
         android:layout_alignStart="@id/typeTitle" />
 
@@ -141,7 +159,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/editAdditInfo"
-        android:layout_below="@+id/textView2"
+        android:layout_below="@+id/additInfoView"
         android:layout_alignLeft="@+id/colorSpinner"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="40dp" />
