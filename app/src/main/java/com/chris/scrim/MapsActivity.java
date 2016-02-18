@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.media.Image;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -17,8 +18,8 @@ import android.support.design.widget.NavigationView;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ImageView;
-import android.widget.SeekBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -80,6 +81,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    private ScrimArea getScrimAreaOfMarker(Marker markSearchFor) {
+        for(int k=0; k<myAreas.size(); k++) {
+            if(myAreas.get(k).getScrimMarker().equals(markSearchFor)){
+                return myAreas.get(k);
+            }
+        }
+        return null;
+    }
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
@@ -95,6 +104,56 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Replace the (default) location source of the my-location layer with our custom LocationSource
         new FollowMeLocationListener(this, googleMap);
         //mMap.setLocationSource(followMeLocationListener);
+       setOnMapClickListener(mMap);
+
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            mMap.setMyLocationEnabled(true);
+        }
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(final Marker marker) {
+                AlertDialog.Builder markerInfoDialogBuilder = new AlertDialog.Builder(MapsActivity.this);
+                final View markerInfoView = MapsActivity.this.getLayoutInflater().inflate(R.layout.marker_info, null);
+                //final Button
+                final ImageView typeImage = (ImageView) markerInfoView.findViewById(R.id.typeImage);
+                TextView spotsLeft = (TextView) markerInfoView.findViewById(R.id.spotsLeft);
+                TextView type = (TextView) markerInfoView.findViewById(R.id.typeText);
+
+                ScrimArea markerScrim = getScrimAreaOfMarker(marker);
+                typeImage.setImageResource(markerScrim.getTypeImage());
+                spotsLeft.setText("1/" + markerScrim.getNumSpots());
+                type.setText(markerScrim.getType());
+                AlertDialog markerInfoDialog = markerInfoDialogBuilder.create();
+                final Button delete = (Button) markerInfoView.findViewById(R.id.deleteButton);
+                setDeleteClickListener(delete, marker, markerInfoDialog);
+                markerInfoDialog.setView(markerInfoView);
+                markerInfoDialog.show();
+                //find which scrim area corresponds to marker
+                return false;
+            }
+        });
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.profile:
+                Log.d(TAG, "Profile");
+                break;
+            case R.id.settings:
+                Log.d(TAG, "Settings");
+                break;
+            case R.id.about:
+                Log.d(TAG, "About");
+                break;
+            case R.id.home:
+            default:
+                Log.d(TAG, "Home");
+                break;
+        }
+        return false;
+    }
+    private void setOnMapClickListener (final GoogleMap mMap) {
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(final LatLng latLng) {
@@ -140,24 +199,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 createButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String title = ((EditText) rightView.findViewById(R.id.editPpl)).getText().toString();
-                        String description = ((EditText) rightView.findViewById(R.id.titleEdit)).getText().toString();
+                        String title = ((EditText) rightView.findViewById(R.id.titleEdit)).getText().toString();
+                        String description = ((EditText) rightView.findViewById(R.id.editAdditInfo)).
+                                getText().toString();
+                        String type = (String)((Spinner) rightView.
+                                findViewById(R.id.typeSpinner)).getSelectedItem();
+                        int numSpot = Integer.valueOf(((EditText) rightView.
+                                findViewById(R.id.editPpl)).getText().toString());
                         myAreas.add(new ScrimArea(mMap, latLng, title, description,
-                                markerImages[typeSpinner.getSelectedItemPosition()]));
+                                markerImages[typeSpinner.getSelectedItemPosition()],
+                                typeImages[typeSpinner.getSelectedItemPosition()], numSpot, type));
                         alertDialog.dismiss();
                     }
                 });
                 alertDialog.show();
             }
         });
-
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            mMap.setMyLocationEnabled(true);
-        }
-        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+    }
+    private void setDeleteClickListener (Button delete, final Marker marker, final AlertDialog markerInfoDialog) {
+        delete.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onMarkerClick(final Marker marker) {
-                //find which scrim area corresponds to marker
+            public void onClick(View v) {
                 //show a dialog that prompts the user if he/she wants to delete
                 new AlertDialog.Builder(MapsActivity.this)
                         .setTitle("Delete entry")
@@ -166,38 +228,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             public void onClick(DialogInterface dialog, int which) {
                                 // continue with delete
                                 marker.remove();
+                                markerInfoDialog.dismiss();
                             }
                         })
                         .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                // do nothing
-                                marker.showInfoWindow();
+
                             }
                         })
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .show();
-                return false;
             }
         });
-    }
-
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        switch(item.getItemId()) {
-            case R.id.profile:
-                Log.d(TAG, "Profile");
-                break;
-            case R.id.settings:
-                Log.d(TAG, "Settings");
-                break;
-            case R.id.about:
-                Log.d(TAG, "About");
-                break;
-            case R.id.home:
-            default:
-                Log.d(TAG, "Home");
-                break;
-        }
-        return false;
     }
 }
