@@ -24,7 +24,7 @@
     <EditText
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/editText3"
+        android:id="@+id/userEdit"
         android:layout_below="@+id/textView3"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         android:text="Password:"
         android:id="@+id/textView4"
-        android:layout_below="@+id/editText3"
+        android:layout_below="@+id/userEdit"
         android:layout_alignLeft="@+id/textView3"
         android:layout_alignStart="@+id/textView3"
         android:layout_marginTop="38dp"
@@ -47,7 +47,7 @@
         android:layout_height="wrap_content"
         android:inputType="textPassword"
         android:ems="10"
-        android:id="@+id/editText4"
+        android:id="@+id/passEdit"
         android:layout_below="@+id/textView4"
         android:layout_centerHorizontal="true" />
 
@@ -65,7 +65,7 @@
         android:layout_height="wrap_content"
         android:text="Login"
         android:id="@+id/LoginBtn"
-        android:layout_below="@+id/editText4"
+        android:layout_below="@+id/passEdit"
         android:layout_centerHorizontal="true" />
 
     <Button
