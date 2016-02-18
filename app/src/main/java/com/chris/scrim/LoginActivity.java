@@ -1,5 +1,6 @@
 package com.chris.scrim;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -29,37 +30,37 @@ public class LoginActivity extends AppCompatActivity {
         super.onStart();
         ref = new Firebase("https://scrim.firebaseio.com/");
 
-        final EditText username = (EditText)findViewById(R.id.userEdit);
-        final EditText password = (EditText)findViewById(R.id.passEdit);
+        final EditText username = (EditText) findViewById(R.id.userEdit);
+        final EditText password = (EditText) findViewById(R.id.passEdit);
 
         Button loginBtn = (Button) findViewById(R.id.LoginBtn);
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                myFirebaseRef.authAnonymously(new Firebase.AuthResultHandler() {
-//                    @Override
-//                    public void onAuthenticated(AuthData authData) {
-//                        Toast.makeText(LoginActivity.this, "Logged in!", Toast.LENGTH_SHORT).show();
-//                        // we've authenticated this session with your Firebase app
-//                    }
-//                    @Override
-//                    public void onAuthenticationError(FirebaseError firebaseError) {
-//                        Toast.makeText(LoginActivity.this, "You done fucked up!", Toast.LENGTH_SHORT).show();
-//                        // there was an error
-//                    }
-//                });
 
                 ref.authWithPassword(username.getText().toString(), password.getText().toString(), new Firebase.AuthResultHandler() {
                     @Override
                     public void onAuthenticated(AuthData authData) {
                         Toast.makeText(LoginActivity.this, "Logged in!", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
+                        startActivity(intent);
                     }
+
                     @Override
                     public void onAuthenticationError(FirebaseError firebaseError) {
                         Toast.makeText(LoginActivity.this, "You done fucked up!", Toast.LENGTH_SHORT).show();
-                        // there was an error
+                        // there was an error //TODO: Check what error
                     }
                 });
+            }
+        });
+
+        Button regBtn = (Button) findViewById(R.id.loginRegBtn);
+        regBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                startActivity(intent);
             }
         });
     }
