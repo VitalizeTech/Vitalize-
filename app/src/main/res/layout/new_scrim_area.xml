@@ -38,7 +38,7 @@
         android:id="@+id/typeSpinner"
         android:layout_toRightOf="@+id/typeTitle"
         android:layout_below="@id/titleEdit"
-        android:layout_marginRight="30dp"
+        android:layout_marginRight="15dp"
         android:layout_marginLeft="30dp"
          />
 
@@ -48,53 +48,7 @@
         android:id="@+id/imageForType"
         android:src="@drawable/football"
         android:layout_alignTop="@+id/typeTitle"
-        android:layout_alignRight="@+id/pickNow"
-        android:layout_alignEnd="@+id/pickNow" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/color"
-        android:id="@+id/colorText"
-        android:layout_below="@+id/typeSpinner"
-        android:layout_marginLeft="40dp"
-         />
-
-    <Spinner
-        android:layout_width="100dp"
-        android:layout_height="40dp"
-        android:id="@+id/colorSpinner"
-        android:layout_marginLeft="10dp"
-        android:layout_below="@+id/colorText"
-        />
-
-
-    <ImageView
-        android:layout_width="50dp"
-        android:layout_height="20dp"
-        android:id="@+id/colorImage"
-        android:layout_below="@id/colorSpinner"
-        android:layout_marginLeft="30dp"
-        />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/size"
-        android:id="@+id/sizeText"
-        android:layout_below="@id/colorImage"
-        android:layout_marginTop="15dp"
-        android:layout_marginLeft="30dp"
-        android:layout_alignLeft="@id/colorText"
-         />
-
-    <SeekBar
-        android:layout_width="170dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/sizeSeekBar"
-        android:layout_below="@id/sizeText"
-        android:max="20"
-        android:layout_marginLeft="5dp"
-        />
+        android:layout_toRightOf="@id/typeSpinner" />
 
     <TextView
         android:layout_width="75dp"
@@ -103,7 +57,6 @@
         android:id="@+id/numPplTxt"
         android:gravity="center"
         android:layout_below="@id/typeSpinner"
-        android:layout_toRightOf="@id/colorText"
         android:layout_marginLeft="50dp"/>
 
     <EditText
@@ -118,12 +71,12 @@
         android:layout_alignStart="@id/numPplTxt" />
 
     <Button
-        android:layout_width="150dp"
+        android:layout_width="100dp"
         android:layout_height="50dp"
         android:text="@string/pick_start"
         android:id="@+id/pickStartTime"
         android:textSize="10dp"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="50dp"
         android:layout_marginTop="20dp"
         android:layout_toRightOf="@id/numPplTxt"
         android:layout_below="@id/imageForType"
@@ -151,7 +104,7 @@
         android:text="@string/addit_info"
         android:id="@+id/additInfoView"
         android:layout_marginTop="20dp"
-        android:layout_below="@id/sizeSeekBar"
+        android:layout_below="@id/editPpl"
         android:layout_alignLeft="@id/typeTitle"
         android:layout_alignStart="@id/typeTitle" />
 
@@ -160,7 +113,6 @@
         android:layout_height="wrap_content"
         android:id="@+id/editAdditInfo"
         android:layout_below="@+id/additInfoView"
-        android:layout_alignLeft="@+id/colorSpinner"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="40dp" />
 
@@ -170,6 +122,7 @@
         android:text="Cancel"
         android:id="@+id/cancelBtn"
         android:layout_alignLeft="@id/numPplTxt"
+        android:layout_marginLeft="60dp"
         android:layout_marginTop="20dp"
         android:layout_below="@id/editAdditInfo"/>
 

@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -81,15 +80,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    private ScrimArea getScrimArea(List<ScrimArea> scrimAreas, LatLng pointOfInterest) {
-        for (ScrimArea a : scrimAreas) {
-            if (a.showIfInCircle(pointOfInterest)) {
-                return a;
-            }
-        }
-        return null;
-    }
-
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
@@ -108,82 +98,59 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(final LatLng latLng) {
-                ScrimArea scrimA = getScrimArea(myAreas, latLng);
-                if (scrimA == null) {
-                    //inflate layout we want
-                    final View rightView = MapsActivity.this.getLayoutInflater().inflate(R.layout.new_scrim_area, null);
-                    final Spinner colorSpinner = (Spinner) rightView.findViewById(R.id.colorSpinner);
-                    String[] colors = {"Green", "Violet", "Pink", "Yellow", "Blue", "Silver"};
-                    final int[] colorsInHex = {0x4000ff00, 0x400000ff, 0x40ff69b4, 0x60FFFF00, 0x800000ff, 0x90c0c0c0};
-                    Spinner typeSpinner = (Spinner) rightView.findViewById(R.id.typeSpinner);
-                    String[] types = {"Football", "Tennis", "Basketball", "Xbox One", "PS4", "Chess"};
-                    final int[] typeImages = {R.drawable.football, R.drawable.tennis,
-                            R.drawable.basketball, R.drawable.xboxone,R.drawable.ps4,
-                            R.drawable.chess};
-                    ArrayAdapter<String> colorAdapter = new ArrayAdapter<String>(MapsActivity.this,
-                            android.R.layout.simple_spinner_item, colors);
-                    colorAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    colorSpinner.setAdapter(colorAdapter);
-                    colorSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                        @Override
-                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                            rightView.findViewById(R.id.colorImage).setBackgroundColor(colorsInHex[position]);
-                        }
+                final int[] markerImages = {R.drawable.basketball_marker, R.drawable.football_marker, R.drawable.frisbee_marker,
+                        R.drawable.soccer_marker, R.drawable.tennis_marker, R.drawable.volleyball_marker};
+                //inflate layout we want
+                final View rightView = MapsActivity.this.getLayoutInflater().inflate(R.layout.new_scrim_area, null);
+                final Spinner typeSpinner = (Spinner) rightView.findViewById(R.id.typeSpinner);
+                String[] types = {"Basketball", "Football", "Frisbee", "Soccer", "Tennnis", "Volleyball"};
+                final int[] typeImages = {R.drawable.basketball, R.drawable.football,
+                        R.drawable.frisbee, R.drawable.soccer, R.drawable.tennis,
+                        R.drawable.volleyball};
+                Button cancelButton = (Button) rightView.findViewById(R.id.cancelBtn);
+                Button createButton = (Button) rightView.findViewById(R.id.createBtn);
+                ArrayAdapter<String> typeAdapter = new ArrayAdapter<String>(MapsActivity.this,
+                        android.R.layout.simple_spinner_item, types);
+                typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                typeSpinner.setAdapter(typeAdapter);
+                typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        ImageView imageForType = (ImageView) rightView.findViewById(R.id.imageForType);
+                        imageForType.setImageResource(typeImages[position]);
+                    }
 
-                        @Override
-                        public void onNothingSelected(AdapterView<?> parent) {
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
 
-                        }
-                    });
-                    Button cancelButton = (Button) rightView.findViewById(R.id.cancelBtn);
-                    Button createButton = (Button) rightView.findViewById(R.id.createBtn);
-                    ArrayAdapter<String> typeAdapter = new ArrayAdapter<String>(MapsActivity.this,
-                            android.R.layout.simple_spinner_item, types);
-                    typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    typeSpinner.setAdapter(typeAdapter);
-                    typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                        @Override
-                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                            ImageView imageForType = (ImageView) rightView.findViewById(R.id.imageForType);
-                            imageForType.setImageResource(typeImages[position]);
-                        }
-
-                        @Override
-                        public void onNothingSelected(AdapterView<?> parent) {
-
-                        }
-                    });
-                    // ask the alert dialog to use our layout
-                    //prompt for dialog
-                    //show a dialog that prompts the user if he/she wants to delete
-                    AlertDialog.Builder addBuild = new AlertDialog.Builder(MapsActivity.this);
-                    addBuild.setView(rightView);
-                    final AlertDialog alertDialog = addBuild.create();
-                    cancelButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            alertDialog.dismiss();
-                        }
-                    });
-                    createButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            String title = ((EditText) rightView.findViewById(R.id.editPpl)).getText().toString();
-                            String description = ((EditText) rightView.findViewById(R.id.titleEdit)).getText().toString();
-                            ((SeekBar)rightView.findViewById(R.id.sizeSeekBar)).getProgress();
-                            myAreas.add(new ScrimArea(mMap, latLng, title, description,
-                                    colorsInHex[ colorSpinner.getSelectedItemPosition()],
-                            ((SeekBar)rightView.findViewById(R.id.sizeSeekBar)).getProgress()
-                             +50));
-                            alertDialog.dismiss();
-                        }
-                    });
-                    alertDialog.show();
-                } else {
-                    scrimA.showMarkerMessage();
-                }
+                    }
+                });
+                // ask the alert dialog to use our layout
+                //prompt for dialog
+                //show a dialog that prompts the user if he/she wants to delete
+                AlertDialog.Builder addBuild = new AlertDialog.Builder(MapsActivity.this);
+                addBuild.setView(rightView);
+                final AlertDialog alertDialog = addBuild.create();
+                cancelButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        alertDialog.dismiss();
+                    }
+                });
+                createButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String title = ((EditText) rightView.findViewById(R.id.editPpl)).getText().toString();
+                        String description = ((EditText) rightView.findViewById(R.id.titleEdit)).getText().toString();
+                        myAreas.add(new ScrimArea(mMap, latLng, title, description,
+                                markerImages[typeSpinner.getSelectedItemPosition()]));
+                        alertDialog.dismiss();
+                    }
+                });
+                alertDialog.show();
             }
         });
+
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
         }
@@ -191,7 +158,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public boolean onMarkerClick(final Marker marker) {
                 //find which scrim area corresponds to marker
-                final ScrimArea temp = getScrimArea(myAreas, marker.getPosition());
                 //show a dialog that prompts the user if he/she wants to delete
                 new AlertDialog.Builder(MapsActivity.this)
                         .setTitle("Delete entry")
@@ -199,13 +165,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 // continue with delete
-                                temp.remove();
-                                myAreas.remove(temp);
+                                marker.remove();
                             }
                         })
                         .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 // do nothing
+                                marker.showInfoWindow();
                             }
                         })
                         .setIcon(android.R.drawable.ic_dialog_alert)
