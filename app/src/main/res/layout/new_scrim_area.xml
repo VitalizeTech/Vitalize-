@@ -1,38 +1,138 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
-
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    >
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Title"
-        android:id="@+id/newTitle"
-        android:layout_marginLeft = "15dp"
-        android:layout_marginTop = "10dp"
-         />
+        android:text="@string/title"
+        android:id="@+id/titleView"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        />
 
     <EditText
-        android:layout_width="110dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/editText"
-        android:layout_below="@id/newTitle"
-        android:layout_alignLeft="@id/newTitle"
+        android:id="@+id/titleEdit"
+        android:layout_toRightOf="@id/titleView"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="10dp"
         />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Description"
-        android:id="@+id/textView2"
-        android:layout_below="@+id/editText"
-        android:layout_marginLeft = "15dp"/>
+        android:text="@string/type"
+        android:id="@+id/typeTitle"
+        android:layout_marginLeft = "20dp"
+        android:layout_marginTop = "40dp"
+        android:layout_below="@id/titleView"
+         />
 
+    <Spinner
+        android:layout_width="150dp"
+        android:layout_height="75dp"
+        android:id="@+id/typeSpinner"
+        android:layout_toRightOf="@+id/typeTitle"
+        android:layout_below="@id/titleEdit"
+        android:layout_marginRight="15dp"
+        android:layout_marginLeft="30dp"
+         />
+
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:id="@+id/imageForType"
+        android:src="@drawable/football"
+        android:layout_alignTop="@+id/typeTitle"
+        android:layout_toRightOf="@id/typeSpinner" />
+
+    <TextView
+        android:layout_width="75dp"
+        android:layout_height="wrap_content"
+        android:text="@string/num_people"
+        android:id="@+id/numPplTxt"
+        android:gravity="center"
+        android:layout_below="@id/typeSpinner"
+        android:layout_marginLeft="50dp"/>
 
     <EditText
-        android:layout_width="110dp"
+        android:layout_width="75dp"
         android:layout_height="wrap_content"
-        android:id="@+id/editText2"
-        android:layout_below="@+id/textView2"
-        android:layout_alignLeft="@id/newTitle"
-       />
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/editPpl"
+        android:layout_below="@id/numPplTxt"
+        android:layout_marginTop="10dp"
+        android:layout_alignLeft="@id/numPplTxt"
+        android:layout_alignStart="@id/numPplTxt" />
+
+    <Button
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:text="@string/pick_start"
+        android:id="@+id/pickStartTime"
+        android:textSize="10dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="20dp"
+        android:layout_toRightOf="@id/numPplTxt"
+        android:layout_below="@id/imageForType"
+         />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/now"
+        android:id="@+id/pickNow"
+        android:layout_below="@id/pickStartTime"
+        android:layout_alignLeft="@id/pickStartTime"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/startDisplay"
+        android:layout_below="@id/pickNow"
+        android:layout_alignLeft="@id/pickNow"
+        android:layout_alignStart="@id/pickNow" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/addit_info"
+        android:id="@+id/additInfoView"
+        android:layout_marginTop="20dp"
+        android:layout_below="@id/editPpl"
+        android:layout_alignLeft="@id/typeTitle"
+        android:layout_alignStart="@id/typeTitle" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/editAdditInfo"
+        android:layout_below="@+id/additInfoView"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="40dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cancel"
+        android:id="@+id/cancelBtn"
+        android:layout_alignLeft="@id/numPplTxt"
+        android:layout_marginLeft="60dp"
+        android:layout_marginTop="20dp"
+        android:layout_below="@id/editAdditInfo"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create"
+        android:id="@+id/createBtn"
+        android:layout_marginTop="20dp"
+        android:layout_toRightOf="@id/cancelBtn"
+        android:layout_below="@id/editAdditInfo"/>
+
 </RelativeLayout>
