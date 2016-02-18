@@ -1,7 +1,16 @@
 <resources>
-    <string name="app_name">Scrim</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_maps">Map</string>
+    <string name="addit_info">Additional Information</string>
+    <string name="app_name">Scrim</string>
+    <string name="color">Color</string>
+    <string name="new_scrim_title">New Scrim Area</string>
+    <string name="now">Now</string>
+    <string name="num_people">Number of people</string>
+    <string name="pick_start">Pick Start Date </string>
     <string name="profileIcon">profileIcon</string>
     <string name="loginUsernameText">Username: </string>
+    <string name="size">Size</string>
+    <string name="title">Title</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="type">Type</string>
 </resources>
