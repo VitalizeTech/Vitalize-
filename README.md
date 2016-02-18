@@ -48,6 +48,10 @@ When starting a new feature/layout/change.
 	* git status
 	* git push (if there are no issues!) 
 
+### Undo a commit ###
+If you committed something but didn't mean to or you had more work to do on it. This command will undo the commit and keep your changes.
+* git reset HEAD^
+
 ### Stashing your work ###
 Stashing your work will allow you to remove all your changes but also stash them somewhere incase you want to bring them back. To stash your work follow these instructions.
 * stash your work with 'git stash -u'
