@@ -4,10 +4,10 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
-import android.media.Image;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import SlidingMenu.SlidingMenu;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback,
         NavigationView.OnNavigationItemSelectedListener {
 
     private final static String TAG = MapsActivity.class.getName();
@@ -127,6 +127,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 final Button delete = (Button) markerInfoView.findViewById(R.id.deleteButton);
                 setDeleteClickListener(delete, marker, markerInfoDialog);
                 markerInfoDialog.setView(markerInfoView);
+                markerInfoDialog.getWindow().getAttributes().y = -600;
                 markerInfoDialog.show();
                 //find which scrim area corresponds to marker
                 return false;
@@ -240,5 +241,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         .show();
             }
         });
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
     }
 }
