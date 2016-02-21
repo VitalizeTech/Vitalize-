@@ -65,6 +65,8 @@
         android:inputType="number"
         android:ems="10"
         android:id="@+id/editPpl"
+        android:text="1"
+        android:gravity="center"
         android:layout_below="@id/numPplTxt"
         android:layout_marginTop="10dp"
         android:layout_alignLeft="@id/numPplTxt"
@@ -82,21 +84,14 @@
         android:layout_below="@id/imageForType"
          />
 
-    <CheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/now"
-        android:id="@+id/pickNow"
-        android:layout_below="@id/pickStartTime"
-        android:layout_alignLeft="@id/pickStartTime"/>
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/startDisplay"
-        android:layout_below="@id/pickNow"
-        android:layout_alignLeft="@id/pickNow"
-        android:layout_alignStart="@id/pickNow" />
+        android:gravity="center"
+        android:layout_below="@id/pickStartTime"
+        android:layout_alignLeft="@id/pickStartTime"
+        android:layout_marginLeft="10dp" />
 
     <TextView
         android:layout_width="wrap_content"

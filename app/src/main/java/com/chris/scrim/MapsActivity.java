@@ -2,6 +2,8 @@ package com.chris.scrim;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -12,6 +14,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.support.design.widget.NavigationView;
 
@@ -20,6 +23,7 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -28,6 +32,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import SlidingMenu.SlidingMenu;
 
@@ -162,6 +167,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         R.drawable.soccer_marker, R.drawable.tennis_marker, R.drawable.volleyball_marker};
                 //inflate layout we want
                 final View rightView = MapsActivity.this.getLayoutInflater().inflate(R.layout.new_scrim_area, null);
+                final Button timePickerButton = (Button) rightView.findViewById(R.id.pickStartTime);
+                final TextView timeDisplay = (TextView) rightView.findViewById(R.id.startDisplay);
+                setTimeButtonClickListener(timePickerButton, timeDisplay);
                 final Spinner typeSpinner = (Spinner) rightView.findViewById(R.id.typeSpinner);
                 String[] types = {"Basketball", "Football", "Frisbee", "Soccer", "Tennnis", "Volleyball"};
                 final int[] typeImages = {R.drawable.basketball, R.drawable.football,
@@ -203,7 +211,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         String title = ((EditText) rightView.findViewById(R.id.titleEdit)).getText().toString();
                         String description = ((EditText) rightView.findViewById(R.id.editAdditInfo)).
                                 getText().toString();
-                        String type = (String)((Spinner) rightView.
+                        String type = (String) ((Spinner) rightView.
                                 findViewById(R.id.typeSpinner)).getSelectedItem();
                         int numSpot = Integer.valueOf(((EditText) rightView.
                                 findViewById(R.id.editPpl)).getText().toString());
@@ -214,6 +222,44 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                 });
                 alertDialog.show();
+            }
+        });
+    }
+    private void setTimeButtonClickListener(Button timePickerButton, final TextView timeDisplay) {
+        timePickerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //get current time
+                final Calendar currentTime = Calendar.getInstance();
+                DatePickerDialog datePickerDialog = new DatePickerDialog(MapsActivity.this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, final int monthOfYear, final int dayOfMonth) {
+                        TimePickerDialog timePickerDialog = new TimePickerDialog(MapsActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                            @Override
+                            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                                    //is am or pm
+                                    currentTime.set(Calendar.HOUR, hourOfDay);
+                                    currentTime.set(Calendar.MINUTE, minute);
+
+                                    boolean isPm = currentTime.get(Calendar.AM_PM) == Calendar.PM;
+                                    int month = monthOfYear + 1;
+                                    String minuteText;
+                                    if(minute >= 10) {
+                                        minuteText = "" + minute;
+                                    } else {
+                                        minuteText = "0" + minute;
+                                    }
+                                    if(isPm) {
+                                        timeDisplay.setText(month + "/" + dayOfMonth + " " + currentTime.get(Calendar.HOUR) + ":" + minuteText+"PM");
+                                    } else {
+                                        timeDisplay.setText(month + "/" + dayOfMonth + " " + currentTime.get(Calendar.HOUR) + ":" + minuteText+"AM");
+                                    }
+                            }
+                        }, currentTime.get(Calendar.HOUR), currentTime.get(Calendar.MINUTE), false);
+                        timePickerDialog.show();
+                    }
+                }, currentTime.get(Calendar.YEAR), currentTime.get(Calendar.MONTH), currentTime.get(Calendar.DATE) );
+                datePickerDialog.show();
             }
         });
     }
