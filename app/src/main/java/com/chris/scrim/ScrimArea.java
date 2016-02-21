@@ -50,4 +50,7 @@ public class ScrimArea {
     public String getType () {
         return type;
     }
+    public String getAdditionalInfo() {
+        return additionalInfo;
+    }
 }

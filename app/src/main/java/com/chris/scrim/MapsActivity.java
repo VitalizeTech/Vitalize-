@@ -132,8 +132,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 final ImageView typeImage = (ImageView) markerInfoView.findViewById(R.id.typeImage);
                 TextView spotsLeft = (TextView) markerInfoView.findViewById(R.id.spotsLeft);
                 TextView type = (TextView) markerInfoView.findViewById(R.id.typeText);
-
                 final ScrimArea markerScrim = getScrimAreaOfMarker(marker);
+                ((TextView)markerInfoView.findViewById(R.id.titleText)).setText(markerScrim.getTitle());
+                ((TextView)markerInfoView.findViewById(R.id.additInfoText)).setText(markerScrim.getAdditionalInfo());
                 typeImage.setImageResource(markerScrim.getTypeImage());
                 spotsLeft.setText("1/" + markerScrim.getNumSpots());
                 type.setText(markerScrim.getType());
