@@ -9,8 +9,11 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -237,28 +240,28 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         TimePickerDialog timePickerDialog = new TimePickerDialog(MapsActivity.this, new TimePickerDialog.OnTimeSetListener() {
                             @Override
                             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                                    //is am or pm
-                                    currentTime.set(Calendar.HOUR, hourOfDay);
-                                    currentTime.set(Calendar.MINUTE, minute);
+                                //is am or pm
+                                currentTime.set(Calendar.HOUR, hourOfDay);
+                                currentTime.set(Calendar.MINUTE, minute);
 
-                                    boolean isPm = currentTime.get(Calendar.AM_PM) == Calendar.PM;
-                                    int month = monthOfYear + 1;
-                                    String minuteText;
-                                    if(minute >= 10) {
-                                        minuteText = "" + minute;
-                                    } else {
-                                        minuteText = "0" + minute;
-                                    }
-                                    if(isPm) {
-                                        timeDisplay.setText(month + "/" + dayOfMonth + " " + currentTime.get(Calendar.HOUR) + ":" + minuteText+"PM");
-                                    } else {
-                                        timeDisplay.setText(month + "/" + dayOfMonth + " " + currentTime.get(Calendar.HOUR) + ":" + minuteText+"AM");
-                                    }
+                                boolean isPm = currentTime.get(Calendar.AM_PM) == Calendar.PM;
+                                int month = monthOfYear + 1;
+                                String minuteText;
+                                if (minute >= 10) {
+                                    minuteText = "" + minute;
+                                } else {
+                                    minuteText = "0" + minute;
+                                }
+                                if (isPm) {
+                                    timeDisplay.setText(month + "/" + dayOfMonth + " " + currentTime.get(Calendar.HOUR) + ":" + minuteText + "PM");
+                                } else {
+                                    timeDisplay.setText(month + "/" + dayOfMonth + " " + currentTime.get(Calendar.HOUR) + ":" + minuteText + "AM");
+                                }
                             }
                         }, currentTime.get(Calendar.HOUR), currentTime.get(Calendar.MINUTE), false);
                         timePickerDialog.show();
                     }
-                }, currentTime.get(Calendar.YEAR), currentTime.get(Calendar.MONTH), currentTime.get(Calendar.DATE) );
+                }, currentTime.get(Calendar.YEAR), currentTime.get(Calendar.MONTH), currentTime.get(Calendar.DATE));
                 datePickerDialog.show();
             }
         });
@@ -293,5 +296,37 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.find ) {
+            AlertDialog.Builder findGroupDialogBuilder = new AlertDialog.Builder(MapsActivity.this, R.style.AppTheme);
+            LayoutInflater inflateDialogLayout = (LayoutInflater) MapsActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
+            final View findGroupView = inflateDialogLayout.inflate(R.layout.find_scrim_dialog, null, false);
+            findGroupDialogBuilder.setView(findGroupView);
+            final AlertDialog findGroupDialog = findGroupDialogBuilder.create();
+            findGroupView.findViewById(R.id.backButton).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    findGroupDialog.dismiss();
+                }
+            });
+            Window window = findGroupDialog.getWindow();
+            window.getAttributes().y = -1075;
+            window.setBackgroundDrawableResource(R.color.white);
+            window.setLayout(1500, 200);
+            WindowManager.LayoutParams windowParams = window.getAttributes();
+            windowParams.dimAmount = 0.75f;
+            windowParams.flags |= WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+            findGroupDialog.show();
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
