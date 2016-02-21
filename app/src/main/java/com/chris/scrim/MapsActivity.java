@@ -2,30 +2,34 @@ package com.chris.scrim;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
+
 import android.widget.Button;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
-
+    private static final int PLACE_PICKER_REQUEST = 1;
     private GoogleMap mMap;
     private List<ScrimArea> myAreas;
     private VitalizeAreaEditDialogManager vitalizeAreaEditDialogManager;
@@ -83,32 +87,33 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(final Marker marker) {
-                AlertDialog.Builder markerInfoDialogBuilder = new AlertDialog.Builder(MapsActivity.this);
-                final View markerInfoView = MapsActivity.this.getLayoutInflater().inflate(R.layout.marker_info, null);
-                //final Button
-                final ImageView typeImage = (ImageView) markerInfoView.findViewById(R.id.typeImage);
-                TextView spotsLeft = (TextView) markerInfoView.findViewById(R.id.spotsLeft);
-                TextView type = (TextView) markerInfoView.findViewById(R.id.typeText);
                 final ScrimArea markerScrim = ScrimArea.getScrimAreaOfMarker(marker, myAreas);
-                ((TextView)markerInfoView.findViewById(R.id.titleText)).setText(markerScrim.getTitle());
-                ((TextView)markerInfoView.findViewById(R.id.additInfoText)).setText(markerScrim.getAdditionalInfo());
-                typeImage.setImageResource(markerScrim.getTypeImage());
-                spotsLeft.setText("1/" + markerScrim.getNumSpots());
-                type.setText(markerScrim.getType());
-                final AlertDialog markerInfoDialog = markerInfoDialogBuilder.create();
-                final Button delete = (Button) markerInfoView.findViewById(R.id.deleteButton);
-                vitalizeAreaEditDialogManager.setDeleteClickListener(delete, marker, markerInfoDialog);
-                markerInfoView.findViewById(R.id.editButton).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        markerInfoDialog.dismiss();
-                        vitalizeAreaEditDialogManager.showEditScrimDialog(markerScrim, null);
-                    }
-                });
-                markerInfoDialog.setView(markerInfoView);
-                markerInfoDialog.getWindow().getAttributes().y = -600;
-                markerInfoDialog.show();
-                //find which scrim area corresponds to marker
+                if(markerScrim != null) {
+                    AlertDialog.Builder markerInfoDialogBuilder = new AlertDialog.Builder(MapsActivity.this);
+                    final View markerInfoView = MapsActivity.this.getLayoutInflater().inflate(R.layout.marker_info, null);
+                    //final Button
+                    final ImageView typeImage = (ImageView) markerInfoView.findViewById(R.id.typeImage);
+                    TextView spotsLeft = (TextView) markerInfoView.findViewById(R.id.spotsLeft);
+                    TextView type = (TextView) markerInfoView.findViewById(R.id.typeText);
+                    ((TextView) markerInfoView.findViewById(R.id.titleText)).setText(markerScrim.getTitle());
+                    ((TextView) markerInfoView.findViewById(R.id.additInfoText)).setText(markerScrim.getAdditionalInfo());
+                    typeImage.setImageResource(markerScrim.getTypeImage());
+                    spotsLeft.setText("1/" + markerScrim.getNumSpots());
+                    type.setText(markerScrim.getType());
+                    final AlertDialog markerInfoDialog = markerInfoDialogBuilder.create();
+                    final Button delete = (Button) markerInfoView.findViewById(R.id.deleteButton);
+                    vitalizeAreaEditDialogManager.setDeleteClickListener(delete, marker, markerInfoDialog);
+                    markerInfoView.findViewById(R.id.editButton).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            markerInfoDialog.dismiss();
+                            vitalizeAreaEditDialogManager.showEditScrimDialog(markerScrim, null);
+                        }
+                    });
+                    markerInfoDialog.setView(markerInfoView);
+                    markerInfoDialog.getWindow().getAttributes().y = -600;
+                    markerInfoDialog.show();
+                }
                 return false;
             }
         });
@@ -131,35 +136,37 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         return true;
     }
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item){
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         //noinspection SimplifiableIfStatement
         if (id == R.id.find ) {
-            AlertDialog.Builder findGroupDialogBuilder = new AlertDialog.Builder(MapsActivity.this, R.style.AppTheme);
-            LayoutInflater inflateDialogLayout = (LayoutInflater) MapsActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
-            final View findGroupView = inflateDialogLayout.inflate(R.layout.find_scrim_dialog, null, false);
-            findGroupDialogBuilder.setView(findGroupView);
-            final AlertDialog findGroupDialog = findGroupDialogBuilder.create();
-            findGroupView.findViewById(R.id.backButton).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    findGroupDialog.dismiss();
-                }
-            });
-            Window window = findGroupDialog.getWindow();
-            window.getAttributes().y = -1075;
-            window.setBackgroundDrawableResource(R.color.white);
-            window.setLayout(1500, 200);
-            WindowManager.LayoutParams windowParams = window.getAttributes();
-            windowParams.dimAmount = 0.75f;
-            windowParams.flags |= WindowManager.LayoutParams.FLAG_DIM_BEHIND;
-            findGroupDialog.show();
-        }
+            try {
+                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+                startActivityForResult(builder.build(this), PLACE_PICKER_REQUEST);
+            }
+            catch(GooglePlayServicesNotAvailableException e) {
 
+            }
+            catch (GooglePlayServicesRepairableException e) {
+
+            }
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PLACE_PICKER_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                Place place = PlacePicker.getPlace(this, data);
+                FollowMeLocationListener.moveToCurrentLocation(mMap, place.getLatLng());
+                mMap.addMarker(new MarkerOptions().position(place.getLatLng()).title(place.getName()+"").
+                        draggable(false));
+            }
+        }
     }
 }

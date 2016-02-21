@@ -65,20 +65,21 @@ public class FollowMeLocationListener implements LocationSource, LocationListene
             /* ..and Animate camera to center on that location !
              * (the reason for we created this custom Location Source !) */
       //  mMap.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(), location.getLongitude())));
-        moveToCurrentLocation(new LatLng(location.getLatitude(), location.getLongitude()));
+        moveToCurrentLocation(mMap, new LatLng(location.getLatitude(), location.getLongitude()));
         if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             locationManager.removeUpdates(this);
         }
         waitToReceiveCurLoc.dismiss();
     }
 
-   private void moveToCurrentLocation(LatLng currentLocation) {
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation,15));
+   public static void moveToCurrentLocation(GoogleMap theMap, LatLng currentLocation) {
+       theMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation,15));
         // Zoom in, animating the camera.
-        mMap.animateCamera(CameraUpdateFactory.zoomIn());
-//        // Zoom out to zoom level 10, animating with a duration of 2 seconds.
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(13), 2000, null);
-    }
+       theMap.animateCamera(CameraUpdateFactory.zoomIn());
+       //Zoom out to zoom level 10, animating with a duration of 2 seconds.
+       theMap.animateCamera(CameraUpdateFactory.zoomTo(13), 2000, null);
+   }
+
     @Override
     public void onStatusChanged(String s, int i, Bundle bundle) {
 
