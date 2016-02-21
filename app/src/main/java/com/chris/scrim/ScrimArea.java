@@ -13,22 +13,26 @@ import com.google.android.gms.maps.model.MarkerOptions;
  */
 public class ScrimArea {
     private String title;
-    private String Description;
+    private String additionalInfo;
     private String type;
     private Marker scrimMarker;
     private int numSpots;
     private int typeImage;
     public ScrimArea(GoogleMap mMap, LatLng  center, String theName, String theDescription,
                      int markerImage, int typeImage, int numSpots, String type){
-
-        title = theName;
-        Description = theDescription;
         scrimMarker = mMap.addMarker(new MarkerOptions().position(center).title(title).
-                                draggable(true).snippet(Description)
-                                .icon(BitmapDescriptorFactory.fromResource(markerImage)));
-        this.typeImage = typeImage;
+                                draggable(true).snippet(additionalInfo));
+        update(theName, theDescription, typeImage, markerImage, numSpots, type);
+
+    }
+
+    public void update(String title, String description, int typeImage, int markerImage, int numSpots, String type) {
+        this.title = title;
+        additionalInfo = description;
+        scrimMarker.setIcon(BitmapDescriptorFactory.fromResource(markerImage));
         this.numSpots = numSpots;
         this.type = type;
+        this.typeImage = typeImage;
     }
 
     public Marker getScrimMarker() {
