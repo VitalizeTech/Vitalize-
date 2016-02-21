@@ -8,6 +8,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.List;
+
 /**
  * Created by chris on 2/4/2016.
  */
@@ -52,5 +54,13 @@ public class ScrimArea {
     }
     public String getAdditionalInfo() {
         return additionalInfo;
+    }
+    public static ScrimArea getScrimAreaOfMarker(Marker toSearchFor, List<ScrimArea> scrimAreaList) {
+        for(int k=0; k<scrimAreaList.size(); k++) {
+            if(scrimAreaList.get(k).getScrimMarker().equals(toSearchFor)){
+                return scrimAreaList.get(k);
+            }
+        }
+        return null;
     }
 }
