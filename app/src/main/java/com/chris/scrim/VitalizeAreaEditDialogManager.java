@@ -27,6 +27,7 @@ import java.util.List;
  * Created by chris on 2/21/2016.
  */
 public class VitalizeAreaEditDialogManager {
+    private static final int NUM_AM_HOURS = 12;
     private Activity mActivity;
     private GoogleMap mMap;
     private List<ScrimArea> myAreas;
@@ -117,9 +118,9 @@ public class VitalizeAreaEditDialogManager {
                             @Override
                             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                                 //is am or pm
+                                //so 16 is represented as 4
                                 currentTime.set(Calendar.HOUR, hourOfDay);
                                 currentTime.set(Calendar.MINUTE, minute);
-                                boolean isPm = currentTime.get(Calendar.AM_PM) == Calendar.PM;
                                 int month = monthOfYear + 1;
                                 String minuteText;
                                 if (minute >= 10) {
@@ -127,7 +128,7 @@ public class VitalizeAreaEditDialogManager {
                                 } else {
                                     minuteText = "0" + minute;
                                 }
-                                if (isPm) {
+                                if (hourOfDay > NUM_AM_HOURS) {
                                     timeDisplay.setText(month + "/" + dayOfMonth + " " + currentTime.get(Calendar.HOUR) + ":" + minuteText + "PM");
                                 } else {
                                     timeDisplay.setText(month + "/" + dayOfMonth + " " + currentTime.get(Calendar.HOUR) + ":" + minuteText + "AM");
