@@ -25,13 +25,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
     private static final int PLACE_PICKER_REQUEST = 1;
     private GoogleMap mMap;
-    private List<ScrimArea> myAreas;
     private VitalizeAreaEditDialogManager vitalizeAreaEditDialogManager;
 
     @Override
@@ -42,7 +39,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        myAreas = new ArrayList<>();
         VitalizeSlidingMenu.initializeSlidingMenu(this);
     }
 
@@ -74,12 +70,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        vitalizeAreaEditDialogManager =  new VitalizeAreaEditDialogManager(this, googleMap, myAreas);
+        vitalizeAreaEditDialogManager =  new VitalizeAreaEditDialogManager(this, googleMap);
         mMap = googleMap;
         // Replace the (default) location source of the my-location layer with our custom LocationSource
         new FollowMeLocationListener(this, googleMap);
         //mMap.setLocationSource(followMeLocationListener);
        setOnMapClickListener(mMap);
+        ScrimArea.loadAllAreasOntoMap(googleMap);
 
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
@@ -87,7 +84,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(final Marker marker) {
-                final ScrimArea markerScrim = ScrimArea.getScrimAreaOfMarker(marker, myAreas);
+                final ScrimArea markerScrim = ScrimArea.getScrimAreaOfMarker(marker, VitalizeApplication.getAllAreas());
                 if(markerScrim != null) {
                     AlertDialog.Builder markerInfoDialogBuilder = new AlertDialog.Builder(MapsActivity.this);
                     final View markerInfoView = MapsActivity.this.getLayoutInflater().inflate(R.layout.marker_info, null);

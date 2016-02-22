@@ -5,13 +5,21 @@ import android.app.Application;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by chris on 2/21/2016.
  */
 public class VitalizeApplication extends Application {
+    private static List<ScrimArea> allAreas;
+    public static List<ScrimArea> getAllAreas() {
+        return allAreas;
+    }
     @Override
     public void onCreate() {
         super.onCreate();
+        allAreas = new ArrayList<>();
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
             @Override
             public void onActivityCreated(Activity activity,

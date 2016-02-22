@@ -30,16 +30,14 @@ public class VitalizeAreaEditDialogManager {
     private static final int NUM_AM_HOURS = 12;
     private Activity mActivity;
     private GoogleMap mMap;
-    private List<ScrimArea> myAreas;
     private final int[] markerImages = {R.drawable.basketball_marker, R.drawable.football_marker, R.drawable.frisbee_marker,
             R.drawable.soccer_marker, R.drawable.tennis_marker, R.drawable.volleyball_marker};
     private final int[] typeImages = {R.drawable.basketball, R.drawable.football,
             R.drawable.frisbee, R.drawable.soccer, R.drawable.tennis,
             R.drawable.volleyball};
-    public VitalizeAreaEditDialogManager(Activity theActivity, GoogleMap theMap, List<ScrimArea> theAreas) {
+    public VitalizeAreaEditDialogManager(Activity theActivity, GoogleMap theMap) {
         mActivity = theActivity;
         mMap = theMap;
-        myAreas = theAreas;
     }
     public void showEditScrimDialog(final ScrimArea theAre, final LatLng latLng ) {
         //inflate layout we wantz
@@ -97,7 +95,7 @@ public class VitalizeAreaEditDialogManager {
                 int numSpot = Integer.valueOf(((EditText) rightView.
                         findViewById(R.id.editPpl)).getText().toString());
                 if(theAre == null) {
-                    myAreas.add(new ScrimArea(mMap, latLng, title, description,
+                    VitalizeApplication.getAllAreas().add(new ScrimArea(mMap, latLng, title, description,
                             markerImages[typeSpinner.getSelectedItemPosition()],
                             typeImages[typeSpinner.getSelectedItemPosition()], numSpot, type));
                 } else {
@@ -165,6 +163,9 @@ public class VitalizeAreaEditDialogManager {
                         .setMessage("Are you sure you want to delete this entry?")
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
+                                List<ScrimArea> allAreas = VitalizeApplication.getAllAreas();
+                                //remove it from point of truth as well
+                                allAreas.remove(ScrimArea.getScrimAreaOfMarker(marker, allAreas));
                                 // continue with delete
                                 marker.remove();
                                 markerInfoDialog.dismiss();
