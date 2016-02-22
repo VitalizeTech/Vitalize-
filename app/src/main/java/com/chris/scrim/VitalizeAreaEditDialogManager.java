@@ -44,6 +44,10 @@ public class VitalizeAreaEditDialogManager {
     public void showEditScrimDialog(final ScrimArea theAre, final LatLng latLng ) {
         //inflate layout we wantz
         final View rightView = mActivity.getLayoutInflater().inflate(R.layout.new_scrim_area, null);
+        Calendar current = Calendar.getInstance();
+        setText((TextView)rightView.findViewById(R.id.startDisplay), current.get(Calendar.MINUTE),
+                current.get(Calendar.MONTH) + 1, current.get(Calendar.DAY_OF_MONTH), current);
+
         final Button timePickerButton = (Button) rightView.findViewById(R.id.pickStartTime);
         final TextView timeDisplay = (TextView) rightView.findViewById(R.id.startDisplay);
         setTimeButtonClickListener(timePickerButton, timeDisplay);
@@ -120,19 +124,10 @@ public class VitalizeAreaEditDialogManager {
                                 //is am or pm
                                 //so 16 is represented as 4
                                 currentTime.set(Calendar.HOUR, hourOfDay);
+                                currentTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
                                 currentTime.set(Calendar.MINUTE, minute);
                                 int month = monthOfYear + 1;
-                                String minuteText;
-                                if (minute >= 10) {
-                                    minuteText = "" + minute;
-                                } else {
-                                    minuteText = "0" + minute;
-                                }
-                                if (hourOfDay > NUM_AM_HOURS) {
-                                    timeDisplay.setText(month + "/" + dayOfMonth + " " + currentTime.get(Calendar.HOUR) + ":" + minuteText + "PM");
-                                } else {
-                                    timeDisplay.setText(month + "/" + dayOfMonth + " " + currentTime.get(Calendar.HOUR) + ":" + minuteText + "AM");
-                                }
+                                setText(timeDisplay, minute, month, dayOfMonth, currentTime);
                             }
                         }, currentTime.get(Calendar.HOUR), currentTime.get(Calendar.MINUTE), false);
                         timePickerDialog.show();
@@ -141,6 +136,24 @@ public class VitalizeAreaEditDialogManager {
                 datePickerDialog.show();
             }
         });
+    }
+    private void setText(TextView timeDisplay, int minute, int month, int dayOfMonth, Calendar getHour) {
+        //getHour - 16 -> 4
+        String minuteText;
+        if (minute >= 10) {
+            minuteText = "" + minute;
+        } else {
+            minuteText = "0" + minute;
+        }
+        int hourIn12HourClock = getHour.get(Calendar.HOUR);
+        if(hourIn12HourClock == 0) {
+            hourIn12HourClock = 12;
+        }
+        if (getHour.get(Calendar.HOUR_OF_DAY) >= NUM_AM_HOURS) {
+            timeDisplay.setText(month + "/" + dayOfMonth + " " + hourIn12HourClock + ":" + minuteText + "PM");
+        } else {
+            timeDisplay.setText(month + "/" + dayOfMonth + " " + hourIn12HourClock + ":" + minuteText + "AM");
+        }
     }
     public void setDeleteClickListener (Button delete, final Marker marker, final AlertDialog markerInfoDialog) {
         delete.setOnClickListener(new View.OnClickListener() {
