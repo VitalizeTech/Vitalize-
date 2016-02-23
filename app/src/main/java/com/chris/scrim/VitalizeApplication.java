@@ -7,11 +7,16 @@ import android.os.Bundle;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by chris on 2/21/2016.
  */
 public class VitalizeApplication extends Application {
+    private DBHelper dbHelper;
+    private static Map<String, Integer> typeToMarkerImage;
+    private static Map<String, Integer> typeToTypeImage;
+    private static String[] types;
     private static List<ScrimArea> allAreas;
     public static List<ScrimArea> getAllAreas() {
         return allAreas;
@@ -19,7 +24,10 @@ public class VitalizeApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        initializeMaps();
         allAreas = new ArrayList<>();
+        dbHelper = new DBHelper(this);
+        allAreas = dbHelpler.getAllScrimAreas();
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
             @Override
             public void onActivityCreated(Activity activity,
@@ -57,5 +65,9 @@ public class VitalizeApplication extends Application {
 
             }
         });
+    }
+    private static void initializeMaps() {
+        String[] types = {"Basketball", "Football", "Frisbee", "Soccer", "Tennnis", "Volleyball"};
+
     }
 }
