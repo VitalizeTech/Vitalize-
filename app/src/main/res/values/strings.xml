@@ -15,5 +15,7 @@
     <string name="spot">Spots</string>
     <string name="title">Title</string>
     <string name="title_activity_maps">Map</string>
+    <string name="profileIcon">profileIcon</string>
+    <string name="loginUsernameText">Username: </string>
     <string name="type">Type</string>
 </resources>
