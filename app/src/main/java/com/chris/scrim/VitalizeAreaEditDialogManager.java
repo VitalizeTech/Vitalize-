@@ -30,38 +30,35 @@ public class VitalizeAreaEditDialogManager {
     private static final int NUM_AM_HOURS = 12;
     private Activity mActivity;
     private GoogleMap mMap;
-    private final int[] markerImages = {R.drawable.basketball_marker, R.drawable.football_marker, R.drawable.frisbee_marker,
-            R.drawable.soccer_marker, R.drawable.tennis_marker, R.drawable.volleyball_marker};
-    private final int[] typeImages = {R.drawable.basketball, R.drawable.football,
-            R.drawable.frisbee, R.drawable.soccer, R.drawable.tennis,
-            R.drawable.volleyball};
+    private DBHelper dbHelper;
+
     public VitalizeAreaEditDialogManager(Activity theActivity, GoogleMap theMap) {
         mActivity = theActivity;
         mMap = theMap;
+        dbHelper = new DBHelper(theActivity);
     }
     public void showEditScrimDialog(final ScrimArea theAre, final LatLng latLng ) {
         //inflate layout we wantz
         final View rightView = mActivity.getLayoutInflater().inflate(R.layout.new_scrim_area, null);
         Calendar current = Calendar.getInstance();
-        setText((TextView)rightView.findViewById(R.id.startDisplay), current.get(Calendar.MINUTE),
+        setText((TextView) rightView.findViewById(R.id.startDisplay), current.get(Calendar.MINUTE),
                 current.get(Calendar.MONTH) + 1, current.get(Calendar.DAY_OF_MONTH), current);
 
         final Button timePickerButton = (Button) rightView.findViewById(R.id.pickStartTime);
         final TextView timeDisplay = (TextView) rightView.findViewById(R.id.startDisplay);
         setTimeButtonClickListener(timePickerButton, timeDisplay);
         final Spinner typeSpinner = (Spinner) rightView.findViewById(R.id.typeSpinner);
-        String[] types = {"Basketball", "Football", "Frisbee", "Soccer", "Tennnis", "Volleyball"};
         Button cancelButton = (Button) rightView.findViewById(R.id.cancelBtn);
         Button createButton = (Button) rightView.findViewById(R.id.createBtn);
         ArrayAdapter<String> typeAdapter = new ArrayAdapter<String>(mActivity,
-                android.R.layout.simple_spinner_item, types);
+                android.R.layout.simple_spinner_item, VitalizeApplication.getTypes());
         typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         typeSpinner.setAdapter(typeAdapter);
         typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 ImageView imageForType = (ImageView) rightView.findViewById(R.id.imageForType);
-                imageForType.setImageResource(typeImages[position]);
+                imageForType.setImageResource(VitalizeApplication.getTypeImage(VitalizeApplication.getTypes()[position]));
             }
 
             @Override
@@ -95,12 +92,15 @@ public class VitalizeAreaEditDialogManager {
                 int numSpot = Integer.valueOf(((EditText) rightView.
                         findViewById(R.id.editPpl)).getText().toString());
                 if(theAre == null) {
-                    VitalizeApplication.getAllAreas().add(new ScrimArea(mMap, latLng, title, description,
-                            markerImages[typeSpinner.getSelectedItemPosition()],
-                            typeImages[typeSpinner.getSelectedItemPosition()], numSpot, type));
+                    ScrimArea newArea = new ScrimArea(mMap, latLng, title, description,
+                            VitalizeApplication.getMarkerImage(type), VitalizeApplication.getTypeImage(type), numSpot, type);
+                    VitalizeApplication.getAllAreas().add(newArea);
+                    dbHelper.insertScrimAreaDB(newArea.getId(), newArea.getTitle(), newArea.getAdditionalInfo(),
+                            newArea.getType(), newArea.getCenter().latitude, newArea.getCenter().longitude, newArea.getNumSpots());
                 } else {
-                    theAre.update(title, description,  typeImages[typeSpinner.getSelectedItemPosition()],
-                            markerImages[typeSpinner.getSelectedItemPosition()], numSpot, type);
+                    theAre.update(title, description,  VitalizeApplication.getTypeImage(type),
+                            VitalizeApplication.getMarkerImage(type), numSpot, type);
+                    dbHelper.updateScrimAreaDB(theAre.getId(), title, description, type, numSpot);
                 }
                 alertDialog.dismiss();
             }
@@ -164,10 +164,12 @@ public class VitalizeAreaEditDialogManager {
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 List<ScrimArea> allAreas = VitalizeApplication.getAllAreas();
+                                ScrimArea toRemove = ScrimArea.getScrimAreaOfMarker(marker, allAreas);
                                 //remove it from point of truth as well
-                                allAreas.remove(ScrimArea.getScrimAreaOfMarker(marker, allAreas));
+                                allAreas.remove(toRemove);
                                 // continue with delete
                                 marker.remove();
+                                dbHelper.removeScrimAreaDB(toRemove.getId());
                                 markerInfoDialog.dismiss();
                             }
                         })

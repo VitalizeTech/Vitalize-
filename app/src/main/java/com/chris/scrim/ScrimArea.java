@@ -22,12 +22,18 @@ public class ScrimArea {
     private int typeImage;
     private int markerImage;
     private LatLng center;
-    public ScrimArea(GoogleMap mMap, LatLng  center, String theName, String theDescription,
+    private int id;
+    public ScrimArea(GoogleMap mMap, LatLng  center, String theName, String theAdditionalInfo,
                      int markerImage, int typeImage, int numSpots, String type){
+
+        id = VitalizeApplication.getUniqueId();
         scrimMarker = mMap.addMarker(new MarkerOptions().position(center).title(title).
                                 draggable(true).snippet(additionalInfo));
-        update(theName, theDescription, typeImage, markerImage, numSpots, type);
         this.center = center;
+
+        update(theName, theAdditionalInfo, typeImage, markerImage, numSpots, type);
+    }
+    public ScrimArea() {
     }
     public static void loadAllAreasOntoMap(GoogleMap map) {
         for(ScrimArea area: VitalizeApplication.getAllAreas()) {
@@ -35,16 +41,36 @@ public class ScrimArea {
                 .icon(BitmapDescriptorFactory.fromResource(area.markerImage)));
         }
     }
-    public void update(String title, String description, int typeImage, int markerImage, int numSpots, String type) {
+    public void update(String title, String theAdditionalInfo, int typeImage, int markerImage, int numSpots, String type) {
         this.title = title;
-        additionalInfo = description;
+        additionalInfo = theAdditionalInfo;
         this.markerImage = markerImage;
-        scrimMarker.setIcon(BitmapDescriptorFactory.fromResource(markerImage));
+        if(scrimMarker != null) {
+            scrimMarker.setIcon(BitmapDescriptorFactory.fromResource(markerImage));
+        }
         this.numSpots = numSpots;
         this.type = type;
         this.typeImage = typeImage;
     }
+    public LatLng getCenter() {
+        return center;
+    }
 
+    @Override
+    public String toString() {
+        return "ScrimArea{" +
+                "title='" + title + '\'' +
+                ", additionalInfo='" + additionalInfo + '\'' +
+                ", type='" + type + '\'' +
+                ", numSpots=" + numSpots +
+                ", center=" + center +
+                ", id=" + id +
+                '}';
+    }
+
+    public int getId() {
+        return id;
+    }
     public String getTitle() {
         return title;
     }
@@ -59,6 +85,12 @@ public class ScrimArea {
     }
     public String getAdditionalInfo() {
         return additionalInfo;
+    }
+    public void setCenter(LatLng center) {
+        this.center = center;
+    }
+    public void setId(int id) {
+        this.id = id;
     }
     public static ScrimArea getScrimAreaOfMarker(Marker toSearchFor, List<ScrimArea> scrimAreaList) {
         for(int k=0; k<scrimAreaList.size(); k++) {
