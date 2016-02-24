@@ -1,68 +1,105 @@
 package com.chris.scrim;
 
-import android.graphics.Color;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.Circle;
-import com.google.android.gms.maps.model.CircleOptions;
+
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.List;
 
 /**
  * Created by chris on 2/4/2016.
  */
 public class ScrimArea {
-    private Circle myCircle;
-    private Marker centerOfCircle;
-    private GoogleMap mMap;
-    private String name;
-    private String Description;
-    public ScrimArea(GoogleMap mMap, LatLng  center, String theName, String theDescription ){
-        this.mMap = mMap;
-        name = theName;
-        Description = theDescription;
-        centerOfCircle=mMap.addMarker(new MarkerOptions().position(center).title(name).
-                draggable(true).snippet(Description)
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)));
+    private String title;
+    private String additionalInfo;
+    private String type;
+    private Marker scrimMarker;
+    private int numSpots;
+    private int typeImage;
+    private int markerImage;
+    private LatLng center;
+    private int id;
+    public ScrimArea(GoogleMap mMap, LatLng  center, String theName, String theAdditionalInfo,
+                     int markerImage, int typeImage, int numSpots, String type){
 
-        CircleOptions       circleAroundMarker = new CircleOptions()
-                .center(center)
-                .radius(1000)
-                .strokeColor(Color.RED)
-                .fillColor(Color.BLUE);
-        myCircle = mMap.addCircle(circleAroundMarker);
+        id = VitalizeApplication.getUniqueId();
+        scrimMarker = mMap.addMarker(new MarkerOptions().position(center).title(title).
+                                draggable(true).snippet(additionalInfo));
+        this.center = center;
+
+        update(theName, theAdditionalInfo, typeImage, markerImage, numSpots, type);
+    }
+    public ScrimArea() {
+    }
+    public static void loadAllAreasOntoMap(GoogleMap map) {
+        for(ScrimArea area: VitalizeApplication.getAllAreas()) {
+            area.scrimMarker = map.addMarker(new MarkerOptions().position(area.center).title(area.title).draggable(true).snippet(area.additionalInfo)
+                .icon(BitmapDescriptorFactory.fromResource(area.markerImage)));
+        }
+    }
+    public void update(String title, String theAdditionalInfo, int typeImage, int markerImage, int numSpots, String type) {
+        this.title = title;
+        additionalInfo = theAdditionalInfo;
+        this.markerImage = markerImage;
+        if(scrimMarker != null) {
+            scrimMarker.setIcon(BitmapDescriptorFactory.fromResource(markerImage));
+        }
+        this.numSpots = numSpots;
+        this.type = type;
+        this.typeImage = typeImage;
+    }
+    public LatLng getCenter() {
+        return center;
     }
 
-    public Circle getCircle() {
-        return myCircle;
+    @Override
+    public String toString() {
+        return "ScrimArea{" +
+                "title='" + title + '\'' +
+                ", additionalInfo='" + additionalInfo + '\'' +
+                ", type='" + type + '\'' +
+                ", numSpots=" + numSpots +
+                ", center=" + center +
+                ", id=" + id +
+                '}';
     }
 
-    public Marker getCenterOfCircle() {
-        return centerOfCircle;
+    public int getId() {
+        return id;
+    }
+    public String getTitle() {
+        return title;
+    }
+    public int getTypeImage() {
+        return typeImage;
+    }
+    public int getNumSpots () {
+        return numSpots;
+    }
+    public String getType () {
+        return type;
+    }
+    public String getAdditionalInfo() {
+        return additionalInfo;
+    }
+    public void setCenter(LatLng center) {
+        this.center = center;
+    }
+    public void setId(int id) {
+        this.id = id;
+    }
+    public static ScrimArea getScrimAreaOfMarker(Marker toSearchFor, List<ScrimArea> scrimAreaList) {
+        for(int k=0; k<scrimAreaList.size(); k++) {
+            //marker comparison won't work, creating new ones in memory
+            if(scrimAreaList.get(k).center.equals(toSearchFor.getPosition())){
+                return scrimAreaList.get(k);
+            }
+        }
+        return null;
     }
 
-    public boolean showIfInCircle(LatLng pointOfInterest) {
-        double dx = myCircle.getCenter().latitude - pointOfInterest.latitude;
-        double dy = myCircle.getCenter().longitude - pointOfInterest.longitude;
-        double earthRadius = 6371000; //meters
-        double dLat = Math.toRadians(dx);
-        double dLng = Math.toRadians(dy);
-        double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                Math.cos(Math.toRadians(pointOfInterest.latitude)) *
-                        Math.cos(Math.toRadians(myCircle.getCenter().latitude)) *
-                        Math.sin(dLng/2) * Math.sin(dLng/2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        return (earthRadius * c) <= myCircle.getRadius();
-    }
-
-    public void showMarkerMessage() {
-        centerOfCircle.showInfoWindow();
-
-    }
-    public void remove() {
-        centerOfCircle.remove();
-        myCircle.remove();;
-    }
 }

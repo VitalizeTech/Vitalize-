@@ -2,38 +2,34 @@ package com.chris.scrim;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
 import android.view.View;
-import android.widget.EditText;
-import android.support.design.widget.NavigationView;
 
-import android.util.Log;
+import android.widget.Button;
 import android.view.MenuItem;
-
-import com.google.android.gms.maps.CameraUpdateFactory;
+import android.widget.ImageView;
+import android.widget.TextView;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.ArrayList;
-import java.util.List;
-import SlidingMenu.SlidingMenu;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
-        NavigationView.OnNavigationItemSelectedListener {
-
-    private final static String TAG = MapsActivity.class.getName();
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
+    private static final int PLACE_PICKER_REQUEST = 1;
     private GoogleMap mMap;
-    private List<ScrimArea> myAreas;
-    private SlidingMenu mySlidingMenu;
+    private VitalizeAreaEditDialogManager vitalizeAreaEditDialogManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,32 +39,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        myAreas = new ArrayList<>();
-
-
-        // configure the SlidingMenu
-        mySlidingMenu = new SlidingMenu(this);
-        mySlidingMenu.setMode(SlidingMenu.LEFT);
-        mySlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
-        mySlidingMenu.setShadowWidthRes(R.dimen.shadow_width);
-        // Need to add shadow.
-        // mySlidingMenu.setShadowDrawable(R.drawable.common_plus_signin_btn_icon_dark);
-        mySlidingMenu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
-        mySlidingMenu.setFadeDegree(0.35f);
-        mySlidingMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
-        mySlidingMenu.setMenu(R.layout.sliding_menu);
-        ((NavigationView) mySlidingMenu.getMenu().findViewById(R.id.nav_view))
-                .setNavigationItemSelectedListener(this);
+        VitalizeSlidingMenu.initializeSlidingMenu(this);
     }
 
-    private ScrimArea getScrimArea(List<ScrimArea> scrimAreas, LatLng pointOfInterest) {
-
-        for (ScrimArea a : scrimAreas) {
-            if (a.showIfInCircle(pointOfInterest)) {
-                return a;
-            }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(mMap != null && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            mMap.setMyLocationEnabled(true);
         }
-        return null;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        /* Disable the my-location layer (this causes our LocationSource to be automatically deactivated.) */
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            mMap.setMyLocationEnabled(false);
+        }
     }
 
     /**
@@ -82,47 +70,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        vitalizeAreaEditDialogManager =  new VitalizeAreaEditDialogManager(this, googleMap);
         mMap = googleMap;
-        LatLng startLocation = new LatLng(47.5626337, -122.1344056);
-        // Add a marker in Sydney and move the camera
-        mMap.addMarker(new MarkerOptions().position(startLocation).title("Pickup").draggable(true).snippet("For Group")
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
-        moveToCurrentLocation(startLocation);
-        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-            @Override
-            public void onMapClick(final LatLng latLng) {
-                ScrimArea scrimA = getScrimArea(myAreas, latLng);
-                if(scrimA == null) {
-                    //inflate layout we want
-                    final View view = MapsActivity.this.getLayoutInflater().inflate(R.layout.new_scrim_area, null);
-                    // ask the alert dialog to use our layout
-                    //prompt for dialog
-                    //show a dialog that prompts the user if he/she wants to delete
-                    AlertDialog.Builder addBuild = new AlertDialog.Builder(MapsActivity.this)
-                            .setTitle("New")
-                            .setMessage("Add new scrim area")
-                            .setPositiveButton("Create", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    //retrieve our data
-                                    String title = ((EditText)view.findViewById(R.id.editText)).getText().toString();
-                                    String description = ((EditText)view.findViewById(R.id.editText2)).getText().toString();
-                                    myAreas.add(new ScrimArea(mMap, latLng, title, description));
-                                }
-                            })
-                            .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    // do nothing
-                                }
-                            })
-                            .setIcon(android.R.drawable.ic_dialog_alert);
-                    addBuild.setView(view);
-                    addBuild.show();
-                } else {
-                    scrimA.showMarkerMessage();
-                }
-
-            }
-        });
+        // Replace the (default) location source of the my-location layer with our custom LocationSource
+        new FollowMeLocationListener(this, googleMap);
+       setOnMapClickListener(mMap);
+        ScrimArea.loadAllAreasOntoMap(googleMap);
 
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
@@ -130,59 +83,86 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(final Marker marker) {
-                //find which scrim area corresponds to marker
-                final ScrimArea temp = getScrimArea(myAreas, marker.getPosition());
-
-                //marker.remove();
-                //show a dialog that prompts the user if he/she wants to delete
-                new AlertDialog.Builder(MapsActivity.this)
-                        .setTitle("Delete entry")
-                        .setMessage("Are you sure you want to delete this entry?")
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // continue with delete
-                                temp.remove();
-                                myAreas.remove(temp);
-                            }
-                        })
-                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // do nothing
-                            }
-                        })
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .show();
+                final ScrimArea markerScrim = ScrimArea.getScrimAreaOfMarker(marker, VitalizeApplication.getAllAreas());
+                if(markerScrim != null) {
+                    AlertDialog.Builder markerInfoDialogBuilder = new AlertDialog.Builder(MapsActivity.this);
+                    final View markerInfoView = MapsActivity.this.getLayoutInflater().inflate(R.layout.marker_info, null);
+                    //final Button
+                    final ImageView typeImage = (ImageView) markerInfoView.findViewById(R.id.typeImage);
+                    TextView spotsLeft = (TextView) markerInfoView.findViewById(R.id.spotsLeft);
+                    TextView type = (TextView) markerInfoView.findViewById(R.id.typeText);
+                    ((TextView) markerInfoView.findViewById(R.id.titleText)).setText(markerScrim.getTitle());
+                    ((TextView) markerInfoView.findViewById(R.id.additInfoText)).setText(markerScrim.getAdditionalInfo());
+                    typeImage.setImageResource(markerScrim.getTypeImage());
+                    spotsLeft.setText("1/" + markerScrim.getNumSpots());
+                    type.setText(markerScrim.getType());
+                    final AlertDialog markerInfoDialog = markerInfoDialogBuilder.create();
+                    final Button delete = (Button) markerInfoView.findViewById(R.id.deleteButton);
+                    vitalizeAreaEditDialogManager.setDeleteClickListener(delete, marker, markerInfoDialog);
+                    markerInfoView.findViewById(R.id.editButton).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            markerInfoDialog.dismiss();
+                            vitalizeAreaEditDialogManager.showEditScrimDialog(markerScrim, null);
+                        }
+                    });
+                    markerInfoDialog.setView(markerInfoView);
+                    markerInfoDialog.getWindow().getAttributes().y = -600;
+                    markerInfoDialog.show();
+                }
                 return false;
             }
         });
     }
 
-
-    private void moveToCurrentLocation(LatLng currentLocation) {
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation,15));
-        // Zoom in, animating the camera.
-        mMap.animateCamera(CameraUpdateFactory.zoomIn());
-        // Zoom out to zoom level 10, animating with a duration of 2 seconds.
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(13), 2000, null);
+    private void setOnMapClickListener (final GoogleMap mMap) {
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(final LatLng latLng) {
+                //inflate layout we wantz
+                vitalizeAreaEditDialogManager.showEditScrimDialog(null, latLng);
+            }
+        });
     }
 
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        switch(item.getItemId()) {
-            case R.id.profile:
-                Log.d(TAG, "Profile");
-                break;
-            case R.id.settings:
-                Log.d(TAG, "Settings");
-                break;
-            case R.id.about:
-                Log.d(TAG, "About");
-                break;
-            case R.id.home:
-            default:
-                Log.d(TAG, "Home");
-                break;
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.find ) {
+            try {
+                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+                startActivityForResult(builder.build(this), PLACE_PICKER_REQUEST);
+            }
+            catch(GooglePlayServicesNotAvailableException e) {
+
+            }
+            catch (GooglePlayServicesRepairableException e) {
+
+            }
         }
-        return false;
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PLACE_PICKER_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                Place place = PlacePicker.getPlace(this, data);
+                FollowMeLocationListener.moveToCurrentLocation(mMap, place.getLatLng());
+                mMap.addMarker(new MarkerOptions().position(place.getLatLng()).title(place.getName()+"").
+                        draggable(false));
+            }
+        }
     }
 }

@@ -2,9 +2,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.ryde.chris.scrim.MainActivity">
+
     <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
+        android:id="@+id/find"
+        android:orderInCategory="101"
+        android:title="Find"
+        android:icon="@drawable/find"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/filter"
+        android:orderInCategory="102"
+        android:title="Filter"
+        android:icon="@drawable/filter"
+        app:showAsAction="always" />
+
 </menu>
