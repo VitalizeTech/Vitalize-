@@ -74,7 +74,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap = googleMap;
         // Replace the (default) location source of the my-location layer with our custom LocationSource
         new FollowMeLocationListener(this, googleMap);
-        //mMap.setLocationSource(followMeLocationListener);
        setOnMapClickListener(mMap);
         ScrimArea.loadAllAreasOntoMap(googleMap);
 
