@@ -89,6 +89,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 if(markerScrim != null) {
                     AlertDialog.Builder markerInfoDialogBuilder = new AlertDialog.Builder(MapsActivity.this);
                     final View markerInfoView = MapsActivity.this.getLayoutInflater().inflate(R.layout.marker_info, null);
+                    markerScrim.populateDateText((TextView)markerInfoView.findViewById(R.id.dateText));
                     //final Button
                     final ImageView typeImage = (ImageView) markerInfoView.findViewById(R.id.typeImage);
                     TextView spotsLeft = (TextView) markerInfoView.findViewById(R.id.spotsLeft);
@@ -112,7 +113,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     markerInfoDialog.getWindow().getAttributes().y = -600;
                     markerInfoDialog.show();
                 }
-                return false;
+                return true;
             }
         });
     }

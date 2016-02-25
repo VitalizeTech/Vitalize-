@@ -96,22 +96,24 @@ public class VitalizeAreaEditDialogManager {
                             }
                     ).show();
                 } else {
-                    String description = ((EditText) rightView.findViewById(R.id.editAdditInfo)).
-                            getText().toString();
+                    String date = ((TextView) rightView.findViewById(R.id.startDisplay)).getText().toString();
+                    String description = ((EditText) rightView.findViewById(R.id.editAdditInfo)).getText().toString();
                     String type = (String) ((Spinner) rightView.
                             findViewById(R.id.typeSpinner)).getSelectedItem();
                     int numSpot = Integer.valueOf(((EditText) rightView.
                             findViewById(R.id.editPpl)).getText().toString());
                     if (theAre == null) {
                         ScrimArea newArea = new ScrimArea(mMap, latLng, title, description,
-                                VitalizeApplication.getMarkerImage(type), VitalizeApplication.getTypeImage(type), numSpot, type);
+                                VitalizeApplication.getMarkerImage(type), VitalizeApplication.getTypeImage(type), numSpot, type,
+                                ScrimArea.parseDateOut(date));
                         VitalizeApplication.getAllAreas().add(newArea);
                         dbHelper.insertScrimAreaDB(newArea.getId(), newArea.getTitle(), newArea.getAdditionalInfo(),
-                                newArea.getType(), newArea.getCenter().latitude, newArea.getCenter().longitude, newArea.getNumSpots());
+                                newArea.getType(), newArea.getCenter().latitude, newArea.getCenter().longitude, newArea.getNumSpots(),
+                                newArea.getDate());
                     } else {
                         theAre.update(title, description, VitalizeApplication.getTypeImage(type),
-                                VitalizeApplication.getMarkerImage(type), numSpot, type);
-                        dbHelper.updateScrimAreaDB(theAre.getId(), title, description, type, numSpot);
+                                VitalizeApplication.getMarkerImage(type), numSpot, type, ScrimArea.parseDateOut(date));
+                        dbHelper.updateScrimAreaDB(theAre.getId(), title, description, type, numSpot, theAre.getDate());
                     }
                     alertDialog.dismiss();
                 }
