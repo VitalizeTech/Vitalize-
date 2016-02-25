@@ -27,6 +27,7 @@ import java.util.List;
  * Created by chris on 2/21/2016.
  */
 public class VitalizeAreaEditDialogManager {
+    private static final int MIN_TITLE_LENGTH = 6;
     private static final int NUM_AM_HOURS = 12;
     private Activity mActivity;
     private GoogleMap mMap;
@@ -78,31 +79,44 @@ public class VitalizeAreaEditDialogManager {
                 alertDialog.dismiss();
             }
         });
-        if(theAre != null) {
+        if (theAre != null) {
             createButton.setText("Save");
         }
         createButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String title = ((EditText) rightView.findViewById(R.id.titleEdit)).getText().toString();
-                String description = ((EditText) rightView.findViewById(R.id.editAdditInfo)).
-                        getText().toString();
-                String type = (String) ((Spinner) rightView.
-                        findViewById(R.id.typeSpinner)).getSelectedItem();
-                int numSpot = Integer.valueOf(((EditText) rightView.
-                        findViewById(R.id.editPpl)).getText().toString());
-                if(theAre == null) {
-                    ScrimArea newArea = new ScrimArea(mMap, latLng, title, description,
-                            VitalizeApplication.getMarkerImage(type), VitalizeApplication.getTypeImage(type), numSpot, type);
-                    VitalizeApplication.getAllAreas().add(newArea);
-                    dbHelper.insertScrimAreaDB(newArea.getId(), newArea.getTitle(), newArea.getAdditionalInfo(),
-                            newArea.getType(), newArea.getCenter().latitude, newArea.getCenter().longitude, newArea.getNumSpots());
+                if (title.length() < MIN_TITLE_LENGTH) {
+                    new AlertDialog.Builder(mActivity).setMessage("Title must be at least 6 characters").setPositiveButton(
+                            "OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            }
+                    ).show();
                 } else {
-                    theAre.update(title, description,  VitalizeApplication.getTypeImage(type),
-                            VitalizeApplication.getMarkerImage(type), numSpot, type);
-                    dbHelper.updateScrimAreaDB(theAre.getId(), title, description, type, numSpot);
+                    String date = ((TextView) rightView.findViewById(R.id.startDisplay)).getText().toString();
+                    String description = ((EditText) rightView.findViewById(R.id.editAdditInfo)).getText().toString();
+                    String type = (String) ((Spinner) rightView.
+                            findViewById(R.id.typeSpinner)).getSelectedItem();
+                    int numSpot = Integer.valueOf(((EditText) rightView.
+                            findViewById(R.id.editPpl)).getText().toString());
+                    if (theAre == null) {
+                        ScrimArea newArea = new ScrimArea(mMap, latLng, title, description,
+                                VitalizeApplication.getMarkerImage(type), VitalizeApplication.getTypeImage(type), numSpot, type,
+                                ScrimArea.parseDateOut(date));
+                        VitalizeApplication.getAllAreas().add(newArea);
+                        dbHelper.insertScrimAreaDB(newArea.getId(), newArea.getTitle(), newArea.getAdditionalInfo(),
+                                newArea.getType(), newArea.getCenter().latitude, newArea.getCenter().longitude, newArea.getNumSpots(),
+                                newArea.getDate());
+                    } else {
+                        theAre.update(title, description, VitalizeApplication.getTypeImage(type),
+                                VitalizeApplication.getMarkerImage(type), numSpot, type, ScrimArea.parseDateOut(date));
+                        dbHelper.updateScrimAreaDB(theAre.getId(), title, description, type, numSpot, theAre.getDate());
+                    }
+                    alertDialog.dismiss();
                 }
-                alertDialog.dismiss();
             }
         });
         alertDialog.show();

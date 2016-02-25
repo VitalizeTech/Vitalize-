@@ -25,12 +25,13 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String LOCATION_LAT = "location_lat";
     private static final String LOCATION_LONG = "location_lon";
     private static final String NUM_SPOTS = "num_spots";
+    private static final String DATE_IN_MILLIS = "date_in_millis";
     private static final String ID = "id";
     private static final int DATABASE_VERSION = 1;
 
     private static final String CREATE_DATABASE_STATEMENT = "create table " + TABLE_NAME + "(" + ID +" integer primary key autoincrement, " +
             TITLE + " text not null, " + ADDIT_INFO + " text not null, " + TYPE + " text not null, " + LOCATION_LAT
-            + " double, " + LOCATION_LONG + " double, " +  NUM_SPOTS + " integer)";
+            + " double, " + LOCATION_LONG + " double, " +  NUM_SPOTS + " integer, " + DATE_IN_MILLIS + " integer)";
     public DBHelper(Context theContext) {
         super(theContext, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -46,18 +47,19 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void insertScrimAreaDB(int id, String title, String additionalInfo, String type, double latitude, double longitude, int numSpots) {
+    public void insertScrimAreaDB(int id, String title, String additionalInfo, String type, double latitude, double longitude, int numSpots,
+                                  Calendar date) {
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
-        ContentValues contentValues = getSharedContentUpdateInsertValues(title, additionalInfo, type, numSpots);
+        ContentValues contentValues = getSharedContentUpdateInsertValues(title, additionalInfo, type, numSpots, date);
         contentValues.put(LOCATION_LAT, latitude);
         contentValues.put(LOCATION_LONG, longitude);
         contentValues.put(ID, id);
         sqLiteDatabase.insert(TABLE_NAME, null, contentValues);
         sqLiteDatabase.close();
     }
-    public int updateScrimAreaDB(int id, String title, String additionalInfo, String type, int numSpots) {
+    public int updateScrimAreaDB(int id, String title, String additionalInfo, String type, int numSpots, Calendar date) {
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
-        int returnCode =  sqLiteDatabase.update(TABLE_NAME, getSharedContentUpdateInsertValues(title, additionalInfo, type, numSpots),
+        int returnCode =  sqLiteDatabase.update(TABLE_NAME, getSharedContentUpdateInsertValues(title, additionalInfo, type, numSpots, date),
                         ID + " = ?", new String[]{String.valueOf(id)});
         sqLiteDatabase.close();
         return returnCode;
@@ -67,12 +69,13 @@ public class DBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.delete(TABLE_NAME, ID + " = ?", new String[]{String.valueOf(id)});
         sqLiteDatabase.close();;
     }
-    private ContentValues getSharedContentUpdateInsertValues(String title, String additionalInfo, String type, int numSpots) {
+    private ContentValues getSharedContentUpdateInsertValues(String title, String additionalInfo, String type, int numSpots, Calendar date) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(TITLE, title);
         contentValues.put(ADDIT_INFO, additionalInfo);
         contentValues.put(TYPE, type);
         contentValues.put(NUM_SPOTS, numSpots);
+        contentValues.put(DATE_IN_MILLIS, date.getTimeInMillis());
         return contentValues;
     }
 
@@ -89,9 +92,12 @@ public class DBHelper extends SQLiteOpenHelper {
                 double locationLatitude = getAll.getDouble(getAll.getColumnIndex(LOCATION_LAT));
                 double locationLongitude = getAll.getDouble(getAll.getColumnIndex(LOCATION_LONG));
                 int numSpots = getAll.getInt(getAll.getColumnIndex(NUM_SPOTS));
+                long dateInMillis = getAll.getLong(getAll.getColumnIndex(DATE_IN_MILLIS));
                 ScrimArea fromDatabase = new ScrimArea();
+                Calendar calInMillis = Calendar.getInstance();
+                calInMillis.setTimeInMillis(dateInMillis);
                 fromDatabase.update(title, additionalInfo, VitalizeApplication.getTypeImage(type), VitalizeApplication.getMarkerImage(type),
-                        numSpots, type);
+                        numSpots, type, calInMillis);
                 fromDatabase.setId(id);
                 fromDatabase.setCenter(new LatLng(locationLatitude, locationLongitude));
                 allAreas.add(fromDatabase);

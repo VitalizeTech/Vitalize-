@@ -1,6 +1,7 @@
 package com.chris.scrim;
 
 
+import android.widget.TextView;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 
@@ -8,6 +9,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -23,17 +25,32 @@ public class ScrimArea {
     private int markerImage;
     private LatLng center;
     private int id;
+    private Calendar date;
+
     public ScrimArea(GoogleMap mMap, LatLng  center, String theName, String theAdditionalInfo,
-                     int markerImage, int typeImage, int numSpots, String type){
+                     int markerImage, int typeImage, int numSpots, String type, Calendar date){
 
         id = VitalizeApplication.getUniqueId();
         scrimMarker = mMap.addMarker(new MarkerOptions().position(center).title(title).
                                 draggable(true).snippet(additionalInfo));
         this.center = center;
 
-        update(theName, theAdditionalInfo, typeImage, markerImage, numSpots, type);
+        update(theName, theAdditionalInfo, typeImage, markerImage, numSpots, type, date);
     }
     public ScrimArea() {
+    }
+    public Calendar getDate() {
+        return date;
+    }
+    public void populateDateText(TextView textView) {
+        String dateText = date.get(Calendar.MONTH) + "/" + date.get(Calendar.DAY_OF_MONTH) + " " +  date.get(Calendar.HOUR) +
+                ":" + date.get(Calendar.MINUTE);
+        if(date.get(Calendar.AM_PM) == Calendar.AM) {
+            dateText += "AM";
+        } else {
+            dateText += "PM";
+        }
+        textView.setText(dateText);
     }
     public static void loadAllAreasOntoMap(GoogleMap map) {
         for(ScrimArea area: VitalizeApplication.getAllAreas()) {
@@ -41,7 +58,7 @@ public class ScrimArea {
                 .icon(BitmapDescriptorFactory.fromResource(area.markerImage)));
         }
     }
-    public void update(String title, String theAdditionalInfo, int typeImage, int markerImage, int numSpots, String type) {
+    public void update(String title, String theAdditionalInfo, int typeImage, int markerImage, int numSpots, String type, Calendar date) {
         this.title = title;
         additionalInfo = theAdditionalInfo;
         this.markerImage = markerImage;
@@ -51,6 +68,27 @@ public class ScrimArea {
         this.numSpots = numSpots;
         this.type = type;
         this.typeImage = typeImage;
+        this.date = date;
+    }
+
+    public static Calendar parseDateOut(String date) {
+        Calendar parsedCalendarOut = Calendar.getInstance();
+        String[] timeComponents = date.split(" ");
+        String dateComponent = timeComponents[0];
+        String[] dayAndMonth = dateComponent.split("/");
+        parsedCalendarOut.set(Calendar.MONTH, Integer.parseInt(dayAndMonth[0]));
+        parsedCalendarOut.set(Calendar.DAY_OF_MONTH, Integer.parseInt(dayAndMonth[1]));
+        String hourAndDayComponent = timeComponents[1];
+        String[] hourAndDay = hourAndDayComponent.split(":");
+        parsedCalendarOut.set(Calendar.HOUR, Integer.parseInt(hourAndDay[0]));
+        parsedCalendarOut.set(Calendar.MINUTE, Integer.parseInt(hourAndDay[1].substring(0, hourAndDay[1].length() - 2)));
+        String amPm = hourAndDay[1].substring(hourAndDay[1].length() - 2, hourAndDay[1].length());
+        if(amPm.equals("AM")) {
+            parsedCalendarOut.set(Calendar.AM_PM, Calendar.AM);
+        } else {
+            parsedCalendarOut.set(Calendar.AM_PM, Calendar.PM);
+        }
+        return parsedCalendarOut;
     }
     public LatLng getCenter() {
         return center;

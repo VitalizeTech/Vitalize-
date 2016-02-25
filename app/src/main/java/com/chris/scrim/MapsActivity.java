@@ -18,6 +18,7 @@ import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
+
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -34,6 +35,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        Firebase.setAndroidContext(this);
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -87,6 +89,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 if(markerScrim != null) {
                     AlertDialog.Builder markerInfoDialogBuilder = new AlertDialog.Builder(MapsActivity.this);
                     final View markerInfoView = MapsActivity.this.getLayoutInflater().inflate(R.layout.marker_info, null);
+                    markerScrim.populateDateText((TextView)markerInfoView.findViewById(R.id.dateText));
                     //final Button
                     final ImageView typeImage = (ImageView) markerInfoView.findViewById(R.id.typeImage);
                     TextView spotsLeft = (TextView) markerInfoView.findViewById(R.id.spotsLeft);
@@ -110,7 +113,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     markerInfoDialog.getWindow().getAttributes().y = -600;
                     markerInfoDialog.show();
                 }
-                return false;
+                return true;
             }
         });
     }
