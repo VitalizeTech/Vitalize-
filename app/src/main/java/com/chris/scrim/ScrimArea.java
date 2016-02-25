@@ -70,6 +70,9 @@ public class ScrimArea {
         this.typeImage = typeImage;
         this.date = date;
     }
+    public Marker getScrimMarker () {
+        return scrimMarker;
+    }
 
     public static Calendar parseDateOut(String date) {
         Calendar parsedCalendarOut = Calendar.getInstance();
