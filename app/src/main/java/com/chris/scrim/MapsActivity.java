@@ -10,9 +10,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.View;
 
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -152,6 +155,60 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             catch (GooglePlayServicesRepairableException e) {
 
             }
+        }
+        if (id == R.id.filter) {
+            item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+
+                public boolean onMenuItemClick(MenuItem item) {
+                    //inflate layout we wantz
+                    final View filterView = MapsActivity.this.getLayoutInflater().inflate(R.layout.filter, null);
+                    final Spinner filterSpinner = (Spinner) filterView.findViewById(R.id.filter_spinner);
+                    Button cancelButton = (Button) filterView.findViewById(R.id.Filter_confirm);
+                    Button filterButton = (Button) filterView.findViewById(R.id.Filter_cancel);
+                    ArrayAdapter<String> typeAdapter = new ArrayAdapter<String>(MapsActivity.this,
+                            android.R.layout.simple_spinner_item, VitalizeApplication.getTypes());
+                    typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    filterSpinner.setAdapter(typeAdapter);
+                    filterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            String typeSelected = VitalizeApplication.getTypes()[position];
+                            for (ScrimArea a : VitalizeApplication.getAllAreas()) {
+                                a.getScrimMarker().setVisible(a.getType().equals(typeSelected));
+                            }
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+
+                        }
+                    });
+                    // ask the alert dialog to use our layout
+                    //prompt for dialog
+                    //show a dialog that prompts the user if he/she wants to delete
+                    AlertDialog.Builder addBuild = new AlertDialog.Builder(MapsActivity.this);
+                    addBuild.setView(filterView);
+                    final AlertDialog alertDialog = addBuild.create();
+                    cancelButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            VitalizeApplication.getAllAreas();
+                            alertDialog.dismiss();
+                        }
+                    });
+
+                    filterButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            //filter the item and just display the option chosen
+                            alertDialog.dismiss();
+                        }
+                    });
+                    alertDialog.show();
+                    return false;
+                }
+            });
         }
         return super.onOptionsItemSelected(item);
     }
