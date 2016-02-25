@@ -35,7 +35,6 @@ public class RegisterActivity extends AppCompatActivity {
                 if(/*!myPassword.getText().toString().equals("") // Pass not blank
                         && !myEmail.getText().toString().equals("") // Email not blank
                         && */myPassword.getText().toString().equals(myPassConfirmation.getText().toString())) { // Pass is the same
-                    Toast.makeText(RegisterActivity.this, "Passwords do not match!", Toast.LENGTH_SHORT).show();
                     ref.createUser(myEmail.getText().toString(), myPassword.getText().toString(), new Firebase.ResultHandler() {
                         @Override
                         public void onSuccess() {
@@ -67,6 +66,8 @@ public class RegisterActivity extends AppCompatActivity {
                             // there was an error //TODO: Check what error
                         }
                     });
+                } else {
+                    Toast.makeText(RegisterActivity.this, "Passwords do not match!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
