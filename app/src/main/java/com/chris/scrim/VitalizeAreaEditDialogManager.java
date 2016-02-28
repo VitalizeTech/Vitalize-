@@ -20,6 +20,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -41,18 +42,22 @@ public class VitalizeAreaEditDialogManager {
     public void showEditScrimDialog(final ScrimArea theAre, final LatLng latLng ) {
         //inflate layout we wantz
         final View rightView = mActivity.getLayoutInflater().inflate(R.layout.new_scrim_area, null);
-        Calendar current = Calendar.getInstance();
+        Calendar current = theAre == null? Calendar.getInstance():theAre.getDate();
+
         setText((TextView) rightView.findViewById(R.id.startDisplay), current.get(Calendar.MINUTE),
-                current.get(Calendar.MONTH) + 1, current.get(Calendar.DAY_OF_MONTH), current);
+                current.get(Calendar.MONTH), current.get(Calendar.DAY_OF_MONTH), current);
 
         final Button timePickerButton = (Button) rightView.findViewById(R.id.pickStartTime);
         final TextView timeDisplay = (TextView) rightView.findViewById(R.id.startDisplay);
         setTimeButtonClickListener(timePickerButton, timeDisplay);
+
+
         final Spinner typeSpinner = (Spinner) rightView.findViewById(R.id.typeSpinner);
         Button cancelButton = (Button) rightView.findViewById(R.id.cancelBtn);
         Button createButton = (Button) rightView.findViewById(R.id.createBtn);
         ArrayAdapter<String> typeAdapter = new ArrayAdapter<String>(mActivity,
                 android.R.layout.simple_spinner_item, VitalizeApplication.getTypes());
+
         typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         typeSpinner.setAdapter(typeAdapter);
         typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -119,6 +124,16 @@ public class VitalizeAreaEditDialogManager {
                 }
             }
         });
+        if (theAre != null) {
+
+            ((EditText) rightView.findViewById(R.id.editAdditInfo)).setText(theAre.getAdditionalInfo());
+            ((Spinner) rightView.findViewById(R.id.typeSpinner)).setSelection(Arrays.
+                    asList(VitalizeApplication.getTypes()).indexOf(theAre.getType()));
+            ((ImageView) rightView.findViewById(R.id.imageForType)).setImageResource(VitalizeApplication.getTypeImage(theAre.getType()));
+            ((EditText) rightView.findViewById(R.id.editPpl)).setText(String.valueOf(theAre.getNumSpots()));
+            ((EditText) rightView.findViewById(R.id.titleEdit)).setText(theAre.getTitle());
+
+        }
         alertDialog.show();
     }
     public void setTimeButtonClickListener(Button timePickerButton, final TextView timeDisplay) {
