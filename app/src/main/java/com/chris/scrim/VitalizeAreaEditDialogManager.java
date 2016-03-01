@@ -46,9 +46,12 @@ public class VitalizeAreaEditDialogManager {
         //inflate layout we wantz
         final View rightView = mActivity.getLayoutInflater().inflate(R.layout.new_scrim_area, null);
         Calendar current = theAre == null? Calendar.getInstance():theAre.getDate();
-
+        int shiftHr = 1;
+        if (theAre != null) {
+            shiftHr = 0;
+        }
         setText((TextView) rightView.findViewById(R.id.startDisplay), current.get(Calendar.MINUTE),
-                current.get(Calendar.MONTH) + 1, current.get(Calendar.DAY_OF_MONTH), current);
+                current.get(Calendar.MONTH) + shiftHr, current.get(Calendar.DAY_OF_MONTH), current);
 
         final Button timePickerButton = (Button) rightView.findViewById(R.id.pickStartTime);
         final TextView timeDisplay = (TextView) rightView.findViewById(R.id.startDisplay);
