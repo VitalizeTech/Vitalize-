@@ -23,13 +23,16 @@ import com.google.android.gms.maps.model.Marker;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by chris on 2/21/2016.
  */
 public class VitalizeAreaEditDialogManager {
     private static final int MIN_TITLE_LENGTH = 6;
+    private static final int MAX_DAYS = 3;
     private static final int NUM_AM_HOURS = 12;
+    private static final int ALLOWED_DIFF = -5000;
     private Activity mActivity;
     private GoogleMap mMap;
     private DBHelper dbHelper;
@@ -45,7 +48,7 @@ public class VitalizeAreaEditDialogManager {
         Calendar current = theAre == null? Calendar.getInstance():theAre.getDate();
 
         setText((TextView) rightView.findViewById(R.id.startDisplay), current.get(Calendar.MINUTE),
-                current.get(Calendar.MONTH), current.get(Calendar.DAY_OF_MONTH), current);
+                current.get(Calendar.MONTH) + 1, current.get(Calendar.DAY_OF_MONTH), current);
 
         final Button timePickerButton = (Button) rightView.findViewById(R.id.pickStartTime);
         final TextView timeDisplay = (TextView) rightView.findViewById(R.id.startDisplay);
@@ -141,25 +144,41 @@ public class VitalizeAreaEditDialogManager {
             @Override
             public void onClick(View v) {
                 //get current time
-                final Calendar currentTime = Calendar.getInstance();
+                final Calendar changedTime = Calendar.getInstance();
                 DatePickerDialog datePickerDialog = new DatePickerDialog(mActivity, new DatePickerDialog.OnDateSetListener() {
                     @Override
-                    public void onDateSet(DatePicker view, int year, final int monthOfYear, final int dayOfMonth) {
+                    public void onDateSet(DatePicker view, final int year, final int monthOfYear, final int dayOfMonth) {
                         TimePickerDialog timePickerDialog = new TimePickerDialog(mActivity, new TimePickerDialog.OnTimeSetListener() {
                             @Override
                             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                                changedTime.set(Calendar.MONTH, monthOfYear);
+                                changedTime.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                                changedTime.set(Calendar.YEAR, year);
                                 //is am or pm
                                 //so 16 is represented as 4
-                                currentTime.set(Calendar.HOUR, hourOfDay);
-                                currentTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                                currentTime.set(Calendar.MINUTE, minute);
+                                changedTime.set(Calendar.HOUR, hourOfDay);
+                                changedTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                                changedTime.set(Calendar.MINUTE, minute);
                                 int month = monthOfYear + 1;
-                                setText(timeDisplay, minute, month, dayOfMonth, currentTime);
+                                Calendar currentTime = Calendar.getInstance();
+                                long diff = changedTime.getTimeInMillis() - currentTime.getTimeInMillis();
+                                if(diff >= ALLOWED_DIFF && diff <= TimeUnit.MILLISECONDS.convert(MAX_DAYS, TimeUnit.DAYS)) {
+                                    setText(timeDisplay, minute, month, dayOfMonth, changedTime);
+                                } else {
+                                    new AlertDialog.Builder(mActivity).setMessage("Must be within the next three days").setPositiveButton(
+                                            "OK", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    dialog.dismiss();
+                                                }
+                                            }
+                                    ).show();
+                                }
                             }
-                        }, currentTime.get(Calendar.HOUR), currentTime.get(Calendar.MINUTE), false);
+                        }, changedTime.get(Calendar.HOUR), changedTime.get(Calendar.MINUTE), false);
                         timePickerDialog.show();
                     }
-                }, currentTime.get(Calendar.YEAR), currentTime.get(Calendar.MONTH), currentTime.get(Calendar.DATE));
+                }, changedTime.get(Calendar.YEAR), changedTime.get(Calendar.MONTH), changedTime.get(Calendar.DATE));
                 datePickerDialog.show();
             }
         });
