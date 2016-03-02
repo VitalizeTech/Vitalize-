@@ -21,7 +21,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        Firebase.setAndroidContext(this);
+        Firebase.setAndroidContext(this);
         setContentView(R.layout.activity_login);
     }
 
@@ -43,13 +43,12 @@ public class LoginActivity extends AppCompatActivity {
                     public void onAuthenticated(AuthData authData) {
                         Toast.makeText(LoginActivity.this, "Logged in!", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                     }
 
                     @Override
                     public void onAuthenticationError(FirebaseError firebaseError) {
-                        Toast.makeText(LoginActivity.this, "You done fucked up!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, "Oops something went wrong!", Toast.LENGTH_SHORT).show();
                         // there was an error //TODO: Check what error
                     }
                 });

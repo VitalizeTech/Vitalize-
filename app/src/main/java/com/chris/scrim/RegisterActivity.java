@@ -3,6 +3,7 @@ package com.chris.scrim;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,6 +22,7 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        Firebase.setAndroidContext(this);
         ref = new Firebase("https://scrim.firebaseio.com/");
         myEmail = (EditText) findViewById(R.id.regEmail);
         myPassword = (EditText) findViewById(R.id.regPassword);
@@ -32,7 +34,7 @@ public class RegisterActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(/*!myPassword.getText().toString().equals("") // Pass not blank
                         && !myEmail.getText().toString().equals("") // Email not blank
-                        && */myPassword == myPassConfirmation) { // Pass is the same
+                        && */myPassword.getText().toString().equals(myPassConfirmation.getText().toString())) { // Pass is the same
                     ref.createUser(myEmail.getText().toString(), myPassword.getText().toString(), new Firebase.ResultHandler() {
                         @Override
                         public void onSuccess() {
@@ -48,21 +50,24 @@ public class RegisterActivity extends AppCompatActivity {
 
                                 @Override
                                 public void onAuthenticationError(FirebaseError firebaseError) {
-                                    Toast.makeText(RegisterActivity.this, "You done fucked up!", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(RegisterActivity.this, "Oops something went wrong!", Toast.LENGTH_SHORT).show();
                                     // there was an error //TODO: Check what error
                                 }
                             });
 
                             Intent intent = new Intent(RegisterActivity.this, MapsActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(intent);
                         }
 
                         @Override
                         public void onError(FirebaseError firebaseError) {
-                            Toast.makeText(RegisterActivity.this, "You done fucked up!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegisterActivity.this, "Oops something went wrong!", Toast.LENGTH_SHORT).show();
                             // there was an error //TODO: Check what error
                         }
                     });
+                } else {
+                    Toast.makeText(RegisterActivity.this, "Passwords do not match!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
