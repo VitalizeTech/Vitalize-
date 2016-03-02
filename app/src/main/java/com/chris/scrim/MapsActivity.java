@@ -109,6 +109,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     final AlertDialog markerInfoDialog = markerInfoDialogBuilder.create();
                     final Button delete = (Button) markerInfoView.findViewById(R.id.deleteButton);
                     vitalizeAreaEditDialogManager.setDeleteClickListener(delete, marker, markerInfoDialog);
+                    markerInfoView.findViewById(R.id.membersAndInvitesButton).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                             MapsActivity.this.startActivity(new Intent(MapsActivity.this, MembersAndInvitesActivity.class));
+                        }
+                    });
                     markerInfoView.findViewById(R.id.editButton).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {

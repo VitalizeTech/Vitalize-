@@ -5,9 +5,11 @@
     <string name="color">Color</string>
     <string name="delete">Delete</string>
     <string name="edit">Edit</string>
+    <string name="members">Members</string>
     <string name="new_scrim_title">New Scrim Area</string>
     <string name="now">Now</string>
     <string name="num_people">Number of people</string>
+    <string name="pending">Pending Invitations</string>
     <string name="pick_start">Change Start Time</string>
     <string name="profile_icon">profileIcon</string>
     <string name="see_more">See more</string>
