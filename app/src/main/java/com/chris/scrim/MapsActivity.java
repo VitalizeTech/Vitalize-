@@ -213,7 +213,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             for (int c = 0; c < CheckId.length; c++) {
                                 CheckBox temp = (CheckBox) filterView.findViewById(CheckId[c]);
                                 if (temp.isChecked()) {
-                                    selectedTypes.add(temp.getText().toString();
+                                    selectedTypes.add(temp.getText().toString());
                                 }
                             }
                             //filter the item and just display the option chosen
