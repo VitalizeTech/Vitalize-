@@ -13,7 +13,7 @@ import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterActivity extends TouchActivity {
     private EditText myEmail, myPassword, myPassConfirmation;
     private Button myRegButton;
     private Firebase ref;
@@ -24,11 +24,11 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
         Firebase.setAndroidContext(this);
         ref = new Firebase("https://scrim.firebaseio.com/");
-        myEmail = (EditText) findViewById(R.id.regEmail);
-        myPassword = (EditText) findViewById(R.id.regPassword);
-        myPassConfirmation = (EditText) findViewById(R.id.regPassConfirm);
-        myRegButton = (Button) findViewById(R.id.regRegBtn);
-
+        myEmail = (EditText) findViewById(R.id.email);
+        myPassword = (EditText) findViewById(R.id.pwd);
+        myPassConfirmation = (EditText) findViewById(R.id.confirmPwd);
+        myRegButton = (Button) findViewById(R.id.btnReg);
+        setTouchNClick(myRegButton);
         myRegButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -46,6 +46,7 @@ public class RegisterActivity extends AppCompatActivity {
                                     Toast.makeText(RegisterActivity.this, "Logged in!", Toast.LENGTH_SHORT).show();
                                     Intent intent = new Intent(RegisterActivity.this, MapsActivity.class);
                                     startActivity(intent);
+                                    finish();
                                 }
 
                                 @Override
@@ -53,6 +54,7 @@ public class RegisterActivity extends AppCompatActivity {
                                     Toast.makeText(RegisterActivity.this, "Oops something went wrong!", Toast.LENGTH_SHORT).show();
                                     // there was an error //TODO: Check what error
                                 }
+
                             });
 
                             Intent intent = new Intent(RegisterActivity.this, MapsActivity.class);
