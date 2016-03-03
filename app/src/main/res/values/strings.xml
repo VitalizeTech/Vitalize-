@@ -18,4 +18,5 @@
     <string name="profileIcon">profileIcon</string>
     <string name="loginUsernameText">Username: </string>
     <string name="type">Type</string>
+    <string name="firebase_ref">https://scrim.firebaseio.com/</string>
 </resources>
