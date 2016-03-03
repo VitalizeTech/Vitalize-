@@ -53,6 +53,7 @@ public class ScrimArea {
         textView.setText(dateText);
     }
     public static void loadAllAreasOntoMap(GoogleMap map) {
+        VitalizeApplication.removeAreaPassTimeLimit();
         for(ScrimArea area: VitalizeApplication.getAllAreas()) {
             area.scrimMarker = map.addMarker(new MarkerOptions().position(area.center).title(area.title).draggable(true).snippet(area.additionalInfo)
                 .icon(BitmapDescriptorFactory.fromResource(area.markerImage)));

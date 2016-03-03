@@ -5,9 +5,7 @@ import android.app.Application;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 
-import com.google.android.gms.maps.MapsInitializer;
-
-import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +19,7 @@ public class VitalizeApplication extends Application {
     private static DBHelper dbHelper;
     private static Map<String, Integer> typeToMarkerImage;
     private static Map<String, Integer> typeToTypeImage;
-    private static  final String[] types = {"Basketball", "Football", "Frisbee", "Soccer", "Tennnis", "Volleyball"};
+    private static  final String[] types = {"Basketball", "Football", "Frisbee", "Soccer", "Tennis", "Volleyball"};
     private static List<ScrimArea> allAreas;
     //locally
     public static synchronized int getUniqueId() {
@@ -55,6 +53,7 @@ public class VitalizeApplication extends Application {
         initializeMaps();
         dbHelper = new DBHelper(this);
         allAreas = dbHelper.getAllScrimAreas();
+
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
             @Override
             public void onActivityCreated(Activity activity,
@@ -111,6 +110,18 @@ public class VitalizeApplication extends Application {
         for(int k=0; k<types.length; k++) {
             typeToMarkerImage.put(types[k], markerImages[k]);
             typeToTypeImage.put(types[k], typeImages[k]);
+        }
+    }
+    public static void removeAreaPassTimeLimit() {
+        Calendar temp = Calendar.getInstance();
+        for(int i = 0; i < allAreas.size(); i ++) {
+            Calendar exist = allAreas.get(i).getDate();
+            exist.add(Calendar.MINUTE, 1);
+            if(exist.after(temp)) {
+
+                dbHelper.removeScrimAreaDB(allAreas.get(i).getId());
+                allAreas.remove(i);
+            }
         }
     }
 }
