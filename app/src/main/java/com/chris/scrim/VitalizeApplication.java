@@ -4,44 +4,25 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.util.Log;
-
-import com.google.android.gms.maps.MapsInitializer;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 /**
  * Created by chris on 2/21/2016.
  */
 public class VitalizeApplication extends Application {
     private static int MAX_ID = 1000;
+    //events should be removed 1 hour after start time
+    private static final int HOUR_LIMIT = 1;
     private static DBHelper dbHelper;
     private static Map<String, Integer> typeToMarkerImage;
     private static Map<String, Integer> typeToTypeImage;
-    private static  final String[] types = {"Basketball", "Football", "Frisbee", "Soccer", "Tennnis", "Volleyball"};
+    private static  final String[] types = {"Basketball", "Football", "Frisbee", "Soccer", "Tennis", "Volleyball"};
     private static List<ScrimArea> allAreas;
-    //locally
-//    public static synchronized int getUniqueId() {
-//        Random random = new Random();
-//        int n = random.nextInt(MAX_ID);
-//        while(!isUniqueId(n)) {
-//              random.nextInt(MAX_ID);
-//        }
-//        return n;
-//    }
-
-//    private static boolean isUniqueId(int id) {
-//        for(ScrimArea ariana: allAreas) {
-//            if(ariana.getId() == id) {
-//                return false;
-//            }
-//        }
-//        return true;
-//    }
 
     public static List<ScrimArea> getAllAreas() {
         return allAreas;
@@ -112,6 +93,23 @@ public class VitalizeApplication extends Application {
         for(int k=0; k<types.length; k++) {
             typeToMarkerImage.put(types[k], markerImages[k]);
             typeToTypeImage.put(types[k], typeImages[k]);
+        }
+    }
+    public static void removeAreaPassTimeLimit() {
+//        Log.d("vitalize", String.valueOf(allAreas.size()));
+//        SimpleDateFormat format = new SimpleDateFormat("EEEE, MMMM d, yyyy 'at' h:mm a");
+        int i = 0;
+        while(i < allAreas.size()) {
+            Calendar exist = Calendar.getInstance();
+            exist.setTimeInMillis(allAreas.get(i).getDate());
+            exist.add(Calendar.HOUR_OF_DAY, HOUR_LIMIT);
+            Calendar temp = Calendar.getInstance();
+            if(exist.after(temp)) {
+                dbHelper.removeScrimAreaDB2(allAreas.get(i).getId());
+                allAreas.remove(i);
+            } else  {
+                i ++;
+            }
         }
     }
 }

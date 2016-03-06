@@ -1,7 +1,6 @@
 package com.chris.scrim;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -9,12 +8,10 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.firebase.client.AuthData;
-import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends TouchActivity {
 
     private Firebase ref;
 
@@ -23,6 +20,8 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Firebase.setAndroidContext(this);
         setContentView(R.layout.activity_login);
+        setTouchNClick(findViewById(R.id.btnLogin));
+        setTouchNClick(findViewById(R.id.btnReg));
     }
 
     @Override
@@ -30,10 +29,9 @@ public class LoginActivity extends AppCompatActivity {
         super.onStart();
         ref = new Firebase("https://scrim.firebaseio.com/");
 
-        final EditText username = (EditText) findViewById(R.id.userEdit);
-        final EditText password = (EditText) findViewById(R.id.passEdit);
-
-        Button loginBtn = (Button) findViewById(R.id.LoginBtn);
+        final EditText username = (EditText) findViewById(R.id.username);
+        final EditText password = (EditText) findViewById(R.id.password);
+        Button loginBtn = (Button) findViewById(R.id.btnLogin);
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -44,6 +42,7 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(LoginActivity.this, "Logged in!", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
                         startActivity(intent);
+                        finish();
                     }
 
                     @Override
@@ -55,7 +54,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        Button regBtn = (Button) findViewById(R.id.loginRegBtn);
+        Button regBtn = (Button) findViewById(R.id.btnReg);
         regBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

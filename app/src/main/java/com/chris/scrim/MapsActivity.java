@@ -5,35 +5,33 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
-import android.view.View;
-
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
-
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
+
 
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, Observer {
@@ -54,6 +52,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
         VitalizeSlidingMenu.initializeSlidingMenu(this);
     }
 
@@ -115,6 +114,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     final AlertDialog markerInfoDialog = markerInfoDialogBuilder.create();
                     final Button delete = (Button) markerInfoView.findViewById(R.id.deleteButton);
                     vitalizeAreaEditDialogManager.setDeleteClickListener(delete, marker, markerInfoDialog);
+                    markerInfoView.findViewById(R.id.membersAndInvitesButton).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            MapsActivity.this.startActivity(new Intent(MapsActivity.this, MembersAndInvitesActivity.class));
+                        }
+                    });
                     markerInfoView.findViewById(R.id.editButton).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -182,26 +187,28 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     //inflate layout we wantz
                     final View filterView = MapsActivity.this.getLayoutInflater().inflate(R.layout.filter, null);
                     final Spinner filterSpinner = (Spinner) filterView.findViewById(R.id.filter_spinner);
-                    Button cancelButton = (Button) filterView.findViewById(R.id.Filter_confirm);
-                    Button filterButton = (Button) filterView.findViewById(R.id.Filter_cancel);
-                    ArrayAdapter<String> typeAdapter = new ArrayAdapter<String>(MapsActivity.this,
-                            android.R.layout.simple_spinner_item, VitalizeApplication.getTypes());
-                    typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    filterSpinner.setAdapter(typeAdapter);
-                    filterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                        @Override
-                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                            String typeSelected = VitalizeApplication.getTypes()[position];
-                            for (ScrimArea a : VitalizeApplication.getAllAreas()) {
-                                a.getScrimMarker().setVisible(a.getType().equals(typeSelected));
-                            }
-                        }
+                    Button filterButton = (Button) filterView.findViewById(R.id.Filter_confirm);
+                    Button cancelButton = (Button) filterView.findViewById(R.id.Filter_cancel);
 
-                        @Override
-                        public void onNothingSelected(AdapterView<?> parent) {
 
-                        }
-                    });
+//                    ArrayAdapter<String> typeAdapter = new ArrayAdapter<String>(MapsActivity.this,
+//                            android.R.layout.simple_spinner_item, VitalizeApplication.getTypes());
+//                    typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//                    filterSpinner.setAdapter(typeAdapter);
+//                    filterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//                        @Override
+//                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                            String typeSelected = VitalizeApplication.getTypes()[position];
+//                            for (ScrimArea a : VitalizeApplication.getAllAreas()) {
+//                                a.getScrimMarker().setVisible(a.getType().equals(typeSelected));
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onNothingSelected(AdapterView<?> parent) {
+//
+//                        }
+//                    });
                     // ask the alert dialog to use our layout
                     //prompt for dialog
                     //show a dialog that prompts the user if he/she wants to delete
@@ -219,7 +226,26 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     filterButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            int [] CheckId = {R.id.bballCheckBox, R.id.fballCheckBox,
+                                    R.id.FrisbeeCheckBox, R.id.soccerCheckBox, R.id.tennisCheckBox, R.id.vballCheckBox};
+                            final List<String> selectedTypes = new ArrayList<>();
+                            for (int c = 0; c < CheckId.length; c++) {
+                                CheckBox temp = (CheckBox) filterView.findViewById(CheckId[c]);
+                                if (temp.isChecked()) {
+                                    selectedTypes.add(temp.getText().toString());
+                                }
+                            }
                             //filter the item and just display the option chosen
+                            if (selectedTypes.isEmpty()) {
+                                for (ScrimArea a : VitalizeApplication.getAllAreas()) {
+                                    a.getScrimMarker().setVisible(true);
+                                }
+                            } else {
+                                for (ScrimArea a : VitalizeApplication.getAllAreas()) {
+                                    a.getScrimMarker().setVisible(selectedTypes.contains(a.getType()));
+                                }
+                            }
+
                             alertDialog.dismiss();
                         }
                     });

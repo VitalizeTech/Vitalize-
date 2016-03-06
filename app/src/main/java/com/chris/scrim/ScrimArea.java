@@ -1,23 +1,16 @@
 package com.chris.scrim;
 
 
-import android.util.Log;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.io.Serializable;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -81,6 +74,7 @@ public class ScrimArea {
     }
 
     public static void loadAllAreasOntoMap(GoogleMap map) {
+        // VitalizeApplication.removeAreaPassTimeLimit();
         for(ScrimArea area: VitalizeApplication.getAllAreas()) {
             area.scrimMarker = map.addMarker(new MarkerOptions().position(area.getCenter()).title(area.getTitle()).draggable(true).snippet(area.getAdditionalInfo())
                 .icon(BitmapDescriptorFactory.fromResource(area.getMarkerImage())));

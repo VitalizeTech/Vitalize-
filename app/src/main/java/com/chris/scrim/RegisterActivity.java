@@ -1,9 +1,7 @@
 package com.chris.scrim;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterActivity extends TouchActivity {
     private EditText myEmail, myPassword, myPassConfirmation;
     private Button myRegButton;
     private Firebase ref;
@@ -29,11 +27,11 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
         Firebase.setAndroidContext(this);
         ref = new Firebase("https://scrim.firebaseio.com/");
-        myEmail = (EditText) findViewById(R.id.regEmail);
-        myPassword = (EditText) findViewById(R.id.regPassword);
-        myPassConfirmation = (EditText) findViewById(R.id.regPassConfirm);
-        myRegButton = (Button) findViewById(R.id.regRegBtn);
-
+        myEmail = (EditText) findViewById(R.id.email);
+        myPassword = (EditText) findViewById(R.id.pwd);
+        myPassConfirmation = (EditText) findViewById(R.id.confirmPwd);
+        myRegButton = (Button) findViewById(R.id.btnReg);
+        setTouchNClick(myRegButton);
         myRegButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -51,26 +49,15 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private class RegResultHandler implements Firebase.ResultHandler {
-
         @Override
         public void onSuccess() {
             Toast.makeText(RegisterActivity.this, "User Created!", Toast.LENGTH_SHORT).show();
             ref.authWithPassword(myEmail.getText().toString(), myPassword.getText().toString(), new Firebase.AuthResultHandler() {
                 @Override
                 public void onAuthenticated(AuthData authData) {
-                    Firebase userRef = ref.child("Users").child(authData.getUid());
-                    Map<String, List<String>> userData = new HashMap<>();
-                    userData.put("subscribedChats", new ArrayList<String>());
-                    Map<String, Map<String, List<String>>> user = new HashMap<>();
-                    user.put(authData.getUid(), userData);
-                    userRef.setValue(user, new Firebase.CompletionListener() {
-                        @Override
-                        public void onComplete(FirebaseError firebaseError, Firebase firebase) {
-                            Toast.makeText(RegisterActivity.this, "Logged in!", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(RegisterActivity.this, MapsActivity.class);
-                            startActivity(intent);
-                        }
-                    });
+                    Toast.makeText(RegisterActivity.this, "Logged in!", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(RegisterActivity.this, MapsActivity.class);
+                    startActivity(intent);
                 }
 
                 @Override
