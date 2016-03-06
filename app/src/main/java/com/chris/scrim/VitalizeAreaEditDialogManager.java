@@ -125,7 +125,7 @@ public class VitalizeAreaEditDialogManager {
                     } else {
                         theAre.update(title, description, VitalizeApplication.getTypeImage(type),
                                 VitalizeApplication.getMarkerImage(type), numSpot, type, ScrimArea.parseDateOut(date).getTimeInMillis());
-//                        dbHelper.updateScrimAreaDB(theAre.getId(), title, description, type, numSpot, theAre.getDate());
+                        dbHelper.updateScrimAreaDB2(theAre);
                     }
                     alertDialog.dismiss();
                 }
@@ -205,7 +205,7 @@ public class VitalizeAreaEditDialogManager {
                                 allAreas.remove(toRemove);
                                 // continue with delete
                                 marker.remove();
-//                                dbHelper.removeScrimAreaDB2(toRemove.getId());
+                                dbHelper.removeScrimAreaDB2(toRemove.getId());
                                 markerInfoDialog.dismiss();
                             }
                         })

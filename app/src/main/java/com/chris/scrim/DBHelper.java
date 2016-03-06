@@ -16,6 +16,7 @@ import com.google.android.gms.maps.model.LatLng;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 import java.util.Observable;
 
 /**
@@ -24,16 +25,6 @@ import java.util.Observable;
 public class DBHelper extends Observable {
     public static final String FIREBASE_LINK = "https://scrim.firebaseio.com/";
     private static final String TAG = DBHelper.class.getName();
-    private static final String DATABASE_NAME = "Vitalize.db";
-    private static final String TABLE_NAME = "events";
-    private static final String TITLE = "title";
-    private static final String ADDIT_INFO = "addit_info";
-    private static final String TYPE = "type";
-    private static final String LOCATION_LAT = "location_lat";
-    private static final String LOCATION_LONG = "location_lon";
-    private static final String NUM_SPOTS = "num_spots";
-    private static final String DATE_IN_MILLIS = "date_in_millis";
-    private static final String ID = "id";
     private final Firebase firebaseRef;
 
     public DBHelper(Context theContext) {
@@ -55,43 +46,33 @@ public class DBHelper extends Observable {
         userAreaRef.push().setValue(vAreaRef.getKey(), new OnCompleteListener());
     }
 
-//    public int updateScrimAreaDB(int id, String title, String additionalInfo, String type, int numSpots, Calendar date) {
-//        SQLiteDatabase sqLiteDatabase = getWritableDatabase();
-//        int returnCode =  sqLiteDatabase.update(TABLE_NAME, getSharedContentUpdateInsertValues(title, additionalInfo, type, numSpots, date),
-//                        ID + " = ?", new String[]{String.valueOf(id)});
-//        sqLiteDatabase.close();
-//        return returnCode;
-//    }
-
-    public void removeScrimAreaDB2(String vAreaFbId) {
-        final Firebase vSingleAreaRef = firebaseRef.child("VitalizeAreas").child(vAreaFbId);
-        vSingleAreaRef.removeValue(new OnCompleteListener());
+    public void updateScrimAreaDB2(final ScrimArea area) {
+        final Firebase vAreaRef = firebaseRef.child("VitalizeAreas").child(area.getId());
+        vAreaRef.setValue(area, new OnCompleteListener());
     }
 
-//    private ContentValues getSharedContentUpdateInsertValues(String title, String additionalInfo, String type, int numSpots, Calendar date) {
-//        ContentValues contentValues = new ContentValues();
-//        contentValues.put(TITLE, title);
-//        contentValues.put(ADDIT_INFO, additionalInfo);
-//        contentValues.put(TYPE, type);
-//        contentValues.put(NUM_SPOTS, numSpots);
-//        contentValues.put(DATE_IN_MILLIS, date.getTimeInMillis());
-//        return contentValues;
-//    }
+    public void removeScrimAreaDB2(final String vAreaFbId) {
+        final Firebase vSingleAreaRef = firebaseRef.child("VitalizeAreas").child(vAreaFbId);
+        vSingleAreaRef.removeValue(new OnCompleteListener());
+        firebaseRef.child("Users")
+                .child(firebaseRef.getAuth().getUid())
+                .child("MyAreas").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot child : dataSnapshot.getChildren()) {
+                    final String theId = (String) child.getValue();
+                    if (theId.equals(vAreaFbId)) {
+                        child.getRef().removeValue(new OnCompleteListener());
+                        break;
+                    }
+                }
+            }
 
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
 
-    private String checkSnapShot(DataSnapshot child) {
-        String value = "";
-        Object fbObj = child.getValue();
-        if (fbObj == null) {
-            return value;
-        } else if (fbObj instanceof Long) {
-            value += (long) fbObj;
-        } else if (fbObj instanceof Double){
-            value += (double) fbObj;
-        } else {
-            value += (String) fbObj;
-        }
-        return value;
+            }
+        });
     }
 
     public List<ScrimArea> getAllScrimAreas2() {
