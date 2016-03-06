@@ -113,14 +113,18 @@ public class VitalizeApplication extends Application {
         }
     }
     public static void removeAreaPassTimeLimit() {
-        Calendar temp = Calendar.getInstance();
-        for(int i = 0; i < allAreas.size(); i ++) {
+//        Log.d("vitalize", String.valueOf(allAreas.size()));
+//        SimpleDateFormat format = new SimpleDateFormat("EEEE, MMMM d, yyyy 'at' h:mm a");
+        int i = 0;
+        while(i < allAreas.size()) {
             Calendar exist = allAreas.get(i).getDate();
             exist.add(Calendar.MINUTE, 1);
+            Calendar temp = Calendar.getInstance();
             if(exist.after(temp)) {
-
                 dbHelper.removeScrimAreaDB(allAreas.get(i).getId());
                 allAreas.remove(i);
+            } else  {
+                i ++;
             }
         }
     }
