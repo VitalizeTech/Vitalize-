@@ -16,6 +16,8 @@ import java.util.Random;
  */
 public class VitalizeApplication extends Application {
     private static int MAX_ID = 1000;
+    //events should be removed 1 hour after start time
+    private static final int HOUR_LIMIT = 1;
     private static DBHelper dbHelper;
     private static Map<String, Integer> typeToMarkerImage;
     private static Map<String, Integer> typeToTypeImage;
@@ -118,7 +120,7 @@ public class VitalizeApplication extends Application {
         int i = 0;
         while(i < allAreas.size()) {
             Calendar exist = allAreas.get(i).getDate();
-            exist.add(Calendar.MINUTE, 1);
+            exist.add(Calendar.HOUR_OF_DAY, HOUR_LIMIT);
             Calendar temp = Calendar.getInstance();
             if(exist.after(temp)) {
                 dbHelper.removeScrimAreaDB(allAreas.get(i).getId());
