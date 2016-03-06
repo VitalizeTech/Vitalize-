@@ -5,8 +5,10 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 
@@ -25,22 +27,26 @@ import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.Observable;
+import java.util.Observer;
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
+
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback,
+        Observer {
     private static final int PLACE_PICKER_REQUEST = 1;
-    public static final String FIREBASE_LINK = "https://scrim.firebaseio.com/";
     private GoogleMap mMap;
     private VitalizeAreaEditDialogManager vitalizeAreaEditDialogManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        Firebase.setAndroidContext(this);
         setContentView(R.layout.activity_maps);
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -80,8 +86,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap = googleMap;
         // Replace the (default) location source of the my-location layer with our custom LocationSource
         new FollowMeLocationListener(this, googleMap);
-       setOnMapClickListener(mMap);
-        ScrimArea.loadAllAreasOntoMap(googleMap);
+        setOnMapClickListener(mMap);
+        ScrimArea.loadAllAreasOntoMap(mMap);
 
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
@@ -121,6 +127,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
     }
+
+//    public void loadAllAreasOntoMap() {
+//        Log.d("MapsActivity", "mMap is: " + mMap);
+//        for(ScrimArea area: VitalizeApplication.getAllAreas()) {
+//            area.setScrimMarker(mMap.addMarker(new MarkerOptions().position(area.getCenter()).title(area.getTitle()).draggable(true).snippet(area.getAdditionalInfo())
+//                    .icon(BitmapDescriptorFactory.fromResource(area.getMarkerImage()))));
+//        }
+//    }
 
     private void setOnMapClickListener (final GoogleMap mMap) {
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
@@ -225,5 +239,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         draggable(false));
             }
         }
+    }
+
+    @Override
+    public void update(Observable observable, Object data) {
+        ScrimArea.loadAllAreasOntoMap(mMap);
     }
 }

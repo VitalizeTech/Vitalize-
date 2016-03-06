@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.android.gms.maps.MapsInitializer;
 
@@ -54,7 +55,7 @@ public class VitalizeApplication extends Application {
         super.onCreate();
         initializeMaps();
         dbHelper = new DBHelper(this);
-        allAreas = dbHelper.getAllScrimAreas();
+        allAreas = dbHelper.getAllScrimAreas2();
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
             @Override
             public void onActivityCreated(Activity activity,

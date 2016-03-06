@@ -116,13 +116,9 @@ public class VitalizeAreaEditDialogManager {
                                 VitalizeApplication.getMarkerImage(type), VitalizeApplication.getTypeImage(type), numSpot, type,
                                 ScrimArea.parseDateOut(date));
 
-                        // Push the new scrim area up to Firebase
-                        final Firebase ref = new Firebase(MapsActivity.FIREBASE_LINK);
-                        final Firebase vAreaRef = ref.child("VitalizeAreas").push();
-                        vAreaRef.setValue(newArea, new OnCompleteListener());
-                        Firebase userAreaRef = ref.child("Users").child(ref.getAuth().getUid()).child("MyAreas");
-                        userAreaRef.push().setValue(vAreaRef.getKey(), new OnCompleteListener());
-
+                        // Add to firebase
+                        dbHelper.insertScrimAreaDB2(newArea);
+                        // end firebase
 
                         VitalizeApplication.getAllAreas().add(newArea);
                         dbHelper.insertScrimAreaDB(newArea.getId(), newArea.getTitle(), newArea.getAdditionalInfo(),
@@ -224,16 +220,5 @@ public class VitalizeAreaEditDialogManager {
                         .show();
             }
         });
-    }
-
-    private class OnCompleteListener implements Firebase.CompletionListener {
-        @Override
-        public void onComplete(FirebaseError firebaseError, Firebase firebase) {
-            if (firebaseError == null) {
-                Log.d(TAG, "New vitalize area was made.");
-            } else {
-                Log.d(TAG, "Error making new vitalize area.");
-            }
-        }
     }
 }

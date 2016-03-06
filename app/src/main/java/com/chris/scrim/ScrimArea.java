@@ -16,6 +16,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.Serializable;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -31,14 +32,24 @@ public class ScrimArea {
     private int typeImage;
     private int markerImage;
     private LatLng center;
+    private double latitude;
+    private double longitude;
     private int id;
     private Calendar date;
+
+    public ScrimArea(String title, String additionalInfo, String type, int numSpots,
+                     double latitude, double longitude, long time) {
+        final Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(time);
+        this.center = new LatLng(latitude, longitude);
+        update(title, additionalInfo, typeImage, markerImage, numSpots, type, cal);
+    }
 
     public ScrimArea(GoogleMap mMap, LatLng  center, String theName, String theAdditionalInfo,
                      int markerImage, int typeImage, int numSpots, String type, Calendar date){
         id = VitalizeApplication.getUniqueId();
         scrimMarker = mMap.addMarker(new MarkerOptions().position(center).title(title).
-                                draggable(true).snippet(additionalInfo));
+                draggable(true).snippet(additionalInfo));
         this.center = center;
 
         update(theName, theAdditionalInfo, typeImage, markerImage, numSpots, type, date);
@@ -58,12 +69,14 @@ public class ScrimArea {
         }
         textView.setText(dateText);
     }
+
     public static void loadAllAreasOntoMap(GoogleMap map) {
         for(ScrimArea area: VitalizeApplication.getAllAreas()) {
             area.scrimMarker = map.addMarker(new MarkerOptions().position(area.center).title(area.title).draggable(true).snippet(area.additionalInfo)
                 .icon(BitmapDescriptorFactory.fromResource(area.markerImage)));
         }
     }
+
     public void update(String title, String theAdditionalInfo, int typeImage, int markerImage, int numSpots, String type, Calendar date) {
         this.title = title;
         additionalInfo = theAdditionalInfo;
@@ -139,6 +152,15 @@ public class ScrimArea {
     public void setId(int id) {
         this.id = id;
     }
+
+    public int getMarkerImage() {
+        return markerImage;
+    }
+
+    public void setScrimMarker(Marker scrimMarker) {
+        this.scrimMarker = scrimMarker;
+    }
+
     public static ScrimArea getScrimAreaOfMarker(Marker toSearchFor, List<ScrimArea> scrimAreaList) {
         for(int k=0; k<scrimAreaList.size(); k++) {
             //marker comparison won't work, creating new ones in memory

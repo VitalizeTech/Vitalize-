@@ -7,16 +7,23 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Observable;
 
 /**
  * Created by chris on 2/22/2016.
  */
 public class DBHelper extends SQLiteOpenHelper {
+    public static final String FIREBASE_LINK = "https://scrim.firebaseio.com/";
+    private static final String TAG = DBHelper.class.getName();
     private static final String DATABASE_NAME = "Vitalize.db";
     private static final String TABLE_NAME = "events";
     private static final String TITLE = "title";
@@ -28,12 +35,15 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String DATE_IN_MILLIS = "date_in_millis";
     private static final String ID = "id";
     private static final int DATABASE_VERSION = 1;
+    private final Firebase firebaseRef;
 
     private static final String CREATE_DATABASE_STATEMENT = "create table " + TABLE_NAME + "(" + ID +" integer primary key autoincrement, " +
             TITLE + " text not null, " + ADDIT_INFO + " text not null, " + TYPE + " text not null, " + LOCATION_LAT
             + " double, " + LOCATION_LONG + " double, " +  NUM_SPOTS + " integer, " + DATE_IN_MILLIS + " integer)";
     public DBHelper(Context theContext) {
         super(theContext, DATABASE_NAME, null, DATABASE_VERSION);
+        Firebase.setAndroidContext(theContext);
+        firebaseRef = new Firebase(FIREBASE_LINK);
     }
     @Override
     public void onCreate(SQLiteDatabase db) {
@@ -47,8 +57,19 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    public void insertScrimAreaDB2(final ScrimArea newArea) {
+        // Add to firebase
+        // Push the new scrim area up to Firebase
+        final Firebase vAreaRef = firebaseRef.child("VitalizeAreas").push();
+        vAreaRef.setValue(newArea, new OnCompleteListener());
+        // Add the eventId to the user
+        Firebase userAreaRef = firebaseRef.child("Users").child(firebaseRef.getAuth().getUid()).child("MyAreas");
+        userAreaRef.push().setValue(vAreaRef.getKey(), new OnCompleteListener());
+    }
+
     public void insertScrimAreaDB(int id, String title, String additionalInfo, String type, double latitude, double longitude, int numSpots,
                                   Calendar date) {
+        // Add vitalize area to sql db
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         ContentValues contentValues = getSharedContentUpdateInsertValues(title, additionalInfo, type, numSpots, date);
         contentValues.put(LOCATION_LAT, latitude);
@@ -69,6 +90,12 @@ public class DBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.delete(TABLE_NAME, ID + " = ?", new String[]{String.valueOf(id)});
         sqLiteDatabase.close();;
     }
+
+    public void removeScrimAreaDB2(String vAreaFbId) {
+        final Firebase vSingleAreaRef = firebaseRef.child("VitalizeAreas").child(vAreaFbId);
+        vSingleAreaRef.removeValue(new OnCompleteListener());
+    }
+
     private ContentValues getSharedContentUpdateInsertValues(String title, String additionalInfo, String type, int numSpots, Calendar date) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(TITLE, title);
@@ -105,6 +132,62 @@ public class DBHelper extends SQLiteOpenHelper {
         }
         db.close();
         return allAreas;
+    }
+
+    private String checkSnapShot(DataSnapshot child) {
+        String value = "";
+        Object fbObj = child.getValue();
+        if (fbObj == null) {
+            return value;
+        } else if (fbObj instanceof Long) {
+            value += (long) fbObj;
+        } else if (fbObj instanceof Double){
+            value += (double) fbObj;
+        } else {
+            value += (String) fbObj;
+        }
+        return value;
+    }
+
+    public List<ScrimArea> getAllScrimAreas2() {
+        // Get the ScimAreas via Firebase
+        final List<ScrimArea> allAreas = new ArrayList<>();
+
+        final Firebase vAreaRef = firebaseRef.child("VitalizeAreas");
+        vAreaRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
+                    Log.d(TAG, "Child: " + child.toString());
+                    VitalizeApplication.getAllAreas().add(new ScrimArea(
+                            checkSnapShot(child.child("title")),
+                            checkSnapShot(child.child("addtionalInfo")),
+                            checkSnapShot(child.child("type")),
+                            Integer.parseInt(checkSnapShot(child.child("numSpots"))),
+                            Double.parseDouble(checkSnapShot(child.child("center").child("latitude"))),
+                            Double.parseDouble(checkSnapShot(child.child("center").child("longitude"))),
+                            (long) child.child("date").getValue()));
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+
+        return allAreas;
+    }
+
+    private class OnCompleteListener implements Firebase.CompletionListener {
+        @Override
+        public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+            if (firebaseError == null) {
+                Log.d(TAG, "Success!");
+            } else {
+                Log.d(TAG, "Error!");
+            }
+        }
     }
 }
 
