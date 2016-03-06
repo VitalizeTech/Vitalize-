@@ -86,7 +86,7 @@ public class ScrimArea {
         String[] timeComponents = date.split(" ");
         String dateComponent = timeComponents[0];
         String[] dayAndMonth = dateComponent.split("/");
-        parsedCalendarOut.set(Calendar.MONTH, Integer.parseInt(dayAndMonth[0]));
+        parsedCalendarOut.set(Calendar.MONTH, (Integer.parseInt(dayAndMonth[0])-1));
         parsedCalendarOut.set(Calendar.DAY_OF_MONTH, Integer.parseInt(dayAndMonth[1]));
         String hourAndDayComponent = timeComponents[1];
         String[] hourAndDay = hourAndDayComponent.split(":");
