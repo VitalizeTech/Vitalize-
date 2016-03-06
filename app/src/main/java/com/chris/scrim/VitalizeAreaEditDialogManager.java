@@ -46,7 +46,8 @@ public class VitalizeAreaEditDialogManager {
     public void showEditScrimDialog(final ScrimArea theAre, final LatLng latLng ) {
         //inflate layout we wantz
         final View rightView = mActivity.getLayoutInflater().inflate(R.layout.new_scrim_area, null);
-        Calendar current = theAre == null? Calendar.getInstance():theAre.getDate();
+        Calendar current = Calendar.getInstance();
+        if (theAre != null) current.setTimeInMillis(theAre.getDate());
 
         setText((TextView) rightView.findViewById(R.id.startDisplay), current.get(Calendar.MINUTE),
                 current.get(Calendar.MONTH), current.get(Calendar.DAY_OF_MONTH), current);
@@ -121,13 +122,10 @@ public class VitalizeAreaEditDialogManager {
                         // end firebase
 
                         VitalizeApplication.getAllAreas().add(newArea);
-                        dbHelper.insertScrimAreaDB(newArea.getId(), newArea.getTitle(), newArea.getAdditionalInfo(),
-                                newArea.getType(), newArea.getCenter().latitude, newArea.getCenter().longitude, newArea.getNumSpots(),
-                                newArea.getDate());
                     } else {
                         theAre.update(title, description, VitalizeApplication.getTypeImage(type),
-                                VitalizeApplication.getMarkerImage(type), numSpot, type, ScrimArea.parseDateOut(date));
-                        dbHelper.updateScrimAreaDB(theAre.getId(), title, description, type, numSpot, theAre.getDate());
+                                VitalizeApplication.getMarkerImage(type), numSpot, type, ScrimArea.parseDateOut(date).getTimeInMillis());
+//                        dbHelper.updateScrimAreaDB(theAre.getId(), title, description, type, numSpot, theAre.getDate());
                     }
                     alertDialog.dismiss();
                 }
@@ -207,7 +205,7 @@ public class VitalizeAreaEditDialogManager {
                                 allAreas.remove(toRemove);
                                 // continue with delete
                                 marker.remove();
-                                dbHelper.removeScrimAreaDB(toRemove.getId());
+//                                dbHelper.removeScrimAreaDB2(toRemove.getId());
                                 markerInfoDialog.dismiss();
                             }
                         })

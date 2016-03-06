@@ -36,8 +36,8 @@ import java.util.Observable;
 import java.util.Observer;
 
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback,
-        Observer {
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, Observer {
+    private static final String TAG = MapsActivity.class.getName();
     private static final int PLACE_PICKER_REQUEST = 1;
     private GoogleMap mMap;
     private VitalizeAreaEditDialogManager vitalizeAreaEditDialogManager;
@@ -46,6 +46,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        DBHelper dbHelper = new DBHelper(this);
+        dbHelper.getAllScrimAreas2();
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -87,7 +90,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         // Replace the (default) location source of the my-location layer with our custom LocationSource
         new FollowMeLocationListener(this, googleMap);
         setOnMapClickListener(mMap);
-        ScrimArea.loadAllAreasOntoMap(mMap);
+        // ScrimArea.loadAllAreasOntoMap(mMap);
 
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
@@ -106,7 +109,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     TextView type = (TextView) markerInfoView.findViewById(R.id.typeText);
                     ((TextView) markerInfoView.findViewById(R.id.titleText)).setText(markerScrim.getTitle());
                     ((TextView) markerInfoView.findViewById(R.id.additInfoText)).setText(markerScrim.getAdditionalInfo());
-                    typeImage.setImageResource(markerScrim.getTypeImage());
+                    typeImage.setImageResource((int) markerScrim.getTypeImage());
                     spotsLeft.setText("1/" + markerScrim.getNumSpots());
                     type.setText(markerScrim.getType());
                     final AlertDialog markerInfoDialog = markerInfoDialogBuilder.create();

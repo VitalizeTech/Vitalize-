@@ -25,23 +25,23 @@ public class VitalizeApplication extends Application {
     private static  final String[] types = {"Basketball", "Football", "Frisbee", "Soccer", "Tennnis", "Volleyball"};
     private static List<ScrimArea> allAreas;
     //locally
-    public static synchronized int getUniqueId() {
-        Random random = new Random();
-        int n = random.nextInt(MAX_ID);
-        while(!isUniqueId(n)) {
-              random.nextInt(MAX_ID);
-        }
-        return n;
-    }
+//    public static synchronized int getUniqueId() {
+//        Random random = new Random();
+//        int n = random.nextInt(MAX_ID);
+//        while(!isUniqueId(n)) {
+//              random.nextInt(MAX_ID);
+//        }
+//        return n;
+//    }
 
-    private static boolean isUniqueId(int id) {
-        for(ScrimArea ariana: allAreas) {
-            if(ariana.getId() == id) {
-                return false;
-            }
-        }
-        return true;
-    }
+//    private static boolean isUniqueId(int id) {
+//        for(ScrimArea ariana: allAreas) {
+//            if(ariana.getId() == id) {
+//                return false;
+//            }
+//        }
+//        return true;
+//    }
 
     public static List<ScrimArea> getAllAreas() {
         return allAreas;
@@ -55,7 +55,7 @@ public class VitalizeApplication extends Application {
         super.onCreate();
         initializeMaps();
         dbHelper = new DBHelper(this);
-        allAreas = dbHelper.getAllScrimAreas2();
+        allAreas = new ArrayList<>();
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
             @Override
             public void onActivityCreated(Activity activity,
