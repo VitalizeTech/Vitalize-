@@ -35,6 +35,7 @@ import java.util.List;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
     private static final int PLACE_PICKER_REQUEST = 1;
+    public static final String FIREBASE_LINK = "https://scrim.firebaseio.com/";
     private GoogleMap mMap;
     private VitalizeAreaEditDialogManager vitalizeAreaEditDialogManager;
 

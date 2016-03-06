@@ -1,7 +1,12 @@
 package com.chris.scrim;
 
 
+import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 
@@ -9,6 +14,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.List;
 
@@ -16,6 +22,7 @@ import java.util.List;
  * Created by chris on 2/4/2016.
  */
 public class ScrimArea {
+    private static final String TAG = ScrimArea.class.getName();
     private String title;
     private String additionalInfo;
     private String type;
@@ -29,7 +36,6 @@ public class ScrimArea {
 
     public ScrimArea(GoogleMap mMap, LatLng  center, String theName, String theAdditionalInfo,
                      int markerImage, int typeImage, int numSpots, String type, Calendar date){
-
         id = VitalizeApplication.getUniqueId();
         scrimMarker = mMap.addMarker(new MarkerOptions().position(center).title(title).
                                 draggable(true).snippet(additionalInfo));

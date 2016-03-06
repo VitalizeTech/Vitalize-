@@ -122,7 +122,7 @@ public class VitalizeApplication extends Application {
             Calendar exist = allAreas.get(i).getDate();
             exist.add(Calendar.HOUR_OF_DAY, HOUR_LIMIT);
             Calendar temp = Calendar.getInstance();
-            if(exist.after(temp)) {
+            if(temp.after(exist)) {
                 dbHelper.removeScrimAreaDB(allAreas.get(i).getId());
                 allAreas.remove(i);
             } else  {

@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -16,6 +17,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -29,6 +32,7 @@ import java.util.concurrent.TimeUnit;
  * Created by chris on 2/21/2016.
  */
 public class VitalizeAreaEditDialogManager {
+    private static final String TAG = VitalizeAreaEditDialogManager.class.getName();
     private static final int MIN_TITLE_LENGTH = 6;
     private static final int MAX_DAYS = 3;
     private static final int NUM_AM_HOURS = 12;
@@ -117,6 +121,15 @@ public class VitalizeAreaEditDialogManager {
                         ScrimArea newArea = new ScrimArea(mMap, latLng, title, description,
                                 VitalizeApplication.getMarkerImage(type), VitalizeApplication.getTypeImage(type), numSpot, type,
                                 ScrimArea.parseDateOut(date));
+
+                        // Push the new scrim area up to Firebase
+                        final Firebase ref = new Firebase(MapsActivity.FIREBASE_LINK);
+                        final Firebase vAreaRef = ref.child("VitalizeAreas").push();
+                        vAreaRef.setValue(newArea, new OnCompleteListener());
+                        Firebase userAreaRef = ref.child("Users").child(ref.getAuth().getUid()).child("MyAreas");
+                        userAreaRef.push().setValue(vAreaRef.getKey(), new OnCompleteListener());
+
+
                         VitalizeApplication.getAllAreas().add(newArea);
                         dbHelper.insertScrimAreaDB(newArea.getId(), newArea.getTitle(), newArea.getAdditionalInfo(),
                                 newArea.getType(), newArea.getCenter().latitude, newArea.getCenter().longitude, newArea.getNumSpots(),
@@ -233,5 +246,16 @@ public class VitalizeAreaEditDialogManager {
                         .show();
             }
         });
+    }
+
+    private class OnCompleteListener implements Firebase.CompletionListener {
+        @Override
+        public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+            if (firebaseError == null) {
+                Log.d(TAG, "New vitalize area was made.");
+            } else {
+                Log.d(TAG, "Error making new vitalize area.");
+            }
+        }
     }
 }
