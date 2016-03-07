@@ -27,7 +27,7 @@
             style="@style/editext_graybg"
             android:layout_width="wrap_content"
             android:layout_height="66dp"
-            android:drawableLeft="@drawable/ic_username"
+            android:drawableLeft="@drawable/username_left_icon"
             android:hint="@string/email"
             android:inputType="textEmailAddress" />
 
@@ -36,7 +36,7 @@
             style="@style/editext_graybg"
             android:layout_width="wrap_content"
             android:layout_height="66dp"
-            android:drawableLeft="@drawable/ic_username"
+            android:drawableLeft="@drawable/username_left_icon"
             android:layout_marginTop="5dp"
             android:hint="@string/username"
             android:inputType="textEmailAddress" >
@@ -48,7 +48,7 @@
             android:layout_width="wrap_content"
             android:layout_height="66dp"
             android:layout_marginTop="5dp"
-            android:drawableLeft="@drawable/ic_pwd"
+            android:drawableLeft="@drawable/pwd_left_icon"
             android:hint="@string/password"
             android:inputType="textPassword" >
         </EditText>
@@ -59,7 +59,7 @@
             android:layout_height="66dp"
             android:layout_marginBottom="20dp"
             android:layout_marginTop="5dp"
-            android:drawableLeft="@drawable/ic_pwd"
+            android:drawableLeft="@drawable/pwd_left_icon"
             android:hint="@string/confirm_password"
             android:inputType="textPassword" >
         </EditText>

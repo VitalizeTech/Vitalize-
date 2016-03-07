@@ -30,14 +30,10 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity
-            android:name=".SplashAuthCheck">
-        </activity>
+        <activity android:name=".SplashAuthCheck"></activity>
         <activity
             android:name=".MapsActivity"
-            android:label="@string/title_activity_maps">
-
-        </activity>
+            android:label="@string/title_activity_maps"></activity>
         <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -46,7 +42,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".RegisterActivity" />
-        <activity android:name=".MembersAndInvitesActivity"></activity>
+        <activity android:name=".MembersAndInvitesActivity" />
+        <activity android:name=".ChatActivity"></activity>
     </application>
 
 </manifest>

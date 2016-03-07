@@ -1,12 +1,26 @@
 <resources>
 
     <style name="editext_graybg" parent="android:Widget.EditText">
-        <item name="android:background">@drawable/editext_bg_gray</item>
+        <item name="android:background">@drawable/form_element_bg</item>
         <item name="android:drawablePadding">5dp</item>
         <item name="android:ems">10</item>
         <item name="android:inputType">textEmailAddress</item>
         <item name="android:paddingLeft">10dp</item>
         <item name="android:paddingRight">10dp</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="edittext_msg" parent="android:Widget.Holo.Light.EditText">
+        <item name="android:background">@drawable/message_bg</item>
+        <item name="android:ems">10</item>
+        <item name="android:imeActionId">100</item>
+        <item name="android:imeOptions">actionSend</item>
+        <item name="android:inputType">text</item>
+        <item name="android:layout_marginLeft">5dp</item>
+        <item name="android:layout_marginRight">5dp</item>
+        <item name="android:paddingLeft">5dp</item>
+        <item name="android:paddingRight">5dp</item>
+        <item name="android:textColorHint">@color/main_color_gray</item>
         <item name="android:textSize">16sp</item>
     </style>
 

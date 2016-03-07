@@ -22,15 +22,9 @@ public class MembersAndInvitesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_members_and_invites);
-        User ariana = new User("moonlightbae", "Ariana", 177, R.drawable.ariana, R.drawable.moonlightbae);
-        User kristin = new User("jjones:|", "Krysten", 128, R.drawable.krysten, R.drawable.moonlightbae);
-        User saul = new User("bCallMe", "Jimmy", 102, R.drawable.saul, R.drawable.moonlightbae);
-        User[] pendingUsers = {ariana, kristin, saul};
-        List<User> users = Arrays.asList(pendingUsers);
-        List<User> pendingListUsers = new ArrayList<>();
-        pendingListUsers.addAll(users);
-        groupMembers = new ArrayList<>();
-        groupMembers.addAll(users);
+
+        List<User> pendingListUsers = VitalizeApplication.getTestUsers();
+        groupMembers = VitalizeApplication.getTestUsers();
         groupMembersAdapter = new MembersAdapter(this, R.layout.members, groupMembers);
         ((ListView) findViewById(R.id.pendingInvitationListView)).setAdapter(new PendingInvitesAdapter(this, R.layout.pending_invites, pendingListUsers));
         ((ListView) findViewById(R.id.membersListView)).setAdapter(groupMembersAdapter);

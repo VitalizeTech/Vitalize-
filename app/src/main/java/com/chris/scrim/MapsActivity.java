@@ -65,7 +65,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onPause();
         /* Disable the my-location layer (this causes our LocationSource to be automatically deactivated.) */
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            mMap.setMyLocationEnabled(false);
+            if(mMap != null) {
+                mMap.setMyLocationEnabled(false);
+            }
         }
     }
 
@@ -113,7 +115,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     markerInfoView.findViewById(R.id.membersAndInvitesButton).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                             MapsActivity.this.startActivity(new Intent(MapsActivity.this, MembersAndInvitesActivity.class));
+                            MapsActivity.this.startActivity(new Intent(MapsActivity.this, MembersAndInvitesActivity.class));
+                        }
+                    });
+                    markerInfoView.findViewById(R.id.messageButton).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            MapsActivity.this.startActivity(new Intent(MapsActivity.this, ChatActivity.class));
                         }
                     });
                     markerInfoView.findViewById(R.id.editButton).setOnClickListener(new View.OnClickListener() {

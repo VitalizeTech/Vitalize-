@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.util.Log;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +27,7 @@ public class VitalizeApplication extends Application {
     private static Map<String, Integer> typeToTypeImage;
     private static  final String[] types = {"Basketball", "Football", "Frisbee", "Soccer", "Tennis", "Volleyball"};
     private static List<ScrimArea> allAreas;
+    private static List<User> testUsers;
     //locally
     public static synchronized int getUniqueId() {
         Random random = new Random();
@@ -51,13 +54,23 @@ public class VitalizeApplication extends Application {
         return types;
     }
 
+    public static List<User> getTestUsers() {
+        User ariana = new User("moonlightbae", "Ariana", 177, R.drawable.ariana, R.drawable.moonlightbae);
+        User kristin = new User("jjones:|", "Krysten", 128, R.drawable.krysten, R.drawable.moonlightbae);
+        User saul = new User("bCallMe", "Jimmy", 102, R.drawable.saul, R.drawable.moonlightbae);
+        User donald = new User("dTrump16", "Donald", 190, R.drawable.thedonald, R.drawable.moonlightbae);
+        User[] pendingUsers = {ariana, kristin, saul};
+        List<User> users = Arrays.asList(pendingUsers);
+        List<User> toReturn = new ArrayList<>();
+        toReturn.addAll(users);
+        return toReturn;
+    }
     @Override
     public void onCreate() {
         super.onCreate();
         initializeMaps();
         dbHelper = new DBHelper(this);
         allAreas = dbHelper.getAllScrimAreas();
-
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
             @Override
             public void onActivityCreated(Activity activity,
@@ -122,6 +135,7 @@ public class VitalizeApplication extends Application {
         int i = 0;
         while(i < allAreas.size()) {
             Calendar exist = (Calendar)allAreas.get(i).getDate().clone();
+
             exist.add(Calendar.MINUTE, HOUR_LIMIT);
             Calendar temp = Calendar.getInstance();
             Log.d("vital", "Delete after " + format.format(exist.getTime()));
