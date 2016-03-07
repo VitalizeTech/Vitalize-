@@ -49,7 +49,7 @@ public class ScrimArea {
         return date;
     }
     public void populateDateText(TextView textView) {
-        String dateText = date.get(Calendar.MONTH) + "/" + date.get(Calendar.DAY_OF_MONTH) + " " +  date.get(Calendar.HOUR) +
+        String dateText = (date.get(Calendar.MONTH) + 1) + "/" + date.get(Calendar.DAY_OF_MONTH) + " " +  date.get(Calendar.HOUR) +
                 ":" + date.get(Calendar.MINUTE);
         if(date.get(Calendar.AM_PM) == Calendar.AM) {
             dateText += "AM";

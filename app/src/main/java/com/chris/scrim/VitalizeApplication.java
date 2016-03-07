@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.util.Log;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +19,7 @@ import java.util.Random;
 public class VitalizeApplication extends Application {
     private static int MAX_ID = 1000;
     //events should be removed 1 hour after start time
-    private static final int HOUR_LIMIT = 1;
+    private static final int HOUR_LIMIT = 60;
     private static DBHelper dbHelper;
     private static Map<String, Integer> typeToMarkerImage;
     private static Map<String, Integer> typeToTypeImage;
@@ -115,13 +117,15 @@ public class VitalizeApplication extends Application {
         }
     }
     public static void removeAreaPassTimeLimit() {
-//        Log.d("vitalize", String.valueOf(allAreas.size()));
-//        SimpleDateFormat format = new SimpleDateFormat("EEEE, MMMM d, yyyy 'at' h:mm a");
+        Log.d("vitalize", String.valueOf(allAreas.size()));
+        SimpleDateFormat format = new SimpleDateFormat("EEEE, MMMM d, yyyy 'at' h:mm a");
         int i = 0;
         while(i < allAreas.size()) {
-            Calendar exist = allAreas.get(i).getDate();
-            exist.add(Calendar.HOUR_OF_DAY, HOUR_LIMIT);
+            Calendar exist = (Calendar)allAreas.get(i).getDate().clone();
+            exist.add(Calendar.MINUTE, HOUR_LIMIT);
             Calendar temp = Calendar.getInstance();
+            Log.d("vital", "Delete after " + format.format(exist.getTime()));
+            Log.d("vital", "current time " + format.format(temp.getTime()));
             if(temp.after(exist)) {
                 dbHelper.removeScrimAreaDB(allAreas.get(i).getId());
                 allAreas.remove(i);
