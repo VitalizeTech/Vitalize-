@@ -98,6 +98,7 @@ public class VitalizeAreaEditDialogManager {
             @Override
             public void onClick(View v) {
                 String title = ((EditText) rightView.findViewById(R.id.titleEdit)).getText().toString();
+                String numPeople = ((EditText) rightView.findViewById(R.id.editPpl)).getText().toString();
                 if (title.length() < MIN_TITLE_LENGTH) {
                     new AlertDialog.Builder(mActivity).setMessage("Title must be at least 6 characters").setPositiveButton(
                             "OK", new DialogInterface.OnClickListener() {
@@ -107,36 +108,67 @@ public class VitalizeAreaEditDialogManager {
                                 }
                             }
                     ).show();
+                } else if (numPeople.isEmpty()) {
+                    new AlertDialog.Builder(mActivity).setMessage("You must enter number of people.").setPositiveButton(
+                            "OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            }
+                    ).show();
                 } else {
-                    String date = ((TextView) rightView.findViewById(R.id.startDisplay)).getText().toString();
-                    String description = ((EditText) rightView.findViewById(R.id.editAdditInfo)).getText().toString();
-                    String type = (String) ((Spinner) rightView.
-                            findViewById(R.id.typeSpinner)).getSelectedItem();
-                    int numSpot = Integer.valueOf(((EditText) rightView.
-                            findViewById(R.id.editPpl)).getText().toString());
-                    if (theAre == null) {
-                        ScrimArea newArea = new ScrimArea(mMap, latLng, title, description,
-                                VitalizeApplication.getMarkerImage(type), VitalizeApplication.getTypeImage(type), numSpot, type,
-                                ScrimArea.parseDateOut(date));
-
-                        // Push the new scrim area up to Firebase
-                        final Firebase ref = new Firebase(MapsActivity.FIREBASE_LINK);
-                        final Firebase vAreaRef = ref.child("VitalizeAreas").push();
-                        vAreaRef.setValue(newArea, new OnCompleteListener());
-                        Firebase userAreaRef = ref.child("Users").child(ref.getAuth().getUid()).child("MyAreas");
-                        userAreaRef.push().setValue(vAreaRef.getKey(), new OnCompleteListener());
-
-
-                        VitalizeApplication.getAllAreas().add(newArea);
-                        dbHelper.insertScrimAreaDB(newArea.getId(), newArea.getTitle(), newArea.getAdditionalInfo(),
-                                newArea.getType(), newArea.getCenter().latitude, newArea.getCenter().longitude, newArea.getNumSpots(),
-                                newArea.getDate());
+                    int nump = Integer.parseInt(numPeople);
+                    if (nump < 1) {
+                        new AlertDialog.Builder(mActivity).setMessage("You need at least 1 people to create the event.").setPositiveButton(
+                                "OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                }
+                        ).show();
+                    } else if (nump > 100) {
+                        new AlertDialog.Builder(mActivity).setMessage("You can have no more than 100 people.").setPositiveButton(
+                                "OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                }
+                        ).show();
                     } else {
-                        theAre.update(title, description, VitalizeApplication.getTypeImage(type),
-                                VitalizeApplication.getMarkerImage(type), numSpot, type, ScrimArea.parseDateOut(date));
-                        dbHelper.updateScrimAreaDB(theAre.getId(), title, description, type, numSpot, theAre.getDate());
+                        String date = ((TextView) rightView.findViewById(R.id.startDisplay)).getText().toString();
+                        String description = ((EditText) rightView.findViewById(R.id.editAdditInfo)).getText().toString();
+                        String type = (String) ((Spinner) rightView.
+                                findViewById(R.id.typeSpinner)).getSelectedItem();
+                        int numSpot = Integer.valueOf(((EditText) rightView.
+                                findViewById(R.id.editPpl)).getText().toString());
+                        if (theAre == null) {
+                            ScrimArea newArea = new ScrimArea(mMap, latLng, title, description,
+                                    VitalizeApplication.getMarkerImage(type), VitalizeApplication.getTypeImage(type), numSpot, type,
+                                    ScrimArea.parseDateOut(date));
+
+                            // Push the new scrim area up to Firebase
+                            final Firebase ref = new Firebase(MapsActivity.FIREBASE_LINK);
+                            final Firebase vAreaRef = ref.child("VitalizeAreas").push();
+                            vAreaRef.setValue(newArea, new OnCompleteListener());
+                            Firebase userAreaRef = ref.child("Users").child(ref.getAuth().getUid()).child("MyAreas");
+                            userAreaRef.push().setValue(vAreaRef.getKey(), new OnCompleteListener());
+
+
+                            VitalizeApplication.getAllAreas().add(newArea);
+                            dbHelper.insertScrimAreaDB(newArea.getId(), newArea.getTitle(), newArea.getAdditionalInfo(),
+                                    newArea.getType(), newArea.getCenter().latitude, newArea.getCenter().longitude, newArea.getNumSpots(),
+                                    newArea.getDate());
+                        } else {
+                            theAre.update(title, description, VitalizeApplication.getTypeImage(type),
+                                    VitalizeApplication.getMarkerImage(type), numSpot, type, ScrimArea.parseDateOut(date));
+                            dbHelper.updateScrimAreaDB(theAre.getId(), title, description, type, numSpot, theAre.getDate());
+                        }
+                        alertDialog.dismiss();
                     }
-                    alertDialog.dismiss();
+
                 }
             }
         });
