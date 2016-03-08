@@ -45,9 +45,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-        DBFireBaseHelper dbHelper = new DBFireBaseHelper(this);
-        dbHelper.getAllScrimAreas2();
-
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -82,6 +79,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
         vitalizeAreaEditDialogManager =  new VitalizeAreaEditDialogManager(this, googleMap);
         mMap = googleMap;
+
+        // Get all areas and put it on the map when it is done loading.
+        DBFireBaseHelper dbHelper = new DBFireBaseHelper(this);
+        dbHelper.getAllScrimAreasFromFirebase();
+
         // Replace the (default) location source of the my-location layer with our custom LocationSource
         new FollowMeLocationListener(this, googleMap);
         setOnMapClickListener(mMap);
