@@ -5,7 +5,30 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
+import com.google.android.gms.maps.model.LatLng;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+
+
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
@@ -16,6 +39,8 @@ import java.util.List;
  * Created by chris on 2/22/2016.
  */
 public class DBHelper extends SQLiteOpenHelper {
+    public static final String FIREBASE_LINK = "https://scrim.firebaseio.com/";
+    private static final String TAG = DBHelper.class.getName();
     private static final String DATABASE_NAME = "Vitalize.db";
     private static final String TABLE_NAME = "events";
     private static final String TITLE = "title";
@@ -27,12 +52,15 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String DATE_IN_MILLIS = "date_in_millis";
     private static final String ID = "id";
     private static final int DATABASE_VERSION = 1;
+    private final Firebase firebaseRef;
 
     private static final String CREATE_DATABASE_STATEMENT = "create table " + TABLE_NAME + "(" + ID +" integer primary key autoincrement, " +
             TITLE + " text not null, " + ADDIT_INFO + " text not null, " + TYPE + " text not null, " + LOCATION_LAT
             + " double, " + LOCATION_LONG + " double, " +  NUM_SPOTS + " integer, " + DATE_IN_MILLIS + " integer)";
     public DBHelper(Context theContext) {
         super(theContext, DATABASE_NAME, null, DATABASE_VERSION);
+        Firebase.setAndroidContext(theContext);
+        firebaseRef = new Firebase(FIREBASE_LINK);
     }
     @Override
     public void onCreate(SQLiteDatabase db) {
@@ -46,8 +74,10 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+
     public void insertScrimAreaDB(int id, String title, String additionalInfo, String type, double latitude, double longitude, int numSpots,
                                   Calendar date) {
+        // Add vitalize area to sql db
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         ContentValues contentValues = getSharedContentUpdateInsertValues(title, additionalInfo, type, numSpots, date);
         contentValues.put(LOCATION_LAT, latitude);
@@ -59,7 +89,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public int updateScrimAreaDB(int id, String title, String additionalInfo, String type, int numSpots, Calendar date) {
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         int returnCode =  sqLiteDatabase.update(TABLE_NAME, getSharedContentUpdateInsertValues(title, additionalInfo, type, numSpots, date),
-                        ID + " = ?", new String[]{String.valueOf(id)});
+                ID + " = ?", new String[]{String.valueOf(id)});
         sqLiteDatabase.close();
         return returnCode;
     }
@@ -68,6 +98,9 @@ public class DBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.delete(TABLE_NAME, ID + " = ?", new String[]{String.valueOf(id)});
         sqLiteDatabase.close();;
     }
+
+
+
     private ContentValues getSharedContentUpdateInsertValues(String title, String additionalInfo, String type, int numSpots, Calendar date) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(TITLE, title);
@@ -96,8 +129,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 Calendar calInMillis = Calendar.getInstance();
                 calInMillis.setTimeInMillis(dateInMillis);
                 fromDatabase.update(title, additionalInfo, VitalizeApplication.getTypeImage(type), VitalizeApplication.getMarkerImage(type),
-                        numSpots, type, calInMillis);
-                fromDatabase.setId(id);
+                        numSpots, type, calInMillis.getTimeInMillis());
+                fromDatabase.setId(id+ "");
                 fromDatabase.setCenter(new LatLng(locationLatitude, locationLongitude));
                 allAreas.add(fromDatabase);
             }while (getAll.moveToNext());
@@ -105,5 +138,8 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
         return allAreas;
     }
+
+
+
 }
 

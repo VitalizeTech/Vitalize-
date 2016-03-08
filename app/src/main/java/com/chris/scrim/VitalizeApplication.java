@@ -9,11 +9,11 @@ import android.util.Log;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 /**
  * Created by chris on 2/21/2016.
@@ -22,30 +22,14 @@ public class VitalizeApplication extends Application {
     private static int MAX_ID = 1000;
     //events should be removed 1 hour after start time
     private static final int HOUR_LIMIT = 60;
-    private static DBHelper dbHelper;
+    private static DBFireBaseHelper dbHelper;
     private static Map<String, Integer> typeToMarkerImage;
     private static Map<String, Integer> typeToTypeImage;
     private static  final String[] types = {"Basketball", "Football", "Frisbee", "Soccer", "Tennis", "Volleyball"};
     private static List<ScrimArea> allAreas;
     private static List<User> testUsers;
     //locally
-    public static synchronized int getUniqueId() {
-        Random random = new Random();
-        int n = random.nextInt(MAX_ID);
-        while(!isUniqueId(n)) {
-              random.nextInt(MAX_ID);
-        }
-        return n;
-    }
 
-    private static boolean isUniqueId(int id) {
-        for(ScrimArea ariana: allAreas) {
-            if(ariana.getId() == id) {
-                return false;
-            }
-        }
-        return true;
-    }
 
     public static List<ScrimArea> getAllAreas() {
         return allAreas;
@@ -69,8 +53,8 @@ public class VitalizeApplication extends Application {
     public void onCreate() {
         super.onCreate();
         initializeMaps();
-        dbHelper = new DBHelper(this);
-        allAreas = dbHelper.getAllScrimAreas();
+        dbHelper = new DBFireBaseHelper(this);
+
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
             @Override
             public void onActivityCreated(Activity activity,
@@ -134,14 +118,15 @@ public class VitalizeApplication extends Application {
         SimpleDateFormat format = new SimpleDateFormat("EEEE, MMMM d, yyyy 'at' h:mm a");
         int i = 0;
         while(i < allAreas.size()) {
-            Calendar exist = (Calendar)allAreas.get(i).getDate().clone();
+            Calendar eventExpiredTime = Calendar.getInstance();
+            eventExpiredTime.setTimeInMillis(allAreas.get(i).getDate());
 
-            exist.add(Calendar.MINUTE, HOUR_LIMIT);
+            eventExpiredTime.add(Calendar.MINUTE, HOUR_LIMIT);
             Calendar temp = Calendar.getInstance();
-            Log.d("vital", "Delete after " + format.format(exist.getTime()));
+            Log.d("vital", "Delete after " + format.format(eventExpiredTime.getTime()));
             Log.d("vital", "current time " + format.format(temp.getTime()));
-            if(temp.after(exist)) {
-                dbHelper.removeScrimAreaDB(allAreas.get(i).getId());
+            if(temp.after(eventExpiredTime)) {
+               // dbHelper.removeScrimAreaDB(allAreas.get(i).getId());
                 allAreas.remove(i);
             } else  {
                 i ++;

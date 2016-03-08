@@ -27,4 +27,5 @@
     <string name="type_msg">Type message</string>
     <string name="username">Username</string>
     <string name="firebase_ref">https://scrim.firebaseio.com/</string>
+
 </resources>

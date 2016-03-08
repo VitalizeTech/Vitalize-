@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -17,8 +16,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -39,20 +36,22 @@ public class VitalizeAreaEditDialogManager {
     private static final int ALLOWED_DIFF = -5000;
     private Activity mActivity;
     private GoogleMap mMap;
-    private DBHelper dbHelper;
+    private DBFireBaseHelper dbHelper;
 
     public VitalizeAreaEditDialogManager(Activity theActivity, GoogleMap theMap) {
         mActivity = theActivity;
         mMap = theMap;
-        dbHelper = new DBHelper(theActivity);
+        dbHelper = new DBFireBaseHelper(theActivity);
     }
     public void showEditScrimDialog(final ScrimArea theAre, final LatLng latLng ) {
         //inflate layout we wantz
         final View rightView = mActivity.getLayoutInflater().inflate(R.layout.new_scrim_area, null);
-        Calendar current = theAre == null? Calendar.getInstance():theAre.getDate();
-
-        setText((TextView) rightView.findViewById(R.id.startDisplay), current.get(Calendar.MINUTE),
-                current.get(Calendar.MONTH) + 1, current.get(Calendar.DAY_OF_MONTH), current);
+        Calendar calendar = Calendar.getInstance();
+        if(theAre != null) {
+            calendar.setTimeInMillis(theAre.getDate());
+        }
+        setText((TextView) rightView.findViewById(R.id.startDisplay), calendar.get(Calendar.MINUTE),
+                calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH), calendar);
 
         final Button timePickerButton = (Button) rightView.findViewById(R.id.pickStartTime);
         final TextView timeDisplay = (TextView) rightView.findViewById(R.id.startDisplay);
@@ -119,22 +118,13 @@ public class VitalizeAreaEditDialogManager {
                                 VitalizeApplication.getMarkerImage(type), VitalizeApplication.getTypeImage(type), numSpot, type,
                                 ScrimArea.parseDateOut(date));
 
-                        // Push the new scrim area up to Firebase
-                        final Firebase ref = new Firebase(MapsActivity.FIREBASE_LINK);
-                        final Firebase vAreaRef = ref.child("VitalizeAreas").push();
-                        vAreaRef.setValue(newArea, new OnCompleteListener());
-                        Firebase userAreaRef = ref.child("Users").child(ref.getAuth().getUid()).child("MyAreas");
-                        userAreaRef.push().setValue(vAreaRef.getKey(), new OnCompleteListener());
-
-
-                        VitalizeApplication.getAllAreas().add(newArea);
-                        dbHelper.insertScrimAreaDB(newArea.getId(), newArea.getTitle(), newArea.getAdditionalInfo(),
-                                newArea.getType(), newArea.getCenter().latitude, newArea.getCenter().longitude, newArea.getNumSpots(),
-                                newArea.getDate());
+                        // Add to firebase
+                     //   dbHelper.insertScrimAreaDB2(newArea);
+                        // end firebase
                     } else {
                         theAre.update(title, description, VitalizeApplication.getTypeImage(type),
-                                VitalizeApplication.getMarkerImage(type), numSpot, type, ScrimArea.parseDateOut(date));
-                        dbHelper.updateScrimAreaDB(theAre.getId(), title, description, type, numSpot, theAre.getDate());
+                                VitalizeApplication.getMarkerImage(type), numSpot, type, ScrimArea.parseDateOut(date).getTimeInMillis());
+                        dbHelper.updateScrimAreaDB2(theAre);
                     }
                     alertDialog.dismiss();
                 }
@@ -230,7 +220,7 @@ public class VitalizeAreaEditDialogManager {
                                 allAreas.remove(toRemove);
                                 // continue with delete
                                 marker.remove();
-                                dbHelper.removeScrimAreaDB(toRemove.getId());
+                                dbHelper.removeScrimAreaDB2(toRemove.getId());
                                 markerInfoDialog.dismiss();
                             }
                         })
@@ -243,16 +233,5 @@ public class VitalizeAreaEditDialogManager {
                         .show();
             }
         });
-    }
-
-    private class OnCompleteListener implements Firebase.CompletionListener {
-        @Override
-        public void onComplete(FirebaseError firebaseError, Firebase firebase) {
-            if (firebaseError == null) {
-                Log.d(TAG, "New vitalize area was made.");
-            } else {
-                Log.d(TAG, "Error making new vitalize area.");
-            }
-        }
     }
 }

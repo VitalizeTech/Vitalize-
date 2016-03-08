@@ -8,19 +8,18 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
-import android.view.View;
-
-import android.widget.Button;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
-
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -29,21 +28,26 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
+
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, Observer {
+    private static final String TAG = MapsActivity.class.getName();
     private static final int PLACE_PICKER_REQUEST = 1;
-    public static final String FIREBASE_LINK = "https://scrim.firebaseio.com/";
     private GoogleMap mMap;
     private VitalizeAreaEditDialogManager vitalizeAreaEditDialogManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        Firebase.setAndroidContext(this);
         setContentView(R.layout.activity_maps);
+
+        DBFireBaseHelper dbHelper = new DBFireBaseHelper(this);
+        dbHelper.getAllScrimAreas2();
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -73,12 +77,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     /**
      * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -86,9 +84,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap = googleMap;
         // Replace the (default) location source of the my-location layer with our custom LocationSource
         new FollowMeLocationListener(this, googleMap);
-       setOnMapClickListener(mMap);
-        ScrimArea.loadAllAreasOntoMap(googleMap);
-
+        setOnMapClickListener(mMap);
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
         }
@@ -106,7 +102,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     TextView type = (TextView) markerInfoView.findViewById(R.id.typeText);
                     ((TextView) markerInfoView.findViewById(R.id.titleText)).setText(markerScrim.getTitle());
                     ((TextView) markerInfoView.findViewById(R.id.additInfoText)).setText(markerScrim.getAdditionalInfo());
-                    typeImage.setImageResource(markerScrim.getTypeImage());
+                    typeImage.setImageResource((int) markerScrim.getTypeImage());
                     spotsLeft.setText("1/" + markerScrim.getNumSpots());
                     type.setText(markerScrim.getType());
                     final AlertDialog markerInfoDialog = markerInfoDialogBuilder.create();
@@ -185,28 +181,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     final Spinner filterSpinner = (Spinner) filterView.findViewById(R.id.filter_spinner);
                     Button filterButton = (Button) filterView.findViewById(R.id.Filter_confirm);
                     Button cancelButton = (Button) filterView.findViewById(R.id.Filter_cancel);
-
-
-//                    ArrayAdapter<String> typeAdapter = new ArrayAdapter<String>(MapsActivity.this,
-//                            android.R.layout.simple_spinner_item, VitalizeApplication.getTypes());
-//                    typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//                    filterSpinner.setAdapter(typeAdapter);
-//                    filterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//                        @Override
-//                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//                            String typeSelected = VitalizeApplication.getTypes()[position];
-//                            for (ScrimArea a : VitalizeApplication.getAllAreas()) {
-//                                a.getScrimMarker().setVisible(a.getType().equals(typeSelected));
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void onNothingSelected(AdapterView<?> parent) {
-//
-//                        }
-//                    });
-                    // ask the alert dialog to use our layout
-                    //prompt for dialog
                     //show a dialog that prompts the user if he/she wants to delete
                     AlertDialog.Builder addBuild = new AlertDialog.Builder(MapsActivity.this);
                     addBuild.setView(filterView);
@@ -264,5 +238,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         draggable(false));
             }
         }
+    }
+
+    @Override
+    public void update(Observable observable, Object data) {
+        ScrimArea.loadAllAreasOntoMap(mMap);
     }
 }
