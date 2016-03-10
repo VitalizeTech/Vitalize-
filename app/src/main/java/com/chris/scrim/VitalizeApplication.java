@@ -55,7 +55,7 @@ public class VitalizeApplication extends Application {
         initializeMaps();
         allAreas = new ArrayList<>();
         dbHelper = new DBFireBaseHelper(this);
-
+        allAreas = new ArrayList<ScrimArea>();
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
             @Override
             public void onActivityCreated(Activity activity,

@@ -1,6 +1,7 @@
 package com.chris.scrim;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -22,8 +23,9 @@ public class MembersAndInvitesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_members_and_invites);
-
-        List<User> pendingListUsers = VitalizeApplication.getTestUsers();
+        Intent startedFrom = getIntent();
+        int indexOfScrimArea = startedFrom.getIntExtra("index",0);
+        List<User> pendingListUsers = VitalizeApplication.getAllAreas().get(indexOfScrimArea).users;
         groupMembers = VitalizeApplication.getTestUsers();
         groupMembersAdapter = new MembersAdapter(this, R.layout.members, groupMembers);
         ((ListView) findViewById(R.id.pendingInvitationListView)).setAdapter(new PendingInvitesAdapter(this, R.layout.pending_invites, pendingListUsers));

@@ -17,7 +17,8 @@
         android:layout_alignTop="@+id/messageButton"
         android:background="@drawable/member_button_shape"
         android:layout_marginLeft="10dp"
-        android:layout_toRightOf="@id/messageButton">
+        android:layout_toRightOf="@id/messageButton"
+        android:id="@+id/relativeLayout">
         <Button
             android:layout_width="40dp"
             android:layout_height="40dp"
@@ -104,7 +105,9 @@
         android:layout_below="@id/additInfoText"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:id="@+id/inGroupOptions">
+
         <Button
             android:layout_width="0dp"
             android:layout_weight="1"
@@ -121,7 +124,18 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="@string/see_more"
-            android:id="@+id/seeMoreButton" />
+            android:text="Leave"
+            android:id="@+id/leaveButton" />
     </LinearLayout>
+
+    <Button
+        android:layout_width="500dp"
+        android:layout_height="wrap_content"
+        android:text="Request to Join"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:id="@+id/requestJoin"
+        android:layout_below="@+id/additInfoText"
+        />
+
 </RelativeLayout>
