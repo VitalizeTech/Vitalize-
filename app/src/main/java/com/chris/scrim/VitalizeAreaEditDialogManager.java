@@ -155,8 +155,9 @@ public class VitalizeAreaEditDialogManager {
                             theAre.update(title, description, VitalizeApplication.getTypeImage(type),
                                     VitalizeApplication.getMarkerImage(type), numSpot, type, ScrimArea.parseDateOut(date).getTimeInMillis());
                         firebaseDBHelper.updateScrimAreaInFireBase(theAre);
-                            alertDialog.dismiss();
+
                         }
+                        alertDialog.dismiss();
                     }
                 }
             }

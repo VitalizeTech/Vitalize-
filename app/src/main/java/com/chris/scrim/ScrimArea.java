@@ -10,6 +10,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
@@ -64,14 +65,8 @@ public class ScrimArea {
 
         Calendar date = Calendar.getInstance();
         date.setTimeInMillis(getDate());
-        String dateText = date.get(Calendar.MONTH) + "/" + date.get(Calendar.DAY_OF_MONTH) + " " +  date.get(Calendar.HOUR) +
-                ":" + date.get(Calendar.MINUTE);
-        if(date.get(Calendar.AM_PM) == Calendar.AM) {
-            dateText += "AM";
-        } else {
-            dateText += "PM";
-        }
-        textView.setText(dateText);
+        SimpleDateFormat format = new SimpleDateFormat("MM/d h:mm a");
+        textView.setText(format.format(date.getTime()));
     }
 
     public static void loadAllAreasOntoMap(GoogleMap map) {
