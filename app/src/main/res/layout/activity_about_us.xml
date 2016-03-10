@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context="com.chatt.Login" >
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/vitalize_logo"
+            android:maxHeight="150dp"
+            android:maxWidth="150dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="About Us"
+            android:id="@+id/aboutUsTitleTextView"
+            android:layout_gravity="center_horizontal" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:layout_gravity="center_horizontal" />
+
+        <TextView
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:inputType="textMultiLine"
+            android:ems="10"
+            android:layout_gravity="center_horizontal"
+            android:id="@+id/aboutUsDescriptionTextView"
+            android:text="Vitalize is a community based, social phone app that utilizes Google Map API to notify users of nearby events such as job promotions, shop promotions, sports activities, or any other social gathering the users may specify. Whether a user feels spontaneous or in need of a particular service, Vitalize is useful for anyone who has registered, anywhere, to efficiently pinpoint local areas of interest and it allows for quick communication through chat once people join a common event. It is similar to Craigslist but more visually appealing with flags on the map of wherever the event is happening." />
+
+    </LinearLayout>
+</ScrollView>

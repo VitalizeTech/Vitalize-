@@ -1,9 +1,13 @@
 package com.chris.scrim;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.support.design.widget.NavigationView;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
+
+import com.firebase.client.Firebase;
 
 import SlidingMenu.SlidingMenu;
 
@@ -16,7 +20,7 @@ public class VitalizeSlidingMenu {
     private static NavigationView.OnNavigationItemSelectedListener onNavigationItemSelectedListener;
 
     public static void initializeSlidingMenu(Activity theActivity) {
-        initializeOnNavItemSelectedListener();
+        initializeOnNavItemSelectedListener(theActivity);
         // configure the SlidingMenu
         vitalizeSlidingMenu = new SlidingMenu(theActivity);
         vitalizeSlidingMenu.setMode(SlidingMenu.LEFT);
@@ -32,19 +36,32 @@ public class VitalizeSlidingMenu {
                 .setNavigationItemSelectedListener(onNavigationItemSelectedListener);
     }
 
-    private static void initializeOnNavItemSelectedListener() {
+    private static void initializeOnNavItemSelectedListener(final Activity theActivity) {
         onNavigationItemSelectedListener = new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.profile:
                         Log.d(TAG, "Profile");
+                        Intent profileIntent = new Intent(theActivity, Profile.class);
+                        theActivity.startActivity(profileIntent);
                         break;
                     case R.id.settings:
                         Log.d(TAG, "Settings");
                         break;
                     case R.id.about:
                         Log.d(TAG, "About");
+                        Intent aboutUsIntent = new Intent(theActivity, AboutUs.class);
+                        theActivity.startActivity(aboutUsIntent);
+                        break;
+                    case R.id.logout:
+                        Log.d(TAG, "Log Out");
+                        Firebase ref = new Firebase("https://scrim.firebaseio.com/");
+                        ref.unauth();
+                        Toast.makeText(theActivity, "Logged Out", Toast.LENGTH_SHORT).show();
+                        Intent logoutIntent = new Intent(theActivity, LoginActivity.class);
+                        logoutIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // TODO: Fix back button after logout
+                        theActivity.startActivity(logoutIntent);
                         break;
                     case R.id.home:
                     default:

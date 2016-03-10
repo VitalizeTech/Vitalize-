@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context="com.chatt.Login" >
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/vitalize_logo"
+            android:maxHeight="150dp"
+            android:maxWidth="150dp" />
+
+        <TextView
+            android:layout_width="325dp"
+            android:layout_height="wrap_content"
+            android:text="Username"
+            android:id="@+id/profileUsernameTextView"
+            android:layout_gravity="center_horizontal" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="5" />
+
+            <EditText
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:text="&lt;Username>"
+                android:ems="10"
+                android:layout_gravity="center_horizontal"
+                android:id="@+id/profileUsernameEditText"
+                android:layout_weight="2" />
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="5" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="325dp"
+            android:layout_height="wrap_content"
+            android:text="Email"
+            android:id="@+id/profileEmailTextView"
+            android:layout_gravity="center_horizontal" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="5" />
+
+            <EditText
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:ems="10"
+                android:id="@+id/profileEmailEditText"
+                android:layout_gravity="center_horizontal"
+                android:text="&lt;Email>"
+                android:layout_weight="2" />
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="5" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="325dp"
+            android:layout_height="wrap_content"
+            android:text="City"
+            android:id="@+id/profileCityTextView"
+            android:layout_gravity="center_horizontal" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:layout_height="match_parent">
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="5" />
+
+            <EditText
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/profileCityEditText"
+                android:text="&lt;City>"
+                android:layout_weight="2" />
+
+            <Button
+                style="?android:attr/imageButtonStyle"
+                android:layout_width="20dp"
+                android:layout_height="25dp"
+                android:id="@+id/prodileEditCityBtn"
+                android:stateListAnimator="@null"
+                android:layout_gravity="center"
+                android:background="@android:drawable/ic_menu_edit"
+                android:layout_weight="1" />
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="2" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="325dp"
+            android:layout_height="wrap_content"
+            android:text="About Me"
+            android:id="@+id/profileAboutMeTextView"
+            android:layout_gravity="center_horizontal" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="5" />
+
+            <EditText
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:inputType="textMultiLine"
+                android:ems="10"
+                android:id="@+id/profileAboutMeEditText"
+                android:text="&lt;AboutUser>"
+                android:layout_gravity="center_horizontal"
+                android:maxLines="25"
+                android:layout_weight="2" />
+
+            <Button
+                style="?android:attr/imageButtonStyle"
+                android:layout_width="20dp"
+                android:layout_height="25dp"
+                android:id="@+id/profileEditABoutMeBtn"
+                android:stateListAnimator="@null"
+                android:layout_gravity="center"
+                android:background="@android:drawable/ic_menu_edit"
+                android:layout_weight="1" />
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:layout_gravity="bottom"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>
