@@ -1,6 +1,7 @@
 package com.chris.scrim;
 
 
+import android.app.Application;
 import android.widget.TextView;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -20,6 +21,7 @@ import java.util.List;
 @JsonIgnoreProperties(value = {"scrimMarker", "center"}, ignoreUnknown = true)
 public class ScrimArea {
     private static final String TAG = ScrimArea.class.getName();
+    List<User> users;
     private Marker scrimMarker;
     private String title;
     private String additionalInfo;
@@ -40,26 +42,13 @@ public class ScrimArea {
         this.center  = center;
         this.latitude = center.latitude;
         this.longitude = center.longitude;
-
+        users = VitalizeApplication.getTestUsers();
         update(theName, theAdditionalInfo, typeImage, markerImage, numSpots, type, date.getTimeInMillis());
     }
-    public ScrimArea() {}
-
-    public ScrimArea(String title, String additionalInfo, String type, int numSpots,
-                     int typeImage, int markerImage, double latitude, double longitude,
-                     String id, long date) {
-        this.title = title;
-        this.additionalInfo = additionalInfo;
-        this.type = type;
-        this.numSpots = numSpots;
-        this.typeImage = typeImage;
-        this.markerImage = markerImage;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.id = id;
-        this.date = date;
-        this.center = new LatLng(latitude, longitude);
+    public ScrimArea() {
+        users = VitalizeApplication.getTestUsers();
     }
+
 
     public void populateDateText(TextView textView) {
 

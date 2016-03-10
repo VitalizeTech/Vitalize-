@@ -79,7 +79,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
         vitalizeAreaEditDialogManager =  new VitalizeAreaEditDialogManager(this, googleMap);
         mMap = googleMap;
-
+        final User stub =  new User("jjones:|", "Stub", 128, R.drawable.krysten, R.drawable.moonlightbae);
         // Get all areas and put it on the map when it is done loading.
         DBFireBaseHelper firebaseDBHelper = new DBFireBaseHelper(this);
         firebaseDBHelper.getAllScrimAreasFromFirebase();
@@ -109,11 +109,34 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     type.setText(markerScrim.getType());
                     final AlertDialog markerInfoDialog = markerInfoDialogBuilder.create();
                     final Button delete = (Button) markerInfoView.findViewById(R.id.deleteButton);
+                    Button requestButton = (Button) markerInfoView.findViewById(R.id.requestJoin);
+                    View inGroupOptions = (View)markerInfoView.findViewById(R.id.inGroupOptions);
+                    if(markerScrim.users.contains(stub)) {
+                        requestButton.setVisibility(View.INVISIBLE);
+                        markerInfoView.findViewById(R.id.leaveButton).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                markerScrim.users.remove(markerScrim.users.size()- 1);
+                                markerInfoDialog.dismiss();
+                            }
+                        });
+                    } else {
+                        inGroupOptions.setVisibility(View.INVISIBLE);
+                        requestButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                markerScrim.users.add(stub);
+                                markerInfoDialog.dismiss();
+                            }
+                        });
+                    }
                     vitalizeAreaEditDialogManager.setDeleteClickListener(delete, marker, markerInfoDialog);
                     markerInfoView.findViewById(R.id.membersAndInvitesButton).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            MapsActivity.this.startActivity(new Intent(MapsActivity.this, MembersAndInvitesActivity.class));
+                            Intent startMembersActivity =  new Intent(MapsActivity.this, MembersAndInvitesActivity.class);
+                            startMembersActivity.putExtra("index", VitalizeApplication.getAllAreas().indexOf(markerScrim));
+                            MapsActivity.this.startActivity(startMembersActivity);
                         }
                     });
                     markerInfoView.findViewById(R.id.messageButton).setOnClickListener(new View.OnClickListener() {

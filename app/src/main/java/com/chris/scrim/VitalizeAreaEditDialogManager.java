@@ -147,14 +147,14 @@ public class VitalizeAreaEditDialogManager {
                             ScrimArea newArea = new ScrimArea(mMap, latLng, title, description,
                                     VitalizeApplication.getMarkerImage(type), VitalizeApplication.getTypeImage(type), numSpot, type,
                                     ScrimArea.parseDateOut(date));
-
+                            VitalizeApplication.getAllAreas().add(newArea);
                             // Add to firebase
                                firebaseDBHelper.insertScrimAreaInFirebase(newArea);
                             // end firebase
                         } else {
                             theAre.update(title, description, VitalizeApplication.getTypeImage(type),
                                     VitalizeApplication.getMarkerImage(type), numSpot, type, ScrimArea.parseDateOut(date).getTimeInMillis());
-                        firebaseDBHelper.updateScrimAreaInFireBase(theAre);
+                            firebaseDBHelper.updateScrimAreaInFireBase(theAre);
 
                         }
                         alertDialog.dismiss();
