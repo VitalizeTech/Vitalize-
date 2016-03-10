@@ -81,8 +81,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap = googleMap;
 
         // Get all areas and put it on the map when it is done loading.
-        DBFireBaseHelper dbHelper = new DBFireBaseHelper(this);
-        dbHelper.getAllScrimAreasFromFirebase();
+        DBFireBaseHelper firebaseDBHelper = new DBFireBaseHelper(this);
+        firebaseDBHelper.getAllScrimAreasFromFirebase();
 
         // Replace the (default) location source of the my-location layer with our custom LocationSource
         new FollowMeLocationListener(this, googleMap);

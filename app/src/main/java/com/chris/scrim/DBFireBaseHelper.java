@@ -30,7 +30,7 @@ public class DBFireBaseHelper extends Observable {
         }
     }
 
-    public void insertScrimAreaIntoFirebase(ScrimArea newArea) {
+    public void insertScrimAreaInFirebase(ScrimArea newArea) {
         // Add to firebase
         // Push the new scrim area up to Firebase
         final Firebase vAreaRef = firebaseRef.child("VitalizeAreas").push();
@@ -41,12 +41,12 @@ public class DBFireBaseHelper extends Observable {
         userAreaRef.push().setValue(vAreaRef.getKey(), new OnCompleteListener());
     }
 
-    public void updateScrimAreaDB2(final ScrimArea area) {
+    public void updateScrimAreaInFireBase(final ScrimArea area) {
         final Firebase vAreaRef = firebaseRef.child("VitalizeAreas").child(area.getId());
         vAreaRef.setValue(area, new OnCompleteListener());
     }
 
-    public void removeScrimAreaDB2(final String vAreaFbId) {
+    public void removeScrimAreaInFirebase(final String vAreaFbId) {
         final Firebase vSingleAreaRef = firebaseRef.child("VitalizeAreas").child(vAreaFbId);
         vSingleAreaRef.removeValue(new OnCompleteListener());
         firebaseRef.child("Users")

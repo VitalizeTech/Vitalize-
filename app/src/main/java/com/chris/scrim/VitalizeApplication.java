@@ -53,6 +53,7 @@ public class VitalizeApplication extends Application {
     public void onCreate() {
         super.onCreate();
         initializeMaps();
+        allAreas = new ArrayList<>();
         dbHelper = new DBFireBaseHelper(this);
 
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {

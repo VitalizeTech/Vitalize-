@@ -36,12 +36,12 @@ public class VitalizeAreaEditDialogManager {
     private static final int ALLOWED_DIFF = -5000;
     private Activity mActivity;
     private GoogleMap mMap;
-    private DBFireBaseHelper dbHelper;
+    private DBFireBaseHelper firebaseDBHelper;
 
     public VitalizeAreaEditDialogManager(Activity theActivity, GoogleMap theMap) {
         mActivity = theActivity;
         mMap = theMap;
-        dbHelper = new DBFireBaseHelper(theActivity);
+        firebaseDBHelper = new DBFireBaseHelper(theActivity);
     }
     public void showEditScrimDialog(final ScrimArea theAre, final LatLng latLng ) {
         //inflate layout we wantz
@@ -149,12 +149,12 @@ public class VitalizeAreaEditDialogManager {
                                     ScrimArea.parseDateOut(date));
 
                             // Add to firebase
-                            //   dbHelper.insertScrimAreaDB2(newArea);
+                               firebaseDBHelper.insertScrimAreaInFirebase(newArea);
                             // end firebase
                         } else {
                             theAre.update(title, description, VitalizeApplication.getTypeImage(type),
                                     VitalizeApplication.getMarkerImage(type), numSpot, type, ScrimArea.parseDateOut(date).getTimeInMillis());
-//                        dbHelper.updateScrimAreaDB2(theAre);
+                        firebaseDBHelper.updateScrimAreaInFireBase(theAre);
                             alertDialog.dismiss();
                         }
                     }
@@ -251,7 +251,7 @@ public class VitalizeAreaEditDialogManager {
                                 allAreas.remove(toRemove);
                                 // continue with delete
                                 marker.remove();
-                                dbHelper.removeScrimAreaDB2(toRemove.getId());
+                                firebaseDBHelper.removeScrimAreaInFirebase(toRemove.getId());
                                 markerInfoDialog.dismiss();
                             }
                         })
