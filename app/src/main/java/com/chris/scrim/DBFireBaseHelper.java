@@ -81,6 +81,12 @@ public class DBFireBaseHelper extends Observable {
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                     Log.d(TAG, "Child: " + child.toString());
                     final ScrimArea area = child.getValue(ScrimArea.class);
+                    for (DataSnapshot mems : child.child("members").getChildren()) {
+                        String memId = (String) mems.getValue();
+                        final User stub =  new User("jjones:|", "Stub", 128, R.drawable.krysten, R.drawable.moonlightbae);
+                        stub.setId(memId);
+                        area.getUsers().add(stub);
+                    }
                     VitalizeApplication.getAllAreas().add(area);
                 }
                 setChanged();
@@ -96,6 +102,16 @@ public class DBFireBaseHelper extends Observable {
         return allAreas;
     }
 
+    public void joinEvent(String eventId) {
+        Log.d("Vitalize", "WUT" + eventId);
+        Firebase eventRef = firebaseRef.child("VitalizeAreas").child(eventId).child("members");
+        eventRef.push().setValue(eventRef.getAuth().getUid());
+    }
+
+    public String getUserId() {
+        return firebaseRef.getAuth().getUid();
+    }
+
     private class OnCompleteListener implements Firebase.CompletionListener {
         @Override
         public void onComplete(FirebaseError firebaseError, Firebase firebase) {
@@ -106,5 +122,9 @@ public class DBFireBaseHelper extends Observable {
             }
         }
     }
+
+//    public User getUserInfo(String id) {
+//        firebaseRef
+//    }
 }
 

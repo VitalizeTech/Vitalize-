@@ -22,6 +22,7 @@ public class VitalizeApplication extends Application {
     private static int MAX_ID = 1000;
     //events should be removed 1 hour after start time
     private static final int HOUR_LIMIT = 60;
+    static String loggedInId;
     private static DBFireBaseHelper dbHelper;
     private static Map<String, Integer> typeToMarkerImage;
     private static Map<String, Integer> typeToTypeImage;

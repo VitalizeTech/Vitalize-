@@ -12,16 +12,17 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 /**
  * Created by chris on 2/4/2016.
  */
-@JsonIgnoreProperties(value = {"scrimMarker", "center"}, ignoreUnknown = true)
+@JsonIgnoreProperties(value = {"scrimMarker", "center", "users"}, ignoreUnknown = true)
 public class ScrimArea {
     private static final String TAG = ScrimArea.class.getName();
-    List<User> users;
+    private List<User> users;
     private Marker scrimMarker;
     private String title;
     private String additionalInfo;
@@ -42,7 +43,8 @@ public class ScrimArea {
         this.center  = center;
         this.latitude = center.latitude;
         this.longitude = center.longitude;
-        users = VitalizeApplication.getTestUsers();
+        users = new ArrayList<>();
+
         update(theName, theAdditionalInfo, typeImage, markerImage, numSpots, type, date.getTimeInMillis());
     }
     public ScrimArea() {
@@ -54,7 +56,7 @@ public class ScrimArea {
 
         Calendar date = Calendar.getInstance();
         date.setTimeInMillis(getDate());
-        SimpleDateFormat format = new SimpleDateFormat("MM/d h:mm a");
+        SimpleDateFormat format = new SimpleDateFormat("M/d h:mm a");
         textView.setText(format.format(date.getTime()));
     }
 
@@ -66,6 +68,14 @@ public class ScrimArea {
         }
     }
 
+    public boolean containsMember(String id) {
+        for(User s: users) {
+            if(s.id != null && s.id.equals(id)) {
+                return true;
+            }
+        }
+        return false;
+    }
     public void update(String title, String theAdditionalInfo, int typeImage, int markerImage, int numSpots, String type, long date) {
         this.title = title;
         this.additionalInfo = theAdditionalInfo;
@@ -150,6 +160,14 @@ public class ScrimArea {
 
     public long getDate() {
         return date;
+    }
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 
     public LatLng getCenter() {

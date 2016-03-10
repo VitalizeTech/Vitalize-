@@ -52,6 +52,7 @@ public class LoginActivity extends TouchActivity {
                         String stubUsername = email.substring(0,email.indexOf("@"));
                         editor.putString(USERNAME_KEY, stubUsername);
                         editor.apply();
+                        VitalizeApplication.loggedInId = authData.getUid();
                         Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
                         startActivity(intent);
                         finish();

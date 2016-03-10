@@ -25,7 +25,7 @@ public class MembersAndInvitesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_members_and_invites);
         Intent startedFrom = getIntent();
         int indexOfScrimArea = startedFrom.getIntExtra("index",0);
-        List<User> pendingListUsers = VitalizeApplication.getAllAreas().get(indexOfScrimArea).users;
+        List<User> pendingListUsers = VitalizeApplication.getAllAreas().get(indexOfScrimArea).getUsers();
         groupMembers = VitalizeApplication.getTestUsers();
         groupMembersAdapter = new MembersAdapter(this, R.layout.members, groupMembers);
         ((ListView) findViewById(R.id.pendingInvitationListView)).setAdapter(new PendingInvitesAdapter(this, R.layout.pending_invites, pendingListUsers));

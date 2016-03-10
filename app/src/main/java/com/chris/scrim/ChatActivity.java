@@ -1,5 +1,6 @@
 package com.chris.scrim;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.widget.ListView;
 import com.firebase.client.Firebase;
 
 import java.security.acl.Group;
+import java.util.List;
 
 public class ChatActivity extends TouchActivity {
 
@@ -24,8 +26,13 @@ public class ChatActivity extends TouchActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
-        mFireBase = new Firebase(FIREBASE_URL).child("chat");
         messageToSend = (EditText)findViewById(R.id.message_to_send);
+        Intent startedFrom = getIntent();
+
+        int indexOfScrimArea = startedFrom.getIntExtra("index",0);
+        ScrimArea getChatOf = VitalizeApplication.getAllAreas().get(indexOfScrimArea);
+
+        mFireBase = new Firebase(FIREBASE_URL).child("VitalizeAreas").child(getChatOf.getId()).child("chat");
 
         messageAdapter = new MessageListAdapter(this, mFireBase.limitToFirst(50));
         Button sendButton = (Button)findViewById(R.id.btnSend);

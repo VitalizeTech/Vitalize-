@@ -80,8 +80,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         vitalizeAreaEditDialogManager =  new VitalizeAreaEditDialogManager(this, googleMap);
         mMap = googleMap;
         final User stub =  new User("jjones:|", "Stub", 128, R.drawable.krysten, R.drawable.moonlightbae);
+        final DBFireBaseHelper firebaseDBHelper = new DBFireBaseHelper(this);
+        stub.setId(firebaseDBHelper.getUserId());
         // Get all areas and put it on the map when it is done loading.
-        DBFireBaseHelper firebaseDBHelper = new DBFireBaseHelper(this);
         firebaseDBHelper.getAllScrimAreasFromFirebase();
 
         // Replace the (default) location source of the my-location layer with our custom LocationSource
@@ -111,21 +112,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     final Button delete = (Button) markerInfoView.findViewById(R.id.deleteButton);
                     Button requestButton = (Button) markerInfoView.findViewById(R.id.requestJoin);
                     View inGroupOptions = (View)markerInfoView.findViewById(R.id.inGroupOptions);
-                    if(markerScrim.users.contains(stub)) {
+                    if(markerScrim.containsMember(firebaseDBHelper.getUserId())) {
                         requestButton.setVisibility(View.INVISIBLE);
                         markerInfoView.findViewById(R.id.leaveButton).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                markerScrim.users.remove(markerScrim.users.size()- 1);
+                                markerScrim.getUsers().remove(markerScrim.getUsers().size()- 1);
                                 markerInfoDialog.dismiss();
                             }
                         });
                     } else {
+                        //firebase join
                         inGroupOptions.setVisibility(View.INVISIBLE);
                         requestButton.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                markerScrim.users.add(stub);
+                                markerScrim.getUsers().add(stub);
+                                firebaseDBHelper.joinEvent(markerScrim.getId());
                                 markerInfoDialog.dismiss();
                             }
                         });
@@ -142,7 +145,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     markerInfoView.findViewById(R.id.messageButton).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            MapsActivity.this.startActivity(new Intent(MapsActivity.this, ChatActivity.class));
+                            Intent startChatActivity =  new Intent(MapsActivity.this, ChatActivity.class);
+                            startChatActivity.putExtra("index", VitalizeApplication.getAllAreas().indexOf(markerScrim));
+                            MapsActivity.this.startActivity(startChatActivity);
                         }
                     });
                     markerInfoView.findViewById(R.id.editButton).setOnClickListener(new View.OnClickListener() {
