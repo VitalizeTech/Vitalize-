@@ -46,9 +46,12 @@ public class VitalizeSlidingMenu {
                         Intent profileIntent = new Intent(theActivity, Profile.class);
                         theActivity.startActivity(profileIntent);
                         break;
-                    case R.id.settings:
-                        Log.d(TAG, "Settings");
-                        break;
+//                    case R.id.settings:
+//                        Log.d(TAG, "Settings");
+//                        break;
+//                    case R.id.subscription:
+//                        Log.d(TAG, "Settings");
+//                        break;
                     case R.id.about:
                         Log.d(TAG, "About");
                         Intent aboutUsIntent = new Intent(theActivity, AboutUs.class);
@@ -62,6 +65,7 @@ public class VitalizeSlidingMenu {
                         Intent logoutIntent = new Intent(theActivity, LoginActivity.class);
                         logoutIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // TODO: Fix back button after logout
                         theActivity.startActivity(logoutIntent);
+                        theActivity.finish();
                         break;
                     case R.id.home:
                     default:

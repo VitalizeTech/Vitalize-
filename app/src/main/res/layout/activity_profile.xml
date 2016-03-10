@@ -12,14 +12,88 @@
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal" >
 
-        <ImageView
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="30dp" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="150dp"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="4" />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="3">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Avatar"
+                    android:id="@+id/textView2" />
+
+                <ImageView
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:id="@+id/imageView8"
+                    android:src="@drawable/vitalize_logo" />
+            </LinearLayout>
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="150dp"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="6" />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="3" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Profile"
+                    android:id="@+id/textView3" />
+
+                <ImageView
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:id="@+id/imageView9"
+                    android:src="@drawable/vitalize_logo" />
+
+            </LinearLayout>
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="4" />
+
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="30dp" />
+
+        <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/imageView"
+            android:inputType="textPersonName"
+            android:text="&lt;FirstName> &lt;LastName>"
+            android:ems="10"
+            android:id="@+id/editText"
             android:layout_gravity="center_horizontal"
-            android:src="@drawable/vitalize_logo"
-            android:maxHeight="150dp"
-            android:maxWidth="150dp" />
+            android:editable="false"
+            android:focusable="false"/>
 
         <TextView
             android:layout_width="325dp"
@@ -46,7 +120,9 @@
                 android:ems="10"
                 android:layout_gravity="center_horizontal"
                 android:id="@+id/profileUsernameEditText"
-                android:layout_weight="2" />
+                android:layout_weight="2"
+                android:editable="false"
+                android:focusable="false"/>
 
             <Space
                 android:layout_width="wrap_content"
@@ -79,7 +155,9 @@
                 android:id="@+id/profileEmailEditText"
                 android:layout_gravity="center_horizontal"
                 android:text="&lt;Email>"
-                android:layout_weight="2" />
+                android:layout_weight="2"
+                android:editable="false"
+                android:focusable="false" />
 
             <Space
                 android:layout_width="wrap_content"
@@ -99,7 +177,8 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_gravity="center_horizontal"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:focusableInTouchMode="true">
 
             <Space
                 android:layout_width="wrap_content"
@@ -140,7 +219,8 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:focusableInTouchMode="true">
 
             <Space
                 android:layout_width="wrap_content"

@@ -46,8 +46,12 @@
         <activity android:name=".RegisterActivity" />
         <activity android:name=".MembersAndInvitesActivity" />
         <activity android:name=".ChatActivity" />
-        <activity android:name=".Profile" />
-        <activity android:name=".AboutUs"></activity>
+        <activity android:name=".Profile"
+            android:label="User Profile" />
+        <!-- TODO: Use string resource-->
+        <activity android:name=".AboutUs"
+            android:label="About Us"></activity>
+        <!-- TODO: Use string resource-->
     </application>
 
 </manifest>
