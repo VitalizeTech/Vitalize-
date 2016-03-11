@@ -117,7 +117,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         markerInfoView.findViewById(R.id.leaveButton).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                markerScrim.getUsers().remove(markerScrim.getUsers().size()- 1);
+                                final User leavingUser =
+                                        markerScrim.getUsers().remove(markerScrim.getUsers().size()- 1);
+                                firebaseDBHelper.leaveEvent(markerScrim.getId(), leavingUser.id);
                                 markerInfoDialog.dismiss();
                             }
                         });
@@ -127,8 +129,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         requestButton.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                markerScrim.getUsers().add(stub);
-                                firebaseDBHelper.joinEvent(markerScrim.getId());
+                                markerScrim.getPendingUsers().add(stub);
+                                firebaseDBHelper.requestToJoinEvent(markerScrim.getId());
                                 markerInfoDialog.dismiss();
                             }
                         });

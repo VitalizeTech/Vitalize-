@@ -2,6 +2,7 @@ package com.chris.scrim;
 
 
 import android.app.Application;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -19,10 +20,11 @@ import java.util.List;
 /**
  * Created by chris on 2/4/2016.
  */
-@JsonIgnoreProperties(value = {"scrimMarker", "center", "users"}, ignoreUnknown = true)
+@JsonIgnoreProperties(value = {"scrimMarker", "center", "users", "pendingUsers"}, ignoreUnknown = true)
 public class ScrimArea {
     private static final String TAG = ScrimArea.class.getName();
     private List<User> users;
+    private List<User> pendingUsers;
     private Marker scrimMarker;
     private String title;
     private String additionalInfo;
@@ -43,17 +45,15 @@ public class ScrimArea {
         this.center  = center;
         this.latitude = center.latitude;
         this.longitude = center.longitude;
-        users = new ArrayList<>();
 
         update(theName, theAdditionalInfo, typeImage, markerImage, numSpots, type, date.getTimeInMillis());
     }
     public ScrimArea() {
-        users = VitalizeApplication.getTestUsers();
+        users = new ArrayList<>();
     }
 
 
     public void populateDateText(TextView textView) {
-
         Calendar date = Calendar.getInstance();
         date.setTimeInMillis(getDate());
         SimpleDateFormat format = new SimpleDateFormat("M/d h:mm a");
@@ -163,11 +163,23 @@ public class ScrimArea {
     }
 
     public List<User> getUsers() {
+        if (users == null) users = new ArrayList<>();
         return users;
     }
 
     public void setUsers(List<User> users) {
+        if (users == null) users = new ArrayList<>();
         this.users = users;
+    }
+
+    public List<User> getPendingUsers() {
+        if (pendingUsers == null) pendingUsers = new ArrayList<>();
+        return pendingUsers;
+    }
+
+    public void setPendingUsers(List<User> pendingUsers) {
+        if (pendingUsers == null) pendingUsers = new ArrayList<>();
+        this.pendingUsers = pendingUsers;
     }
 
     public LatLng getCenter() {

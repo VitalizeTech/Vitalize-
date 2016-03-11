@@ -81,11 +81,13 @@ public class DBFireBaseHelper extends Observable {
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                     Log.d(TAG, "Child: " + child.toString());
                     final ScrimArea area = child.getValue(ScrimArea.class);
+                    for (DataSnapshot mems : child.child("pendingMembers").getChildren()) {
+                        final String memId = (String) mems.getValue();
+                        getUserAndAddToList(memId, area.getPendingUsers());
+                    }
                     for (DataSnapshot mems : child.child("members").getChildren()) {
                         String memId = (String) mems.getValue();
-                        final User stub =  new User("jjones:|", "Stub", 128, R.drawable.krysten, R.drawable.moonlightbae);
-                        stub.setId(memId);
-                        area.getUsers().add(stub);
+                        getUserAndAddToList(memId, area.getUsers());
                     }
                     VitalizeApplication.getAllAreas().add(area);
                 }
@@ -102,10 +104,63 @@ public class DBFireBaseHelper extends Observable {
         return allAreas;
     }
 
-    public void joinEvent(String eventId) {
-        Log.d("Vitalize", "WUT" + eventId);
-        Firebase eventRef = firebaseRef.child("VitalizeAreas").child(eventId).child("members");
+    private void getUserAndAddToList(final String userId, final List<User> theList) {
+        final Firebase userRef = firebaseRef.child("Users").child(userId);
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                /* Once user data is properly filled in firebase we can do this.
+                User member = dataSnapshot.getValue(User.class);
+                member.setId(dataSnapshot.getKey());
+                */
+
+                // Temporary data while we fill the rest of user data out in firebase
+                User member = new User("jjones:|", userId + "Stub", 128, R.drawable.krysten, R.drawable.moonlightbae);
+                member.setId(userId);
+                // End temp data
+                theList.add(member);
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+    }
+
+    public void requestToJoinEvent(String eventId) {
+        Firebase eventRef = firebaseRef.child("VitalizeAreas").child(eventId).child("pendingMembers");
         eventRef.push().setValue(eventRef.getAuth().getUid());
+    }
+
+    public void approveRequestToJoinEvent(String eventId, String userId) {
+        Firebase eventRef = firebaseRef.child("VitalizeAreas").child(eventId);
+        // Decline just deletes the request from the pending members list.
+        declineRequestToJoinEvent(eventId, userId);
+        // Then we add the user to the members list
+        eventRef.child("members").push().setValue(eventRef.getAuth().getUid());
+    }
+
+    public void declineRequestToJoinEvent(String eventId, final String userId) {
+        firebaseRef.child("VitalizeAreas")
+                .child(eventId)
+                .child("pendingMembers").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot child : dataSnapshot.getChildren()) {
+                    String theId = child.getValue(String.class);
+                    if (theId.equals(userId)) {
+                        child.getRef().removeValue();
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
     }
 
     public String getUserId() {
@@ -121,6 +176,28 @@ public class DBFireBaseHelper extends Observable {
                 Log.d(TAG, "Error!");
             }
         }
+    }
+
+    public void leaveEvent(String eventId, final String userId) {
+        firebaseRef.child("VitalizeAreas")
+                .child(eventId)
+                .child("members").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot child : dataSnapshot.getChildren()) {
+                    String theId = child.getValue(String.class);
+                    if (theId.equals(userId)) {
+                        child.getRef().removeValue();
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
     }
 
 //    public User getUserInfo(String id) {
