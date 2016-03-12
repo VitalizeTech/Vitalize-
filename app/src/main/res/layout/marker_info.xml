@@ -137,5 +137,14 @@
         android:id="@+id/requestJoin"
         android:layout_below="@+id/additInfoText"
         />
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Favorite"
+        android:id="@+id/Favorite"
+        android:checked="false"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/typeImage"
+        android:layout_toEndOf="@+id/typeImage" />
 
 </RelativeLayout>
