@@ -44,6 +44,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private VitalizeAreaEditDialogManager vitalizeAreaEditDialogManager;
     //for testing the user favorite
     private User localUser;
+    //temp filter -- because you don't need to remember your filter choice in firebase
+    private List<Integer> filterChoice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +59,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         SharedPreferences sharedPreferences = getSharedPreferences(LoginActivity.SHARED_PREFERENCES_FILE,
                 Context.MODE_PRIVATE);
         String username = sharedPreferences.getString(LoginActivity.USERNAME_KEY, "");
-        localUser = new User("jjones:|", username, 128, R.drawable.krysten, R.drawable.moonlightbae);;
+        localUser = new User("jjones:|", username, 128, R.drawable.krysten, R.drawable.moonlightbae);
+        filterChoice = new ArrayList<>();
         VitalizeSlidingMenu.initializeSlidingMenu(this);
     }
 
@@ -236,8 +239,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     //inflate layout we wantz
                     final View filterView = MapsActivity.this.getLayoutInflater().inflate(R.layout.filter, null);
                     final Spinner filterSpinner = (Spinner) filterView.findViewById(R.id.filter_spinner);
-                    Button filterButton = (Button) filterView.findViewById(R.id.Filter_confirm);
+                    final Button filterButton = (Button) filterView.findViewById(R.id.Filter_confirm);
                     Button cancelButton = (Button) filterView.findViewById(R.id.Filter_cancel);
+                    final int [] CheckId = {R.id.bballCheckBox, R.id.fballCheckBox,
+                            R.id.FrisbeeCheckBox, R.id.soccerCheckBox, R.id.tennisCheckBox, R.id.vballCheckBox};
+                    for (int c = 0; c < CheckId.length; c++) {
+                        CheckBox temp = (CheckBox) filterView.findViewById(CheckId[c]);
+                        temp.setChecked(filterChoice.contains(CheckId[c]));
+                    }
+                    final CheckBox myfavorite = (CheckBox)filterView.findViewById(R.id.myFavorite);
+                    myfavorite.setChecked(filterChoice.contains(R.id.myFavorite));
                     //show a dialog that prompts the user if he/she wants to delete
                     AlertDialog.Builder addBuild = new AlertDialog.Builder(MapsActivity.this);
                     addBuild.setView(filterView);
@@ -249,20 +260,29 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             alertDialog.dismiss();
                         }
                     });
-                    final CheckBox myfavorite = (CheckBox)filterView.findViewById(R.id.myFavorite);
+
                     filterButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            int [] CheckId = {R.id.bballCheckBox, R.id.fballCheckBox,
-                                    R.id.FrisbeeCheckBox, R.id.soccerCheckBox, R.id.tennisCheckBox, R.id.vballCheckBox};
                             final List<String> selectedTypes = new ArrayList<>();
                             for (int c = 0; c < CheckId.length; c++) {
                                 CheckBox temp = (CheckBox) filterView.findViewById(CheckId[c]);
                                 if (temp.isChecked()) {
+                                    if (!filterChoice.contains(CheckId[c])) {
+                                        filterChoice.add(CheckId[c]);
+                                    }
                                     selectedTypes.add(temp.getText().toString());
+                                } else {
+                                    if (filterChoice.contains(CheckId[c])) {
+                                        int i = filterChoice.indexOf(CheckId[c]);
+                                        filterChoice.remove(i);
+                                    }
                                 }
                             }
                             if (myfavorite.isChecked()) {
+                                if (!filterChoice.contains((R.id.myFavorite))) {
+                                        filterChoice.add(R.id.myFavorite);
+                                }
                                 if (selectedTypes.isEmpty()) {
                                     for (ScrimArea a : VitalizeApplication.getAllAreas()) {
                                         a.getScrimMarker().setVisible(localUser.getFavoriteList().contains(a.getId()));
@@ -275,6 +295,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 }
                             } else {
                                 //filter the item and just display the option chosen
+                                if (filterChoice.contains(R.id.myFavorite)) {
+                                    int i = filterChoice.indexOf(R.id.myFavorite);
+                                    filterChoice.remove(i);
+                                }
                                 if (selectedTypes.isEmpty()) {
                                     for (ScrimArea a : VitalizeApplication.getAllAreas()) {
                                         a.getScrimMarker().setVisible(true);
