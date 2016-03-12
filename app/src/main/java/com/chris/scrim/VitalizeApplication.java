@@ -52,8 +52,8 @@ public class VitalizeApplication extends Application {
     }
     @Override
     public void onCreate() {
-        super.onCreate();
         initializeMaps();
+        super.onCreate();
         allAreas = new ArrayList<>();
         dbHelper = new DBFireBaseHelper(this);
         allAreas = new ArrayList<ScrimArea>();
@@ -97,7 +97,8 @@ public class VitalizeApplication extends Application {
     }
 
     public static int getMarkerImage(String type) {
-        return typeToMarkerImage.get(type);
+        Integer markerImage = typeToMarkerImage.get(type);
+        return markerImage;
     }
     public static int getTypeImage(String type) {
         return typeToTypeImage.get(type);

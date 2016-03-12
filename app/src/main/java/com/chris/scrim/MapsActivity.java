@@ -2,7 +2,9 @@ package com.chris.scrim;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -79,8 +81,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
         vitalizeAreaEditDialogManager =  new VitalizeAreaEditDialogManager(this, googleMap);
         mMap = googleMap;
-        final User stub =  new User("jjones:|", "Stub", 128, R.drawable.krysten, R.drawable.moonlightbae);
         final DBFireBaseHelper firebaseDBHelper = new DBFireBaseHelper(this);
+        SharedPreferences sharedPreferences = getSharedPreferences(LoginActivity.SHARED_PREFERENCES_FILE,
+                Context.MODE_PRIVATE);
+        String username = sharedPreferences.getString(LoginActivity.USERNAME_KEY, "");
+        final User stub =  new User("jjones:|", username, 128, R.drawable.krysten, R.drawable.moonlightbae);
         stub.setId(firebaseDBHelper.getUserId());
         // Get all areas and put it on the map when it is done loading.
         firebaseDBHelper.getAllScrimAreasFromFirebase();

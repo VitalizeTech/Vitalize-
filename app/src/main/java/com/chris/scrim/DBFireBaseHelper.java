@@ -89,6 +89,7 @@ public class DBFireBaseHelper extends Observable {
                         String memId = (String) mems.getValue();
                         getUserAndAddToList(memId, area.getUsers());
                     }
+                    area.setType(area.getType());
                     VitalizeApplication.getAllAreas().add(area);
                 }
                 setChanged();
@@ -113,9 +114,21 @@ public class DBFireBaseHelper extends Observable {
                 User member = dataSnapshot.getValue(User.class);
                 member.setId(dataSnapshot.getKey());
                 */
-
+                int[] avatarImages = {R.drawable.avatar1, R.drawable.avatar2, R.drawable.avatar3, R.drawable.avatar4,
+                        R.drawable.avatar5};
+                dataSnapshot = dataSnapshot.child("username");
+                String username = "";
+                for(DataSnapshot child: dataSnapshot.getChildren()) {
+                    username = child.getValue(String.class);
+                }
+                int avatarImage;
+                if (username.isEmpty()) {
+                    avatarImage = avatarImages[(int)(Math.random() * avatarImages.length)];
+                } else {
+                    avatarImage = avatarImages[(Character.toLowerCase(username.charAt(0)) - 'a') % 5];
+                }
                 // Temporary data while we fill the rest of user data out in firebase
-                User member = new User("jjones:|", userId + "Stub", 128, R.drawable.krysten, R.drawable.moonlightbae);
+                User member = new User("jjones:|", username, 128, avatarImage, R.drawable.moonlightbae);
                 member.setId(userId);
                 // End temp data
                 theList.add(member);
@@ -133,6 +146,12 @@ public class DBFireBaseHelper extends Observable {
         eventRef.push().setValue(eventRef.getAuth().getUid());
     }
 
+    public void storeUsername(String userId, String username) {
+        Firebase usernameRef = firebaseRef.child("Users").child(userId).child("username");
+        usernameRef.push().setValue(username);
+
+    }
+
     public void approveRequestToJoinEvent(String eventId, String userId) {
         Firebase eventRef = firebaseRef.child("VitalizeAreas").child(eventId);
         // Decline just deletes the request from the pending members list.
@@ -147,7 +166,7 @@ public class DBFireBaseHelper extends Observable {
                 .child("pendingMembers").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot child : dataSnapshot.getChildren()) {
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
                     String theId = child.getValue(String.class);
                     if (theId.equals(userId)) {
                         child.getRef().removeValue();

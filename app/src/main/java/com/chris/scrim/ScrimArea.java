@@ -48,6 +48,11 @@ public class ScrimArea {
 
         update(theName, theAdditionalInfo, typeImage, markerImage, numSpots, type, date.getTimeInMillis());
     }
+    public void setType(String type){
+        this.type = type;
+        markerImage = VitalizeApplication.getMarkerImage(type);
+        typeImage = VitalizeApplication.getTypeImage(type);
+    }
     public ScrimArea() {
         users = new ArrayList<>();
     }
