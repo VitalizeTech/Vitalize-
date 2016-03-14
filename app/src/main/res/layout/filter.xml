@@ -22,60 +22,68 @@
         android:popupBackground="@android:color/white" />
 
     <LinearLayout
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_weight="0.13"
-        android:id="@+id/dynamic_Checkbox">
+        android:layout_height="wrap_content">
 
-        <CheckBox
+        <Space
+            android:layout_width="20px"
+            android:layout_height="20px"
+            android:layout_weight="1" />
+
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Basketball"
-            android:id="@+id/bballCheckBox"
-            android:layout_gravity="center_horizontal"
-            android:checked="false" />
+            android:id="@+id/dynamic_Checkbox">
 
-        <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Football"
-            android:id="@+id/fballCheckBox"
-            android:layout_gravity="center_horizontal"
-            android:checked="false" />
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Basketball"
+                android:id="@+id/bballCheckBox"
+                android:checked="false" />
 
-        <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Frisbee"
-            android:id="@+id/FrisbeeCheckBox"
-            android:layout_gravity="center_horizontal"
-            android:checked="false" />
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Football"
+                android:id="@+id/fballCheckBox"
+                android:checked="false" />
 
-        <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Soccer"
-            android:id="@+id/soccerCheckBox"
-            android:layout_gravity="center_horizontal"
-            android:checked="false" />
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Frisbee"
+                android:id="@+id/FrisbeeCheckBox"
+                android:checked="false" />
 
-        <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Tennis"
-            android:id="@+id/tennisCheckBox"
-            android:layout_gravity="center_horizontal"
-            android:checked="false" />
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Soccer"
+                android:id="@+id/soccerCheckBox"
+                android:checked="false" />
 
-        <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Volleyball"
-            android:id="@+id/vballCheckBox"
-            android:layout_gravity="center_horizontal"
-            android:checked="false" />
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tennis"
+                android:id="@+id/tennisCheckBox"
+                android:checked="false" />
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Volleyball"
+                android:id="@+id/vballCheckBox"
+                android:checked="false" />
+        </LinearLayout>
+
+        <Space
+            android:layout_width="20px"
+            android:layout_height="20px"
+            android:layout_weight="1" />
     </LinearLayout>
 
     <LinearLayout
