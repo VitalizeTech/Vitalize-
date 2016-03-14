@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,21 +13,24 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class MembersAndInvitesActivity extends AppCompatActivity {
     private MembersAdapter groupMembersAdapter;
     private List<User> groupMembers;
+    private DBFireBaseHelper dbFireBaseHelper;
+    private ScrimArea theEvent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_members_and_invites);
         Intent startedFrom = getIntent();
-        int indexOfScrimArea = startedFrom.getIntExtra("index",0);
-        List<User> pendingListUsers = VitalizeApplication.getAllAreas().get(indexOfScrimArea).getUsers();
-        groupMembers = VitalizeApplication.getTestUsers();
+        int indexOfScrimArea = startedFrom.getIntExtra("index", 0);
+        theEvent = VitalizeApplication.getAllAreas().get(indexOfScrimArea);
+        dbFireBaseHelper = new DBFireBaseHelper(this);
+        List<User> pendingListUsers = theEvent.getPendingUsers();
+        groupMembers = VitalizeApplication.getAllAreas().get(indexOfScrimArea).getUsers();
         groupMembersAdapter = new MembersAdapter(this, R.layout.members, groupMembers);
         ((ListView) findViewById(R.id.pendingInvitationListView)).setAdapter(new PendingInvitesAdapter(this, R.layout.pending_invites, pendingListUsers));
         ((ListView) findViewById(R.id.membersListView)).setAdapter(groupMembersAdapter);
@@ -73,6 +77,7 @@ public class MembersAndInvitesActivity extends AppCompatActivity {
                     int index = (int)v.getTag();
                     User approvedMember = pendingInvites.remove(index);
                     groupMembers.add(approvedMember);
+                    dbFireBaseHelper.approveRequestToJoinEvent(theEvent.getId(), approvedMember.id);
                     groupMembersAdapter.notifyDataSetChanged();
                     notifyDataSetChanged();
                 }
@@ -82,7 +87,8 @@ public class MembersAndInvitesActivity extends AppCompatActivity {
             rejectButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    pendingInvites.remove((int) v.getTag());
+                    final User removedUser = pendingInvites.remove((int) v.getTag());
+                    dbFireBaseHelper.declineRequestToJoinEvent(theEvent.getId() ,removedUser.id);
                     notifyDataSetChanged();
                 }
             });

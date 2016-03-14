@@ -2,7 +2,9 @@ package com.chris.scrim;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -12,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -39,6 +42,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final int PLACE_PICKER_REQUEST = 1;
     private GoogleMap mMap;
     private VitalizeAreaEditDialogManager vitalizeAreaEditDialogManager;
+    //for testing the user favorite
+    private User localUser;
+    //temp filter -- because you don't need to remember your filter choice in firebase
+    private List<Integer> filterChoice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +56,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
+        SharedPreferences sharedPreferences = getSharedPreferences(LoginActivity.SHARED_PREFERENCES_FILE,
+                Context.MODE_PRIVATE);
+        String username = sharedPreferences.getString(LoginActivity.USERNAME_KEY, "");
+        localUser = new User("jjones:|", username, 128, R.drawable.krysten, R.drawable.moonlightbae);
+        filterChoice = new ArrayList<>();
         VitalizeSlidingMenu.initializeSlidingMenu(this);
     }
 
@@ -79,8 +90,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
         vitalizeAreaEditDialogManager =  new VitalizeAreaEditDialogManager(this, googleMap);
         mMap = googleMap;
-        final User stub =  new User("jjones:|", "Stub", 128, R.drawable.krysten, R.drawable.moonlightbae);
         final DBFireBaseHelper firebaseDBHelper = new DBFireBaseHelper(this);
+        SharedPreferences sharedPreferences = getSharedPreferences(LoginActivity.SHARED_PREFERENCES_FILE,
+                Context.MODE_PRIVATE);
+        String username = sharedPreferences.getString(LoginActivity.USERNAME_KEY, "");
+        final User stub =  new User("jjones:|", username, 128, R.drawable.krysten, R.drawable.moonlightbae);
         stub.setId(firebaseDBHelper.getUserId());
         // Get all areas and put it on the map when it is done loading.
         firebaseDBHelper.getAllScrimAreasFromFirebase();
@@ -112,12 +126,28 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     final Button delete = (Button) markerInfoView.findViewById(R.id.deleteButton);
                     Button requestButton = (Button) markerInfoView.findViewById(R.id.requestJoin);
                     View inGroupOptions = (View)markerInfoView.findViewById(R.id.inGroupOptions);
+                    CheckBox favorite = (CheckBox)markerInfoView.findViewById(R.id.Favorite);
+                    if(localUser.getFavoriteList().contains(markerScrim.getId())) {
+                        favorite.setChecked(true);
+                    }
+                    favorite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                            if (isChecked) {
+                                localUser.addFavorite(markerScrim);
+                            } else {
+                                localUser.deleteFavorite(markerScrim);
+                            }
+                        }
+                    });
                     if(markerScrim.containsMember(firebaseDBHelper.getUserId())) {
                         requestButton.setVisibility(View.INVISIBLE);
                         markerInfoView.findViewById(R.id.leaveButton).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                markerScrim.getUsers().remove(markerScrim.getUsers().size()- 1);
+                                final User leavingUser =
+                                        markerScrim.getUsers().remove(markerScrim.getUsers().size()- 1);
+                                firebaseDBHelper.leaveEvent(markerScrim.getId(), leavingUser.id);
                                 markerInfoDialog.dismiss();
                             }
                         });
@@ -127,8 +157,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         requestButton.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                markerScrim.getUsers().add(stub);
-                                firebaseDBHelper.joinEvent(markerScrim.getId());
+                                markerScrim.getPendingUsers().add(stub);
+                                firebaseDBHelper.requestToJoinEvent(markerScrim.getId());
                                 markerInfoDialog.dismiss();
                             }
                         });
@@ -137,7 +167,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     markerInfoView.findViewById(R.id.membersAndInvitesButton).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent startMembersActivity =  new Intent(MapsActivity.this, MembersAndInvitesActivity.class);
+                            Intent startMembersActivity = new Intent(MapsActivity.this, MembersAndInvitesActivity.class);
                             startMembersActivity.putExtra("index", VitalizeApplication.getAllAreas().indexOf(markerScrim));
                             MapsActivity.this.startActivity(startMembersActivity);
                         }
@@ -209,8 +239,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     //inflate layout we wantz
                     final View filterView = MapsActivity.this.getLayoutInflater().inflate(R.layout.filter, null);
                     final Spinner filterSpinner = (Spinner) filterView.findViewById(R.id.filter_spinner);
-                    Button filterButton = (Button) filterView.findViewById(R.id.Filter_confirm);
+                    final Button filterButton = (Button) filterView.findViewById(R.id.Filter_confirm);
                     Button cancelButton = (Button) filterView.findViewById(R.id.Filter_cancel);
+                    final int [] CheckId = {R.id.bballCheckBox, R.id.fballCheckBox,
+                            R.id.FrisbeeCheckBox, R.id.soccerCheckBox, R.id.tennisCheckBox, R.id.vballCheckBox};
+                    for (int c = 0; c < CheckId.length; c++) {
+                        CheckBox temp = (CheckBox) filterView.findViewById(CheckId[c]);
+                        temp.setChecked(filterChoice.contains(CheckId[c]));
+                    }
+                    final CheckBox myfavorite = (CheckBox)filterView.findViewById(R.id.myFavorite);
+                    myfavorite.setChecked(filterChoice.contains(R.id.myFavorite));
                     //show a dialog that prompts the user if he/she wants to delete
                     AlertDialog.Builder addBuild = new AlertDialog.Builder(MapsActivity.this);
                     addBuild.setView(filterView);
@@ -226,26 +264,51 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     filterButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            int [] CheckId = {R.id.bballCheckBox, R.id.fballCheckBox,
-                                    R.id.FrisbeeCheckBox, R.id.soccerCheckBox, R.id.tennisCheckBox, R.id.vballCheckBox};
                             final List<String> selectedTypes = new ArrayList<>();
                             for (int c = 0; c < CheckId.length; c++) {
                                 CheckBox temp = (CheckBox) filterView.findViewById(CheckId[c]);
                                 if (temp.isChecked()) {
+                                    if (!filterChoice.contains(CheckId[c])) {
+                                        filterChoice.add(CheckId[c]);
+                                    }
                                     selectedTypes.add(temp.getText().toString());
+                                } else {
+                                    if (filterChoice.contains(CheckId[c])) {
+                                        int i = filterChoice.indexOf(CheckId[c]);
+                                        filterChoice.remove(i);
+                                    }
                                 }
                             }
-                            //filter the item and just display the option chosen
-                            if (selectedTypes.isEmpty()) {
-                                for (ScrimArea a : VitalizeApplication.getAllAreas()) {
-                                    a.getScrimMarker().setVisible(true);
+                            if (myfavorite.isChecked()) {
+                                if (!filterChoice.contains((R.id.myFavorite))) {
+                                        filterChoice.add(R.id.myFavorite);
+                                }
+                                if (selectedTypes.isEmpty()) {
+                                    for (ScrimArea a : VitalizeApplication.getAllAreas()) {
+                                        a.getScrimMarker().setVisible(localUser.getFavoriteList().contains(a.getId()));
+                                    }
+                                } else {
+                                    for (ScrimArea a : VitalizeApplication.getAllAreas()) {
+                                        a.getScrimMarker().setVisible(selectedTypes.contains(a.getType()) &&
+                                                localUser.getFavoriteList().contains(a.getId()));
+                                    }
                                 }
                             } else {
-                                for (ScrimArea a : VitalizeApplication.getAllAreas()) {
-                                    a.getScrimMarker().setVisible(selectedTypes.contains(a.getType()));
+                                //filter the item and just display the option chosen
+                                if (filterChoice.contains(R.id.myFavorite)) {
+                                    int i = filterChoice.indexOf(R.id.myFavorite);
+                                    filterChoice.remove(i);
+                                }
+                                if (selectedTypes.isEmpty()) {
+                                    for (ScrimArea a : VitalizeApplication.getAllAreas()) {
+                                        a.getScrimMarker().setVisible(true);
+                                    }
+                                } else {
+                                    for (ScrimArea a : VitalizeApplication.getAllAreas()) {
+                                        a.getScrimMarker().setVisible(selectedTypes.contains(a.getType()));
+                                    }
                                 }
                             }
-
                             alertDialog.dismiss();
                         }
                     });
@@ -274,4 +337,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void update(Observable observable, Object data) {
         ScrimArea.loadAllAreasOntoMap(mMap);
     }
+
+
 }

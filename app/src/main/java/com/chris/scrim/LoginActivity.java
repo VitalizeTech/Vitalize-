@@ -17,12 +17,13 @@ import com.firebase.client.FirebaseError;
 public class LoginActivity extends TouchActivity {
     public static String SHARED_PREFERENCES_FILE = "com.vitalize.PREFERENCE_FILE_KEY";
     public static String USERNAME_KEY = "username";
-
+    private DBFireBaseHelper firebaseHelper;
     private Firebase ref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        firebaseHelper = new DBFireBaseHelper(this);
         Firebase.setAndroidContext(this);
         setContentView(R.layout.activity_login);
         setTouchNClick(findViewById(R.id.btnLogin));
@@ -50,6 +51,7 @@ public class LoginActivity extends TouchActivity {
                                 Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         String stubUsername = email.substring(0,email.indexOf("@"));
+                        firebaseHelper.storeUsername(authData.getUid(), stubUsername);
                         editor.putString(USERNAME_KEY, stubUsername);
                         editor.apply();
                         VitalizeApplication.loggedInId = authData.getUid();
