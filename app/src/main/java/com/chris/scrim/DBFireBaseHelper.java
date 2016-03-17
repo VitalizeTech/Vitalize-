@@ -114,21 +114,14 @@ public class DBFireBaseHelper extends Observable {
                 User member = dataSnapshot.getValue(User.class);
                 member.setId(dataSnapshot.getKey());
                 */
-                int[] avatarImages = {R.drawable.avatar1, R.drawable.avatar2, R.drawable.avatar3, R.drawable.avatar4,
-                        R.drawable.avatar5};
+
                 dataSnapshot = dataSnapshot.child("username");
                 String username = "";
                 for(DataSnapshot child: dataSnapshot.getChildren()) {
                     username = child.getValue(String.class);
                 }
-                int avatarImage;
-                if (username.isEmpty()) {
-                    avatarImage = avatarImages[(int)(Math.random() * avatarImages.length)];
-                } else {
-                    avatarImage = avatarImages[(Character.toLowerCase(username.charAt(0)) - 'a') % 5];
-                }
                 // Temporary data while we fill the rest of user data out in firebase
-                User member = new User("jjones:|", username, 128, avatarImage, R.drawable.moonlightbae);
+                User member = new User("jjones:|", username, 128, VitalizeApplication.getAvatarImage(username), R.drawable.moonlightbae);
                 member.setId(userId);
                 // End temp data
                 theList.add(member);

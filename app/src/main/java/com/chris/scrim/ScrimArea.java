@@ -45,7 +45,7 @@ public class ScrimArea {
         this.center  = center;
         this.latitude = center.latitude;
         this.longitude = center.longitude;
-
+        users = new ArrayList<User>();
         update(theName, theAdditionalInfo, typeImage, markerImage, numSpots, type, date.getTimeInMillis());
     }
     public void setType(String type){

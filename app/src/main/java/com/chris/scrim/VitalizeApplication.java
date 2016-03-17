@@ -19,7 +19,7 @@ import java.util.Map;
  * Created by chris on 2/21/2016.
  */
 public class VitalizeApplication extends Application {
-    private static int MAX_ID = 1000;
+    public static User currentUser;
     //events should be removed 1 hour after start time
     private static final int HOUR_LIMIT = 60;
     static String loggedInId;
@@ -115,6 +115,17 @@ public class VitalizeApplication extends Application {
             typeToMarkerImage.put(types[k], markerImages[k]);
             typeToTypeImage.put(types[k], typeImages[k]);
         }
+    }
+    public static int getAvatarImage(String username){
+        int[] avatarImages = {R.drawable.avatar1, R.drawable.avatar2, R.drawable.avatar3, R.drawable.avatar4,
+                R.drawable.avatar5};
+        int avatarImage;
+        if (username.isEmpty()) {
+            avatarImage = avatarImages[(int)(Math.random() * avatarImages.length)];
+        } else {
+            avatarImage = avatarImages[(Character.toLowerCase(username.charAt(0)) - 'a') % 5];
+        }
+        return avatarImage;
     }
     public static void removeAreaPassTimeLimit() {
         Log.d("vitalize", String.valueOf(allAreas.size()));
