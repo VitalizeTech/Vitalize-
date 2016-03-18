@@ -15,12 +15,13 @@ public class RegisterActivity extends TouchActivity {
     private EditText myEmail, myPassword, myPassConfirmation;
     private Button myRegButton;
     private Firebase ref;
-
+    private DBFireBaseHelper dbHelperRef;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         Firebase.setAndroidContext(this);
+        dbHelperRef = new DBFireBaseHelper(this);
         ref = new Firebase("https://scrim.firebaseio.com/");
         myEmail = (EditText) findViewById(R.id.email);
         myPassword = (EditText) findViewById(R.id.pwd);
@@ -50,6 +51,8 @@ public class RegisterActivity extends TouchActivity {
             ref.authWithPassword(myEmail.getText().toString(), myPassword.getText().toString(), new Firebase.AuthResultHandler() {
                 @Override
                 public void onAuthenticated(AuthData authData) {
+                    String username = ((EditText)findViewById(R.id.username)).getText().toString();
+                    dbHelperRef.storeUsername(authData.getUid(), username);
                     Toast.makeText(RegisterActivity.this, "Logged in!", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(RegisterActivity.this, MapsActivity.class);
                     startActivity(intent);

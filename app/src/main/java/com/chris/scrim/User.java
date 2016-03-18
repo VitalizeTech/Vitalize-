@@ -24,6 +24,11 @@ public class User {
         this.profileImage = profileImage;
         this.favoriteList = new ArrayList<>();
     }
+    public void setUsername(String username) {
+        this.username = username;
+        avatarProfile = VitalizeApplication.getAvatarImage(username);
+        profileImage = VitalizeApplication.getAvatarImage(username);
+    }
     void setId(String id) {
         this.id = id;
     }

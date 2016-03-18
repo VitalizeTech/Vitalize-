@@ -50,13 +50,11 @@ public class LoginActivity extends TouchActivity {
                         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFERENCES_FILE,
                                 Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPreferences.edit();
-                        String stubUsername = email.substring(0,email.indexOf("@"));
-                        firebaseHelper.storeUsername(authData.getUid(), stubUsername);
-                        editor.putString(USERNAME_KEY, stubUsername);
-                        editor.apply();
+                        firebaseHelper.retrieveUsername(authData.getUid(), editor);
+                        String username  = sharedPreferences.getString(LoginActivity.USERNAME_KEY, "");
                         VitalizeApplication.loggedInId = authData.getUid();
-                        VitalizeApplication.currentUser = new User(stubUsername, "", 0, VitalizeApplication.getAvatarImage(stubUsername),
-                                VitalizeApplication.getAvatarImage(stubUsername));
+                        VitalizeApplication.currentUser = new User(username, "", 0, VitalizeApplication.getAvatarImage(username),
+                                VitalizeApplication.getAvatarImage(username));
                         VitalizeApplication.currentUser.setId(authData.getUid());
                         Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
                         startActivity(intent);

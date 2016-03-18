@@ -75,7 +75,7 @@ public class ScrimArea {
 
     public boolean containsMember(String id) {
         for(User s: users) {
-            if(s.id != null && s.id.equals(id)) {
+            if(s != null && s.id != null && s.id.equals(id)) {
                 return true;
             }
         }

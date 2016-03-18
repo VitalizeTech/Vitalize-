@@ -1,6 +1,7 @@
 package com.chris.scrim;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
@@ -117,7 +118,7 @@ public class DBFireBaseHelper extends Observable {
 
                 dataSnapshot = dataSnapshot.child("username");
                 String username = "";
-                for(DataSnapshot child: dataSnapshot.getChildren()) {
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
                     username = child.getValue(String.class);
                 }
                 // Temporary data while we fill the rest of user data out in firebase
@@ -139,12 +140,32 @@ public class DBFireBaseHelper extends Observable {
         eventRef.push().setValue(eventRef.getAuth().getUid());
     }
 
-    public void storeUsername(String userId, String username) {
-        Firebase usernameRef = firebaseRef.child("Users").child(userId).child("username");
+    public void storeUsername(String userId,final  String username) {
+        final Firebase usernameRef = firebaseRef.child("Users").child(userId).child("username");
         usernameRef.push().setValue(username);
-
     }
 
+    public void retrieveUsername(String userId, final SharedPreferences.Editor storeUsernameLocally) {
+        final Firebase usernameRef = firebaseRef.child("Users").child(userId).child("username");
+        usernameRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String username = "";
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
+                    username = child.getValue(String.class);
+                }
+                VitalizeApplication.currentUser.setUsername(username);
+                storeUsernameLocally.putString(LoginActivity.USERNAME_KEY, username);
+                storeUsernameLocally.apply();
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+
+    }
     public void approveRequestToJoinEvent(String eventId, String userId) {
         Firebase eventRef = firebaseRef.child("VitalizeAreas").child(eventId);
         // Decline just deletes the request from the pending members list.
@@ -176,7 +197,7 @@ public class DBFireBaseHelper extends Observable {
     }
 
     public String getUserId() {
-        return firebaseRef.getAuth().getUid();
+        return firebaseRef.getAuth().getToken();
     }
 
     private class OnCompleteListener implements Firebase.CompletionListener {

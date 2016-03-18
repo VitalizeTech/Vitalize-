@@ -94,8 +94,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         SharedPreferences sharedPreferences = getSharedPreferences(LoginActivity.SHARED_PREFERENCES_FILE,
                 Context.MODE_PRIVATE);
         String username = sharedPreferences.getString(LoginActivity.USERNAME_KEY, "");
-        final User stub =  new User("jjones:|", username, 128, R.drawable.krysten, R.drawable.moonlightbae);
-        stub.setId(firebaseDBHelper.getUserId());
+
         // Get all areas and put it on the map when it is done loading.
         firebaseDBHelper.getAllScrimAreasFromFirebase();
 
@@ -157,7 +156,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         requestButton.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                markerScrim.getPendingUsers().add(stub);
+                                markerScrim.getPendingUsers().add(VitalizeApplication.currentUser);
                                 firebaseDBHelper.requestToJoinEvent(markerScrim.getId());
                                 markerInfoDialog.dismiss();
                             }
