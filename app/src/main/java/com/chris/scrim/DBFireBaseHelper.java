@@ -19,7 +19,7 @@ import java.util.Observable;
  * Created by chris on 2/22/2016.
  */
 public class DBFireBaseHelper extends Observable {
-    public static final String FIREBASE_LINK = "https://scrim.firebaseio.com/";
+    public static final String FIREBASE_LINK = "https://vitalize.firebaseio.com/";
     private static final String TAG = DBFireBaseHelper.class.getName();
     private final Firebase firebaseRef;
 
@@ -31,7 +31,7 @@ public class DBFireBaseHelper extends Observable {
         }
     }
 
-    public void insertScrimAreaInFirebase(ScrimArea newArea) {
+    public void insertScrimAreaInFirebase(ScrimArea newArea, String idOfCreator) {
         // Add to firebase
         // Push the new scrim area up to Firebase
         final Firebase vAreaRef = firebaseRef.child("VitalizeAreas").push();
@@ -39,7 +39,14 @@ public class DBFireBaseHelper extends Observable {
         vAreaRef.setValue(newArea, new OnCompleteListener());
         // Add the eventId to the user
         final Firebase userAreaRef = firebaseRef.child("Users").child(firebaseRef.getAuth().getUid()).child("MyAreas");
+
+        addCreatorToGroup(idOfCreator, newArea.getId());
         userAreaRef.push().setValue(vAreaRef.getKey(), new OnCompleteListener());
+    }
+
+    private void addCreatorToGroup(String idOfCreator, String idOfEvent ) {
+        Firebase eventRef = firebaseRef.child("VitalizeAreas").child(idOfEvent);
+        eventRef.child("members").push().setValue(idOfCreator);
     }
 
     public void updateScrimAreaInFireBase(final ScrimArea area) {
@@ -197,7 +204,7 @@ public class DBFireBaseHelper extends Observable {
     }
 
     public String getUserId() {
-        return firebaseRef.getAuth().getToken();
+        return firebaseRef.getAuth().getUid();
     }
 
     private class OnCompleteListener implements Firebase.CompletionListener {

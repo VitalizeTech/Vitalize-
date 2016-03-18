@@ -147,10 +147,9 @@ public class VitalizeAreaEditDialogManager {
                             ScrimArea newArea = new ScrimArea(mMap, latLng, title, description,
                                     VitalizeApplication.getMarkerImage(type), VitalizeApplication.getTypeImage(type), numSpot, type,
                                     ScrimArea.parseDateOut(date));
-                            newArea.getUsers().add(VitalizeApplication.currentUser);
                             VitalizeApplication.getAllAreas().add(newArea);
                             // Add to firebase
-                               firebaseDBHelper.insertScrimAreaInFirebase(newArea);
+                               firebaseDBHelper.insertScrimAreaInFirebase(newArea, VitalizeApplication.loggedInId);
                             // end firebase
                         } else {
                             theAre.update(title, description, VitalizeApplication.getTypeImage(type),

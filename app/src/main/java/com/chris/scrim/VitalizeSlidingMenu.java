@@ -59,7 +59,7 @@ public class VitalizeSlidingMenu {
                         break;
                     case R.id.logout:
                         Log.d(TAG, "Log Out");
-                        Firebase ref = new Firebase("https://scrim.firebaseio.com/");
+                        Firebase ref = new Firebase("https://vitalize.firebaseio.com/");
                         ref.unauth();
                         Toast.makeText(theActivity, "Logged Out", Toast.LENGTH_SHORT).show();
                         Intent logoutIntent = new Intent(theActivity, LoginActivity.class);

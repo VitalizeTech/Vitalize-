@@ -17,7 +17,7 @@ public class SplashAuthCheck extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Firebase.setAndroidContext(this);
-        ref = new Firebase("https://scrim.firebaseio.com/");
+        ref = new Firebase("https://vitalize.firebaseio.com/");
         Intent nextIntent;
         if (ref.getAuth() == null) {
             nextIntent = new Intent(this, LoginActivity.class);

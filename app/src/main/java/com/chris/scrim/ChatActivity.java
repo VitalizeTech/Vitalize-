@@ -16,7 +16,7 @@ import java.util.List;
 
 public class ChatActivity extends TouchActivity {
 
-    private static final String FIREBASE_URL = "https://scrim.firebaseio.com/";
+    private static final String FIREBASE_URL = "https://vitalize.firebaseio.com/";
 
     private Firebase mFireBase;
     private EditText messageToSend;

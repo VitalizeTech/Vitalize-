@@ -33,7 +33,7 @@ public class LoginActivity extends TouchActivity {
     @Override
     public void onStart() {
         super.onStart();
-        ref = new Firebase("https://scrim.firebaseio.com/");
+        ref = new Firebase("https://vitalize.firebaseio.com/");
 
         final EditText username = (EditText) findViewById(R.id.username);
         final EditText password = (EditText) findViewById(R.id.password);

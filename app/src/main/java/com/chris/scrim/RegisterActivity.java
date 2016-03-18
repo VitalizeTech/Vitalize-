@@ -22,7 +22,7 @@ public class RegisterActivity extends TouchActivity {
         setContentView(R.layout.activity_register);
         Firebase.setAndroidContext(this);
         dbHelperRef = new DBFireBaseHelper(this);
-        ref = new Firebase("https://scrim.firebaseio.com/");
+        ref = new Firebase(DBFireBaseHelper.FIREBASE_LINK);
         myEmail = (EditText) findViewById(R.id.email);
         myPassword = (EditText) findViewById(R.id.pwd);
         myPassConfirmation = (EditText) findViewById(R.id.confirmPwd);
@@ -54,6 +54,9 @@ public class RegisterActivity extends TouchActivity {
                     String username = ((EditText)findViewById(R.id.username)).getText().toString();
                     dbHelperRef.storeUsername(authData.getUid(), username);
                     Toast.makeText(RegisterActivity.this, "Logged in!", Toast.LENGTH_SHORT).show();
+                    VitalizeApplication.loggedInId = authData.getUid();
+                    VitalizeApplication.currentUser = new User(username, "", 0, VitalizeApplication.getAvatarImage(username),
+                            VitalizeApplication.getAvatarImage(username));
                     Intent intent = new Intent(RegisterActivity.this, MapsActivity.class);
                     startActivity(intent);
                 }
