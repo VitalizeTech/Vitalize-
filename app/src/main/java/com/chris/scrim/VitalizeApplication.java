@@ -6,6 +6,8 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
@@ -21,6 +23,8 @@ public class VitalizeApplication extends Application {
 
     public static User currentUser;
 
+    //hard coded water fountains
+    public static List<LatLng> waterFountatins;
 
     //events should be removed 1 hour after start time
     private static final int HOUR_LIMIT = 60;
@@ -102,6 +106,19 @@ public class VitalizeApplication extends Application {
 
             }
         });
+    }
+
+    public static void initWater(){
+        //hard coded water fountains
+        waterFountatins = new ArrayList<>();
+        waterFountatins.add(new LatLng(47.56154477173652,-122.2534108739664));
+        waterFountatins.add(new LatLng( 47.59226551243146,-122.31754232317921));
+        waterFountatins.add(new LatLng(47.63618897771265,-122.35381774181492));
+        waterFountatins.add(new LatLng(47.67072338567659, -122.3464678595544));
+        waterFountatins.add(new LatLng(47.52370976871783, -122.27356240587228));
+        waterFountatins.add(new LatLng(47.680045221853256,-122.32910413888548));
+        waterFountatins.add(new LatLng(47.63044530129085,-122.34796529965905));
+        waterFountatins.add(new LatLng(47.67772125511591,-122.39759954172814));
     }
 
     public static int getMarkerImage(String type) {
