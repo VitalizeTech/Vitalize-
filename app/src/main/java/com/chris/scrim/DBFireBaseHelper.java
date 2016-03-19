@@ -83,6 +83,7 @@ public class DBFireBaseHelper extends Observable {
         vAreaRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                List<ScrimArea> updatedVitalizeAreaList = new ArrayList<>();
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                     Log.d(TAG, "Child: " + child.toString());
                     final ScrimArea area = child.getValue(ScrimArea.class);
@@ -96,8 +97,9 @@ public class DBFireBaseHelper extends Observable {
                         getUserAndAddToList(memId, area.getUsers());
                     }
                     area.setType(area.getType());
-                    VitalizeApplication.getAllAreas().add(area);
+                    updatedVitalizeAreaList.add(area);
                 }
+                VitalizeApplication.setAllAreas(updatedVitalizeAreaList);
                 setChanged();
                 notifyObservers();
             }

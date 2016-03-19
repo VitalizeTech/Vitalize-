@@ -38,7 +38,6 @@ public class ScrimArea {
     private double longitude;
     private String id;
     private long date;
-
     public ScrimArea(GoogleMap mMap, LatLng  center, String theName, String theAdditionalInfo,
                      int markerImage, int typeImage, int numSpots, String type, Calendar date){
         scrimMarker = mMap.addMarker(new MarkerOptions().position(center).title(getTitle()).
@@ -50,6 +49,7 @@ public class ScrimArea {
         pendingUsers = new ArrayList<>();
         update(theName, theAdditionalInfo, typeImage, markerImage, numSpots, type, date.getTimeInMillis());
     }
+
     public void setType(String type){
         this.type = type;
         markerImage = VitalizeApplication.getMarkerImage(type);
@@ -59,7 +59,6 @@ public class ScrimArea {
         users = new ArrayList<>();
     }
 
-
     public void populateDateText(TextView textView) {
         Calendar date = Calendar.getInstance();
         date.setTimeInMillis(getDate());
@@ -68,12 +67,15 @@ public class ScrimArea {
     }
 
     public static void loadAllAreasOntoMap(GoogleMap map) {
+        map.clear();
         // VitalizeApplication.removeAreaPassTimeLimit();
         for(ScrimArea area: VitalizeApplication.getAllAreas()) {
-            area.scrimMarker = map.addMarker(new MarkerOptions().position(area.getCenter()).title(area.getTitle()).draggable(true).snippet(area.getAdditionalInfo())
-                .icon(BitmapDescriptorFactory.fromResource(area.getMarkerImage())));
+                area.scrimMarker = map.addMarker(new MarkerOptions().position(area.getCenter()).title(area.getTitle()).draggable(true).snippet(area.getAdditionalInfo())
+                        .icon(BitmapDescriptorFactory.fromResource(area.getMarkerImage())));
+
+            }
         }
-    }
+
     public boolean containsMember(String id) {
         return containsId(id, users);
     }
@@ -191,15 +193,12 @@ public class ScrimArea {
         }
         return center;
     }
-
     public double getLatitude() {
         return latitude;
     }
-
     public double getLongitude() {
         return longitude;
     }
-
     @Override
     public String toString() {
         return "Area{" +

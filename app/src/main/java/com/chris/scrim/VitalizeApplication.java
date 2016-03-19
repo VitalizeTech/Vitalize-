@@ -36,6 +36,9 @@ public class VitalizeApplication extends Application {
     public static List<ScrimArea> getAllAreas() {
         return allAreas;
     }
+    public static void setAllAreas(List<ScrimArea> allScrimAreas) {
+        allAreas = allScrimAreas;
+    }
     public static String[] getTypes() {
         return types;
     }
