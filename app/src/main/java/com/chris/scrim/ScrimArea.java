@@ -46,7 +46,8 @@ public class ScrimArea {
         this.center  = center;
         this.latitude = center.latitude;
         this.longitude = center.longitude;
-        users = new ArrayList<User>();
+        users = new ArrayList<>();
+        pendingUsers = new ArrayList<>();
         update(theName, theAdditionalInfo, typeImage, markerImage, numSpots, type, date.getTimeInMillis());
     }
     public void setType(String type){
@@ -73,8 +74,14 @@ public class ScrimArea {
                 .icon(BitmapDescriptorFactory.fromResource(area.getMarkerImage())));
         }
     }
-
     public boolean containsMember(String id) {
+        return containsId(id, users);
+    }
+
+    public boolean containsPendingMember(String id) {
+        return containsId(id, pendingUsers);
+    }
+    private boolean containsId(String id, List<User> users) {
         for(User s: users) {
             if(s != null && s.id != null && s.id.equals(id)) {
                 return true;
@@ -116,10 +123,6 @@ public class ScrimArea {
             parsedCalendarOut.set(Calendar.AM_PM, Calendar.PM);
         }
         return parsedCalendarOut;
-    }
-
-    public void setScrimMarker(Marker scrimMarker) {
-        this.scrimMarker = scrimMarker;
     }
 
     public static ScrimArea getScrimAreaOfMarker(Marker toSearchFor, List<ScrimArea> scrimAreaList) {
@@ -169,23 +172,17 @@ public class ScrimArea {
     }
 
     public List<User> getUsers() {
-        if (users == null) users = new ArrayList<>();
+        if (users == null) {
+            users = new ArrayList<>();
+        }
         return users;
     }
 
-    public void setUsers(List<User> users) {
-        if (users == null) users = new ArrayList<>();
-        this.users = users;
-    }
-
     public List<User> getPendingUsers() {
-        if (pendingUsers == null) pendingUsers = new ArrayList<>();
+        if (pendingUsers == null) {
+            pendingUsers = new ArrayList<>();
+        }
         return pendingUsers;
-    }
-
-    public void setPendingUsers(List<User> pendingUsers) {
-        if (pendingUsers == null) pendingUsers = new ArrayList<>();
-        this.pendingUsers = pendingUsers;
     }
 
     public LatLng getCenter() {

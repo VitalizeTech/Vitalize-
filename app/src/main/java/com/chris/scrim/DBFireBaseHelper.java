@@ -93,6 +93,7 @@ public class DBFireBaseHelper extends Observable {
                         final String memId = (String) mems.getValue();
                         getUserAndAddToList(memId, area.getPendingUsers());
                     }
+                    area.getPendingUsers();
                     for (DataSnapshot mems : child.child("members").getChildren()) {
                         String memId = (String) mems.getValue();
                         getUserAndAddToList(memId, area.getUsers());
