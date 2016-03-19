@@ -127,6 +127,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     Button requestButton = (Button) markerInfoView.findViewById(R.id.requestJoin);
                     View inGroupOptions = (View)markerInfoView.findViewById(R.id.inGroupOptions);
                     CheckBox favorite = (CheckBox)markerInfoView.findViewById(R.id.Favorite);
+                    Button leaveButton = (Button)markerInfoView.findViewById(R.id.leaveButton);
                     if(localUser.getFavoriteList().contains(markerScrim.getId())) {
                         favorite.setChecked(true);
                     }
@@ -140,7 +141,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             }
                         }
                     });
-                    if(markerScrim.containsMember(firebaseDBHelper.getUserId())) {
+                     if(markerScrim.getCreator().equals(VitalizeApplication.currentUser.username)) {
+                        //hide request
+                        requestButton.setVisibility(View.INVISIBLE);
+                        //hide leave
+                        leaveButton.setVisibility(View.GONE);
+
+                    }
+                    else if(markerScrim.containsMember(firebaseDBHelper.getUserId())) {
                         requestButton.setVisibility(View.INVISIBLE);
                         markerInfoView.findViewById(R.id.leaveButton).setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -151,7 +159,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 markerInfoDialog.dismiss();
                             }
                         });
-                    } else {
+                    } 
+                    else {
                         //firebase join
                         inGroupOptions.setVisibility(View.INVISIBLE);
                         requestButton.setOnClickListener(new View.OnClickListener() {
