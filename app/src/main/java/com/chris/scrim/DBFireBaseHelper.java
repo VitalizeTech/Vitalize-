@@ -83,7 +83,7 @@ public class DBFireBaseHelper extends Observable {
         final List<ScrimArea> allAreas = new ArrayList<>();
 
         final Firebase vAreaRef = firebaseRef.child("VitalizeAreas");
-        vAreaRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        vAreaRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
@@ -178,7 +178,7 @@ public class DBFireBaseHelper extends Observable {
         // Decline just deletes the request from the pending members list.
         declineRequestToJoinEvent(eventId, userId);
         // Then we add the user to the members list
-        eventRef.child("members").push().setValue(eventRef.getAuth().getUid());
+        eventRef.child("members").push().setValue(userId);
     }
 
     public void declineRequestToJoinEvent(String eventId, final String userId) {
