@@ -8,7 +8,6 @@ import android.util.Log;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -19,16 +18,18 @@ import java.util.Map;
  * Created by chris on 2/21/2016.
  */
 public class VitalizeApplication extends Application {
+
     public static User currentUser;
+
+
     //events should be removed 1 hour after start time
     private static final int HOUR_LIMIT = 60;
-    static String loggedInId;
+
     private static DBFireBaseHelper dbHelper;
     private static Map<String, Integer> typeToMarkerImage;
     private static Map<String, Integer> typeToTypeImage;
     private static  final String[] types = {"Basketball", "Football", "Frisbee", "Soccer", "Tennis", "Volleyball"};
     private static List<ScrimArea> allAreas;
-    private static List<User> testUsers;
     //locally
 
 
@@ -38,25 +39,29 @@ public class VitalizeApplication extends Application {
     public static String[] getTypes() {
         return types;
     }
+    //Thomas logs out
+    //Jim logs in
 
-    public static List<User> getTestUsers() {
-        User ariana = new User("moonlightbae", "Ariana", 177, R.drawable.ariana, R.drawable.moonlightbae);
-        User kristin = new User("jjones:|", "Krysten", 128, R.drawable.krysten, R.drawable.moonlightbae);
-        User saul = new User("bCallMe", "Jimmy", 102, R.drawable.saul, R.drawable.moonlightbae);
-        User donald = new User("dTrump16", "Donald", 190, R.drawable.thedonald, R.drawable.moonlightbae);
-        User[] pendingUsers = {ariana, kristin, saul};
-        List<User> users = Arrays.asList(pendingUsers);
-        List<User> toReturn = new ArrayList<>();
-        toReturn.addAll(users);
-        return toReturn;
+    //Thomas logs in
+    //Thoas shuts device off for an hour
+    //Thomas turns on app, starts using it again
+    public static void intializeLocalUser(String id, String registerUsername) {
+        if(registerUsername.equals("")) {
+           dbHelper.retrieveUsernameAndInitialieLocalUser(id);
+        } else {
+            currentUser = new User(registerUsername, "", 0, VitalizeApplication.getAvatarImage(registerUsername),
+                    VitalizeApplication.getAvatarImage(registerUsername));
+            currentUser.setId(id);
+        }
     }
+
     @Override
     public void onCreate() {
         initializeMaps();
         super.onCreate();
         allAreas = new ArrayList<>();
         dbHelper = new DBFireBaseHelper(this);
-        allAreas = new ArrayList<ScrimArea>();
+        allAreas = new ArrayList<>();
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
             @Override
             public void onActivityCreated(Activity activity,

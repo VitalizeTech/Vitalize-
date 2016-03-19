@@ -74,9 +74,7 @@ public class MessageListAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater mLayoutInflater = myActivity.getLayoutInflater();
         Chat showMessage = messageList.get(position);
-        SharedPreferences sharedPreferences = myActivity.getSharedPreferences(LoginActivity.SHARED_PREFERENCES_FILE,
-                Context.MODE_PRIVATE);
-        if(showMessage.getAuthor().equals(sharedPreferences.getString(LoginActivity.USERNAME_KEY, ""))) {
+        if(showMessage.getAuthor().equals(VitalizeApplication.currentUser.username)) {
             //hasnt been made or is wrong type(Sent vs Receive)
             if(convertView == null || convertView.getTag().equals(MESSAGE_RECEIVED)) {
                 convertView = mLayoutInflater.inflate(R.layout.chat_item_sent, parent, false);
@@ -88,9 +86,7 @@ public class MessageListAdapter extends BaseAdapter {
                 convertView.setTag(MESSAGE_RECEIVED);
             }
         }
-        List<User> users = VitalizeApplication.getTestUsers();
-        User randomUser = users.get(new Random().nextInt(users.size()));
-        populateWithMessage(showMessage, convertView, randomUser);
+        populateWithMessage(showMessage, convertView, VitalizeApplication.currentUser);
         return convertView;
     }
 

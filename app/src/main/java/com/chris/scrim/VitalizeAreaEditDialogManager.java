@@ -150,7 +150,7 @@ public class VitalizeAreaEditDialogManager {
                             newArea.setCreator(VitalizeApplication.currentUser.username);
                             VitalizeApplication.getAllAreas().add(newArea);
                             // Add to firebase
-                               firebaseDBHelper.insertScrimAreaInFirebase(newArea, VitalizeApplication.loggedInId);
+                               firebaseDBHelper.insertScrimAreaInFirebase(newArea, VitalizeApplication.currentUser.id);
                             // end firebase
                         } else {
                             theAre.update(title, description, VitalizeApplication.getTypeImage(type),

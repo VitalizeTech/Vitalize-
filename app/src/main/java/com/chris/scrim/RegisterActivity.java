@@ -54,9 +54,7 @@ public class RegisterActivity extends TouchActivity {
                     String username = ((EditText)findViewById(R.id.username)).getText().toString();
                     dbHelperRef.storeUsername(authData.getUid(), username);
                     Toast.makeText(RegisterActivity.this, "Logged in!", Toast.LENGTH_SHORT).show();
-                    VitalizeApplication.loggedInId = authData.getUid();
-                    VitalizeApplication.currentUser = new User(username, "", 0, VitalizeApplication.getAvatarImage(username),
-                            VitalizeApplication.getAvatarImage(username));
+                    VitalizeApplication.intializeLocalUser(authData.getUid(), username);
                     Intent intent = new Intent(RegisterActivity.this, MapsActivity.class);
                     startActivity(intent);
                 }

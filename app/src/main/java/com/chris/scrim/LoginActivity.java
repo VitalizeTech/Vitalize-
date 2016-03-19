@@ -15,8 +15,7 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 
 public class LoginActivity extends TouchActivity {
-    public static String SHARED_PREFERENCES_FILE = "com.vitalize.PREFERENCE_FILE_KEY";
-    public static String USERNAME_KEY = "username";
+
     private DBFireBaseHelper firebaseHelper;
     private Firebase ref;
 
@@ -47,15 +46,7 @@ public class LoginActivity extends TouchActivity {
                     @Override
                     public void onAuthenticated(AuthData authData) {
                         Toast.makeText(LoginActivity.this, "Logged in!", Toast.LENGTH_SHORT).show();
-                        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFERENCES_FILE,
-                                Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        firebaseHelper.retrieveUsername(authData.getUid(), editor);
-                        String username  = sharedPreferences.getString(LoginActivity.USERNAME_KEY, "");
-                        VitalizeApplication.loggedInId = authData.getUid();
-                        VitalizeApplication.currentUser = new User(username, "", 0, VitalizeApplication.getAvatarImage(username),
-                                VitalizeApplication.getAvatarImage(username));
-                        VitalizeApplication.currentUser.setId(authData.getUid());
+                        VitalizeApplication.intializeLocalUser(authData.getUid(), "");
                         Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
                         startActivity(intent);
                         finish();

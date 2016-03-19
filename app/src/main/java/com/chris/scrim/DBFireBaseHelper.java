@@ -1,9 +1,6 @@
 package com.chris.scrim;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.firebase.client.DataSnapshot;
@@ -153,7 +150,7 @@ public class DBFireBaseHelper extends Observable {
         usernameRef.push().setValue(username);
     }
 
-    public void retrieveUsername(String userId, final SharedPreferences.Editor storeUsernameLocally) {
+    public void retrieveUsernameAndInitialieLocalUser(final String userId) {
         final Firebase usernameRef = firebaseRef.child("Users").child(userId).child("username");
         usernameRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -162,10 +159,9 @@ public class DBFireBaseHelper extends Observable {
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                     username = child.getValue(String.class);
                 }
-                VitalizeApplication.currentUser.setUsername(username);
-                storeUsernameLocally.putString(LoginActivity.USERNAME_KEY, username);
-                storeUsernameLocally.apply();
-            }
+                VitalizeApplication.currentUser = new User(username, "", 0, VitalizeApplication.getAvatarImage(username),
+                        VitalizeApplication.getAvatarImage(username));
+                VitalizeApplication.currentUser.setId(userId);            }
 
             @Override
             public void onCancelled(FirebaseError firebaseError) {

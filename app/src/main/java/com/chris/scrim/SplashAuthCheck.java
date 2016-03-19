@@ -22,6 +22,7 @@ public class SplashAuthCheck extends AppCompatActivity {
         if (ref.getAuth() == null) {
             nextIntent = new Intent(this, LoginActivity.class);
         } else {
+            VitalizeApplication.intializeLocalUser(ref.getAuth().getUid(), "");
             nextIntent = new Intent(this, MapsActivity.class);
         }
         nextIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

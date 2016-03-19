@@ -55,8 +55,7 @@ public class ChatActivity extends TouchActivity {
     private void sendMessage() {
         String textToSend = messageToSend.getText().toString();
         if (!textToSend.equals("")) {
-            SharedPreferences sharedPreferences = getSharedPreferences(LoginActivity.SHARED_PREFERENCES_FILE, MODE_PRIVATE);
-            String userName = sharedPreferences.getString(LoginActivity.USERNAME_KEY, "");
+            String userName = VitalizeApplication.currentUser.username;
            //  Create our 'model', a Chat object
             Chat message = new Chat(textToSend, userName);
            //  Create a new, auto-generated child of that chat location, and save our chat data there

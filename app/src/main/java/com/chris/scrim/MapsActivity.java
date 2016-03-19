@@ -43,9 +43,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final int PLACE_PICKER_REQUEST = 1;
     private GoogleMap mMap;
     private VitalizeAreaEditDialogManager vitalizeAreaEditDialogManager;
-    //for testing the user favorite
-    private User localUser;
-    //temp filter -- because you don't need to remember your filter choice in firebase
+     //temp filter -- because you don't need to remember your filter choice in firebase
     private List<Integer> filterChoice;
 
     @Override
@@ -57,10 +55,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        SharedPreferences sharedPreferences = getSharedPreferences(LoginActivity.SHARED_PREFERENCES_FILE,
-                Context.MODE_PRIVATE);
-        String username = sharedPreferences.getString(LoginActivity.USERNAME_KEY, "");
-        localUser = new User("jjones:|", username, 128, R.drawable.krysten, R.drawable.moonlightbae);
         filterChoice = new ArrayList<>();
         VitalizeSlidingMenu.initializeSlidingMenu(this);
     }
@@ -92,9 +86,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         vitalizeAreaEditDialogManager =  new VitalizeAreaEditDialogManager(this, googleMap);
         mMap = googleMap;
         final DBFireBaseHelper firebaseDBHelper = new DBFireBaseHelper(this);
-        SharedPreferences sharedPreferences = getSharedPreferences(LoginActivity.SHARED_PREFERENCES_FILE,
-                Context.MODE_PRIVATE);
-        String username = sharedPreferences.getString(LoginActivity.USERNAME_KEY, "");
 
         // Get all areas and put it on the map when it is done loading.
         firebaseDBHelper.getAllScrimAreasFromFirebase();
@@ -130,16 +121,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     CheckBox favorite = (CheckBox)markerInfoView.findViewById(R.id.Favorite);
                     Button leaveButton = (Button)markerInfoView.findViewById(R.id.leaveButton);
                     Button messageButton = (Button)markerInfoView.findViewById(R.id.messageButton);
-                    if(localUser.getFavoriteList().contains(markerScrim.getId())) {
+                    if(VitalizeApplication.currentUser.getFavoriteList().contains(markerScrim.getId())) {
                         favorite.setChecked(true);
                     }
                     favorite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                         @Override
                         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                             if (isChecked) {
-                                localUser.addFavorite(markerScrim);
+                                VitalizeApplication.currentUser.addFavorite(markerScrim);
                             } else {
-                                localUser.deleteFavorite(markerScrim);
+                                VitalizeApplication.currentUser.deleteFavorite(markerScrim);
                             }
                         }
                     });
@@ -312,12 +303,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 }
                                 if (selectedTypes.isEmpty()) {
                                     for (ScrimArea a : VitalizeApplication.getAllAreas()) {
-                                        a.getScrimMarker().setVisible(localUser.getFavoriteList().contains(a.getId()));
+                                        a.getScrimMarker().setVisible(VitalizeApplication.currentUser.getFavoriteList().contains(a.getId()));
                                     }
                                 } else {
                                     for (ScrimArea a : VitalizeApplication.getAllAreas()) {
                                         a.getScrimMarker().setVisible(selectedTypes.contains(a.getType()) &&
-                                                localUser.getFavoriteList().contains(a.getId()));
+                                                VitalizeApplication.currentUser.getFavoriteList().contains(a.getId()));
                                     }
                                 }
                             } else {
