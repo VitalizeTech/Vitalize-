@@ -35,24 +35,12 @@
 
         <TextView
             android:layout_width="250dp"
-            android:layout_height="wrap_content"
+            android:layout_height="272dp"
             android:inputType="textMultiLine"
             android:ems="10"
             android:layout_gravity="center_horizontal"
             android:id="@+id/aboutUsDescriptionTextView"
-            android:text="Vitalize is a community based, social phone app that utilizes Google Map API to notify users of nearby events such as job promotions, shop promotions, sports activities, or any other social gathering the users may specify. Whether a user feels spontaneous or in need of a particular service, Vitalize is useful for anyone who has registered, anywhere, to efficiently pinpoint local areas of interest and it allows for quick communication through chat once people join a common event. It is similar to Craigslist but more visually appealing with flags on the map of wherever the event is happening.
-\n\n
-Staff:\n\n
-CEO, Product owner, Developer\n
-    Chris Sun\n\n
-CTO, Developer\n
-    Can Huynh\n\n
-Developer:\n
-    Aaron Chau\n\n
-Developer\n
-    Richard Yang\n\n
-Scrum Master, UI design:\n
-    Jana Tran" />
+            android:text="Vitalize is a community based, social phone app that utilizes Google Map API to notify users of nearby events such as job promotions, shop promotions, sports activities, or any other social gathering the users may specify. Whether a user feels spontaneous or in need of a particular service, Vitalize is useful for anyone who has registered, anywhere, to efficiently pinpoint local areas of interest and it allows for quick communication through chat once people join a common event. It is similar to Craigslist but more visually appealing with flags on the map of wherever the event is happening. \n\n Staff:\n\n CEO, Product owner, Developer\n     Chris Sun\n\n CTO, Developer\n     Can Huynh\n\n Developer:\n     Aaron Chau\n\n Developer\n     Richard Yang\n\n Scrum Master, UI design:\n     Jana Tran" />
 
         <Space
             android:layout_width="match_parent"
