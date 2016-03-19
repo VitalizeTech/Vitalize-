@@ -57,8 +57,8 @@
             style="@style/editext_graybg"
             android:layout_width="wrap_content"
             android:layout_height="66dp"
-            android:layout_marginBottom="20dp"
             android:layout_marginTop="5dp"
+            android:layout_marginBottom="20dp"
             android:drawableLeft="@drawable/pwd_left_icon"
             android:hint="@string/confirm_password"
             android:inputType="textPassword" >

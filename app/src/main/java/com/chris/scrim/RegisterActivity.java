@@ -16,6 +16,7 @@ public class RegisterActivity extends TouchActivity {
     private Button myRegButton;
     private Firebase ref;
     private DBFireBaseHelper dbHelperRef;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,6 +28,7 @@ public class RegisterActivity extends TouchActivity {
         myPassword = (EditText) findViewById(R.id.pwd);
         myPassConfirmation = (EditText) findViewById(R.id.confirmPwd);
         myRegButton = (Button) findViewById(R.id.btnReg);
+
         setTouchNClick(myRegButton);
         myRegButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -36,6 +38,7 @@ public class RegisterActivity extends TouchActivity {
                         && !myEmail.getText().toString().equals("") // Email not blank
                         && */myPassword.getText().toString().equals(myPassConfirmation.getText().toString())) { // Pass is the same
                     ref.createUser(myEmail.getText().toString(), myPassword.getText().toString(), new RegResultHandler());
+
                 } else {
                     Toast.makeText(RegisterActivity.this, "Passwords do not match!", Toast.LENGTH_SHORT).show();
                 }
@@ -55,6 +58,7 @@ public class RegisterActivity extends TouchActivity {
                     dbHelperRef.storeUsername(authData.getUid(), username);
                     Toast.makeText(RegisterActivity.this, "Logged in!", Toast.LENGTH_SHORT).show();
                     VitalizeApplication.intializeLocalUser(authData.getUid(), username);
+
                     Intent intent = new Intent(RegisterActivity.this, MapsActivity.class);
                     startActivity(intent);
                 }

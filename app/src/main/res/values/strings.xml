@@ -27,5 +27,6 @@
     <string name="type_msg">Type message</string>
     <string name="username">Username</string>
     <string name="firebase_ref">https://vitalize.firebaseio.com/</string>
+    <string name="zip">Zip Code</string>
 
 </resources>

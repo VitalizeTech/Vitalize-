@@ -16,6 +16,7 @@ public class User {
     int profileImage;
     private List<String> favoriteList;
 
+
     public User(String username, String firstName, int vitalizeRep, int profileImage, int avatarProfile) {
         this.username = username;
         this.firstName = firstName;
