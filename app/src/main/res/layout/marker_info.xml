@@ -8,7 +8,8 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:id="@+id/messageButton"
-        android:layout_marginLeft="195dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="70dp"
         android:background="@drawable/messages_icon"
         />
     <RelativeLayout
@@ -16,8 +17,8 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/messageButton"
         android:background="@drawable/member_button_shape"
-        android:layout_marginLeft="10dp"
-        android:layout_toRightOf="@id/messageButton"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
         android:id="@+id/relativeLayout">
         <Button
             android:layout_width="40dp"

@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -128,6 +129,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     View inGroupOptions = (View)markerInfoView.findViewById(R.id.inGroupOptions);
                     CheckBox favorite = (CheckBox)markerInfoView.findViewById(R.id.Favorite);
                     Button leaveButton = (Button)markerInfoView.findViewById(R.id.leaveButton);
+                    Button membersButton = (Button)markerInfoView.findViewById(R.id.membersAndInvitesButton);
+                    Button messageButton = (Button)markerInfoView.findViewById(R.id.messageButton);
                     if(localUser.getFavoriteList().contains(markerScrim.getId())) {
                         favorite.setChecked(true);
                     }
@@ -141,6 +144,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             }
                         }
                     });
+                    //if current users is the creator of the even
                      if(markerScrim.getCreator().equals(VitalizeApplication.currentUser.username)) {
                         //hide request
                         requestButton.setVisibility(View.INVISIBLE);
@@ -148,22 +152,29 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         leaveButton.setVisibility(View.GONE);
 
                     }
+                    //
                     else if(markerScrim.containsMember(firebaseDBHelper.getUserId())) {
                         requestButton.setVisibility(View.INVISIBLE);
-                        markerInfoView.findViewById(R.id.leaveButton).setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                final User leavingUser =
+                                markerInfoView.findViewById(R.id.leaveButton).setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        final User leavingUser =
                                         markerScrim.getUsers().remove(markerScrim.getUsers().size()- 1);
                                 firebaseDBHelper.leaveEvent(markerScrim.getId(), leavingUser.id);
                                 markerInfoDialog.dismiss();
                             }
                         });
-                    } 
+
+                    }
                     else {
                         //firebase join
+                        markerInfoView.findViewById(R.id.relativeLayout).setVisibility(View.GONE);
+                        RelativeLayout.LayoutParams msgBtnParams = (RelativeLayout.LayoutParams)messageButton.getLayoutParams();
+                        msgBtnParams.setMargins(0,0,10,0);
+                        messageButton.setLayoutParams(msgBtnParams);
+
                         inGroupOptions.setVisibility(View.INVISIBLE);
-                        requestButton.setOnClickListener(new View.OnClickListener() {
+                         requestButton.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 markerScrim.getPendingUsers().add(VitalizeApplication.currentUser);
