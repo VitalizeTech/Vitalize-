@@ -84,9 +84,20 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Created By: kevin"
+        android:id="@+id/createdBy"
+        android:layout_marginTop="5dp"
+        android:layout_toLeftOf="@id/spotsText"
+        android:layout_below="@id/spotsText"
+        android:layout_alignLeft="@id/typeImage"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="@string/addit_info"
         android:id="@+id/additInfoTitle"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="25dp"
         android:layout_below="@id/spotsText"
         android:layout_alignLeft="@id/typeImage"
         />

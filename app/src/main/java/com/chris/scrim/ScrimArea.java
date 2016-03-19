@@ -29,6 +29,7 @@ public class ScrimArea {
     private String title;
     private String additionalInfo;
     private String type;
+    private String creator;
     private int numSpots;
     private int typeImage;
     private int markerImage;
@@ -222,4 +223,7 @@ public class ScrimArea {
         latitude = center.latitude;
     }
 
+    //TODO: error checking?
+    public String getCreator(){return creator;}
+    public void setCreator(String _c){this.creator = _c;}
 }
