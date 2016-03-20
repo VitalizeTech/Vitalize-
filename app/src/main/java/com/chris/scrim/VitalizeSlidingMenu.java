@@ -18,7 +18,9 @@ public class VitalizeSlidingMenu {
     public static final String TAG = "Vitalize";
     private static SlidingMenu vitalizeSlidingMenu;
     private static NavigationView.OnNavigationItemSelectedListener onNavigationItemSelectedListener;
-
+    public static void show() {
+        vitalizeSlidingMenu.showMenu();
+    }
     public static void initializeSlidingMenu(Activity theActivity) {
         initializeOnNavItemSelectedListener(theActivity);
         // configure the SlidingMenu

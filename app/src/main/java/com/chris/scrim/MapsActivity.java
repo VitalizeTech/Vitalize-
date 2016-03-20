@@ -1,23 +1,23 @@
 package com.chris.scrim;
 
 import android.Manifest;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.v7.app.ActionBar;
+import android.view.LayoutInflater;
+
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -39,8 +39,7 @@ import java.util.Observer;
 
 
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, Observer {
-    private static final String TAG = MapsActivity.class.getName();
+public class MapsActivity extends TouchActivity implements OnMapReadyCallback, Observer {
     private static final int PLACE_PICKER_REQUEST = 1;
     private GoogleMap mMap;
     private VitalizeAreaEditDialogManager vitalizeAreaEditDialogManager;
@@ -49,6 +48,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
@@ -57,6 +57,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         filterChoice = new ArrayList<>();
+        setUpActionBar();
+
         VitalizeSlidingMenu.initializeSlidingMenu(this);
     }
 
@@ -167,7 +169,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     } else if(markerScrim.containsPendingMember(firebaseDBHelper.getUserId())) {
                          requestButton.setText("Request Sent");
                          requestButton.setEnabled(false);
-                         markerInfoView.findViewById(R.id.relativeLayout).setVisibility(View.GONE);
+                         markerInfoView.findViewById(R.id.membersAndInvitesButton).setVisibility(View.GONE);
                          RelativeLayout.LayoutParams msgBtnParams = (RelativeLayout.LayoutParams)messageButton.getLayoutParams();
                          msgBtnParams.setMargins(0,0,10,0);
                          messageButton.setLayoutParams(msgBtnParams);
@@ -175,7 +177,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                      }
                     else {
                          //firebase join
-                        markerInfoView.findViewById(R.id.relativeLayout).setVisibility(View.GONE);
+                        markerInfoView.findViewById(R.id.membersAndInvitesButton).setVisibility(View.GONE);
                         RelativeLayout.LayoutParams msgBtnParams = (RelativeLayout.LayoutParams)messageButton.getLayoutParams();
                          msgBtnParams.setMargins(0,0,10,0);
                         messageButton.setLayoutParams(msgBtnParams);
@@ -233,40 +235,43 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
     }
+    public void setUpActionBar(){
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowHomeEnabled(false);
+        actionBar.setDisplayHomeAsUpEnabled(false);
+        actionBar.setDisplayShowCustomEnabled(true);
+        // actionBar.setIcon(R.drawable.ic_action_search);
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item){
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.find ) {
-            try {
-                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-                startActivityForResult(builder.build(this), PLACE_PICKER_REQUEST);
+        LayoutInflater inflator = (LayoutInflater) this
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View v = inflator.inflate(R.layout.custom_action_bar, null);
+        Button filterButton = (Button)v.findViewById(R.id.filterButton);
+        Button searchButton = (Button)v.findViewById(R.id.searchButton);
+        Button slidingMenuButton = (Button)v.findViewById(R.id.menuButton);
+        setTouchNClick(searchButton);
+        setTouchNClick(slidingMenuButton);
+        setTouchNClick(filterButton);
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+                    startActivityForResult(builder.build(MapsActivity.this), PLACE_PICKER_REQUEST);
+                } catch (GooglePlayServicesNotAvailableException e) {
+                } catch (GooglePlayServicesRepairableException e) {
+                }
             }
-            catch(GooglePlayServicesNotAvailableException e) {
-
+        });
+        slidingMenuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                VitalizeSlidingMenu.show();
             }
-            catch (GooglePlayServicesRepairableException e) {
-
-            }
-        }
-        if (id == R.id.filter) {
-            item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                @Override
-
-                public boolean onMenuItemClick(MenuItem item) {
-                    //inflate layout we wantz
-                    final View filterView = MapsActivity.this.getLayoutInflater().inflate(R.layout.filter, null);
-                    final Spinner filterSpinner = (Spinner) filterView.findViewById(R.id.filter_spinner);
+        });
+        filterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final View filterView = MapsActivity.this.getLayoutInflater().inflate(R.layout.filter, null);
                     final Button filterButton = (Button) filterView.findViewById(R.id.Filter_confirm);
                     Button cancelButton = (Button) filterView.findViewById(R.id.Filter_cancel);
                     final int [] CheckId = {R.id.bballCheckBox, R.id.fballCheckBox,
@@ -341,12 +346,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         }
                     });
                     alertDialog.show();
-                    return false;
                 }
-            });
-        }
-        return super.onOptionsItemSelected(item);
+        });
+        actionBar.setCustomView(v);
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

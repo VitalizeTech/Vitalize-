@@ -51,13 +51,13 @@
         android:layout_toRightOf="@id/typeSpinner" />
 
     <TextView
-        android:layout_width="75dp"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:text="@string/num_people"
         android:id="@+id/numPplTxt"
-        android:gravity="center"
+        android:layout_marginTop="10dp"
         android:layout_below="@id/typeSpinner"
-        android:layout_marginLeft="50dp"/>
+        android:layout_marginLeft="20dp"/>
 
     <EditText
         android:layout_width="75dp"
@@ -67,30 +67,28 @@
         android:id="@+id/editPpl"
         android:text="1"
         android:gravity="center"
-        android:layout_below="@id/numPplTxt"
-        android:layout_marginTop="10dp"
-        android:layout_alignLeft="@id/numPplTxt"
-        android:layout_alignStart="@id/numPplTxt" />
+        android:layout_below="@+id/typeSpinner"
+        android:layout_toRightOf="@+id/cancelBtn"
+        android:layout_toEndOf="@+id/cancelBtn" />
 
     <Button
-        android:layout_width="100dp"
+        android:layout_width="150dp"
         android:layout_height="50dp"
         android:text="@string/pick_start"
         android:id="@+id/pickStartTime"
-        android:textSize="10dp"
-        android:layout_marginLeft="50dp"
+        android:layout_marginLeft="20dp"
         android:layout_marginTop="20dp"
-        android:layout_toRightOf="@id/numPplTxt"
-        android:layout_below="@id/imageForType"
-         />
+        android:textSize="10dp"
+        android:layout_below="@id/numPplTxt" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/startDisplay"
         android:gravity="center"
-        android:layout_below="@id/pickStartTime"
-        android:layout_alignLeft="@id/pickStartTime"
+        android:layout_alignTop="@id/pickStartTime"
+        android:layout_marginTop="20dp"
+        android:layout_toRightOf="@id/pickStartTime"
         android:layout_marginLeft="10dp" />
 
     <TextView
@@ -98,18 +96,19 @@
         android:layout_height="wrap_content"
         android:text="@string/addit_info"
         android:id="@+id/additInfoView"
-        android:layout_marginTop="20dp"
-        android:layout_below="@id/editPpl"
-        android:layout_alignLeft="@id/typeTitle"
-        android:layout_alignStart="@id/typeTitle" />
+        android:layout_below="@id/pickStartTime"
+        android:layout_marginTop="10dp"
+        android:layout_centerVertical="true"
+        android:layout_alignLeft="@+id/editAdditInfo"
+        android:layout_alignStart="@+id/editAdditInfo" />
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/editAdditInfo"
         android:layout_below="@+id/additInfoView"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="40dp" />
+        android:layout_alignLeft="@+id/typeTitle"
+        android:layout_alignStart="@+id/typeTitle" />
 
     <Button
         android:layout_width="wrap_content"
@@ -117,8 +116,11 @@
         android:text="Cancel"
         android:id="@+id/cancelBtn"
         android:layout_alignLeft="@id/numPplTxt"
-        android:layout_marginLeft="60dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginLeft="80dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="15dp"
+        android:background="#c3c3c3"
+
         android:layout_below="@id/editAdditInfo"/>
 
     <Button
@@ -126,7 +128,10 @@
         android:layout_height="wrap_content"
         android:text="Create"
         android:id="@+id/createBtn"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="15dp"
+        android:background="#FFC128"
+        android:layout_marginLeft="10dp"
         android:layout_toRightOf="@id/cancelBtn"
         android:layout_below="@id/editAdditInfo"/>
 

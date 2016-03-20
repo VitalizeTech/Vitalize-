@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="40dp"
+    android:background="#FFC128">
+    <Button
+        android:id="@+id/menuButton"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/menu_bar_icon"
+        android:layout_marginLeft="10dp"
+     />
+    <TextView
+        android:id="@+id/appTitle"
+        android:layout_width="95dp"
+        android:layout_height="fill_parent"
+        android:text="Vitalize"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/menuButton"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/white"
+        android:textSize="25dp"
+        />
+
+    <Button
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:id="@+id/searchButton"
+        android:layout_marginTop="10dp"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/search_bar"
+        android:layout_marginRight="60dp"
+       />
+    <Button
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_marginTop="10dp"
+        android:id="@+id/filterButton"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/filter_icon"
+        android:layout_marginRight="6dp"
+        />
+
+</RelativeLayout>

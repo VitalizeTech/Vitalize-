@@ -2,7 +2,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.ryde.chris.scrim.MainActivity">
-
+    <item
+        android:id="@+id/find2"
+        android:orderInCategory="101"
+        android:title="Find"
+        android:icon="@drawable/find"
+        app:showAsAction="always" />
     <item
         android:id="@+id/find"
         android:orderInCategory="101"

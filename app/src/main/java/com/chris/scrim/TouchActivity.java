@@ -1,6 +1,8 @@
 package com.chris.scrim;
 
+import android.app.Application;
 import android.graphics.drawable.Drawable;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
