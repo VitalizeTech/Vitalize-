@@ -73,8 +73,15 @@ public class ScrimArea {
                 area.scrimMarker = map.addMarker(new MarkerOptions().position(area.getCenter()).title(area.getTitle()).draggable(true).snippet(area.getAdditionalInfo())
                         .icon(BitmapDescriptorFactory.fromResource(area.getMarkerImage())));
 
-            }
         }
+        VitalizeApplication.initWater();
+        for(LatLng point : VitalizeApplication.waterFountatins){
+            map.addMarker(new MarkerOptions()
+                    .position(point)
+                    .title("Water Fountain")
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.water_filter_marker)));
+        }
+    }
 
     public boolean containsMember(String id) {
         return containsId(id, users);
