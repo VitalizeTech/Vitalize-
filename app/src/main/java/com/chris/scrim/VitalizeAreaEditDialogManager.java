@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.view.View;
 import android.widget.AdapterView;
@@ -12,6 +13,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -20,6 +22,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
@@ -37,14 +40,23 @@ public class VitalizeAreaEditDialogManager {
     private Activity mActivity;
     private GoogleMap mMap;
     private DBFireBaseHelper firebaseDBHelper;
+    private Context mContext;
 
-    public VitalizeAreaEditDialogManager(Activity theActivity, GoogleMap theMap) {
+    public VitalizeAreaEditDialogManager(Activity theActivity, GoogleMap theMap, Context context) {
         mActivity = theActivity;
         mMap = theMap;
         firebaseDBHelper = new DBFireBaseHelper(theActivity);
+        context = mContext;
     }
+
     public void showEditScrimDialog(final ScrimArea theAre, final LatLng latLng ) {
         //inflate layout we wantz
+        InputStream inputstream = mContext.getResources().openRawResource(R.raw.pokemon);
+        CSVReader csvFile = new CSVReader(inputstream);
+        List pokemonList = csvFile.read();
+        // Create adapter here
+        // AutoCompleteTextview textview = (autocompletetextview) findViewById(R.id.blah);
+        // textView.setAdapter(adapter);
         final View rightView = mActivity.getLayoutInflater().inflate(R.layout.new_scrim_area, null);
         Calendar calendar = Calendar.getInstance();
         if(theAre != null) {

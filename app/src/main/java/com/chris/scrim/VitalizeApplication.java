@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
@@ -23,6 +24,8 @@ public class VitalizeApplication extends Application {
 
     public static User currentUser;
 
+    private List pokemonList;
+    private PokemonAdapter pokemonAdapter;
     //hard coded water fountains
     public static List<LatLng> waterFountatins;
 
@@ -69,6 +72,9 @@ public class VitalizeApplication extends Application {
         allAreas = new ArrayList<>();
         dbHelper = new DBFireBaseHelper(this);
         allAreas = new ArrayList<>();
+        InputStream inputstream = getResources().openRawResource(R.raw.pokemon);
+        CSVReader csvFile = new CSVReader(inputstream);
+        List pokemonList = csvFile.read();
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
             @Override
             public void onActivityCreated(Activity activity,
