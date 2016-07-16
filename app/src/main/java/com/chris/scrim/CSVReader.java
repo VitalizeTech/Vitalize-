@@ -23,7 +23,7 @@ public class CSVReader {
         try {
             String csvLine;
             while ((csvLine = reader.readLine()) != null) {
-                String row = csvLine.split(",")[1];
+                String row = csvLine.split(",")[1]; // will only get the pokemon name
                 resultList.add(row);
             }
         } catch (IOException ex) {
