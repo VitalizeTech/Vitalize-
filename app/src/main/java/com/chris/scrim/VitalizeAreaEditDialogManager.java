@@ -46,7 +46,7 @@ public class VitalizeAreaEditDialogManager {
         mActivity = theActivity;
         mMap = theMap;
         firebaseDBHelper = new DBFireBaseHelper(theActivity);
-        context = mContext;
+        mContext = context;
     }
 
     public void showEditScrimDialog(final ScrimArea theAre, final LatLng latLng ) {

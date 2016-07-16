@@ -88,7 +88,7 @@ public class MapsActivity extends TouchActivity implements OnMapReadyCallback, O
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        vitalizeAreaEditDialogManager =  new VitalizeAreaEditDialogManager(this, googleMap);
+        vitalizeAreaEditDialogManager =  new VitalizeAreaEditDialogManager(this, googleMap, this);
         mMap = googleMap;
         final DBFireBaseHelper firebaseDBHelper = new DBFireBaseHelper(this);
 
