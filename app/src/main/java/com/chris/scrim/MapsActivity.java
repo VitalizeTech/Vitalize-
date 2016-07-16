@@ -109,8 +109,6 @@ public class MapsActivity extends TouchActivity implements OnMapReadyCallback, O
         //Zoom out to zoom level 10, animating with a duration of 2 seconds.
         googleMap.animateCamera(CameraUpdateFactory.zoomTo(13), 2000, null);
         ////
-
-
                 mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
                     public boolean onMarkerClick(final Marker marker) {
@@ -121,21 +119,15 @@ public class MapsActivity extends TouchActivity implements OnMapReadyCallback, O
                             markerScrim.populateDateText((TextView) markerInfoView.findViewById(R.id.dateText));
                             //final Button
                             final ImageView typeImage = (ImageView) markerInfoView.findViewById(R.id.typeImage);
-                            TextView spotsLeft = (TextView) markerInfoView.findViewById(R.id.spotsLeft);
-                            TextView type = (TextView) markerInfoView.findViewById(R.id.typeText);
                             ((TextView) markerInfoView.findViewById(R.id.titleText)).setText(markerScrim.getTitle());
-                            ((TextView) markerInfoView.findViewById(R.id.additInfoText)).setText(markerScrim.getAdditionalInfo());
-                            ((TextView) markerInfoView.findViewById(R.id.createdBy)).setText("Created By:" + markerScrim.getCreator());
-                            typeImage.setImageResource((int) markerScrim.getTypeImage());
-                            spotsLeft.setText("1/" + markerScrim.getNumSpots());
-                            type.setText(markerScrim.getType());
+                            ((TextView) markerInfoView.findViewById(R.id.combatPowerTxt)).setText("  Combat Power: " + markerScrim.getCombatPower()+"");
+                            ((TextView) markerInfoView.findViewById(R.id.playerLvlTxt)).setText("  Player Level: " + markerScrim.getPlayerLevel()+"");
+                            ((TextView) markerInfoView.findViewById(R.id.createdBy)).setText("Reported By:" + markerScrim.getCreator());
+                            typeImage.setImageResource(R.drawable.abra);
                             final AlertDialog markerInfoDialog = markerInfoDialogBuilder.create();
                             final Button delete = (Button) markerInfoView.findViewById(R.id.deleteButton);
-                            final Button requestButton = (Button) markerInfoView.findViewById(R.id.requestJoin);
-                            View inGroupOptions = markerInfoView.findViewById(R.id.inGroupOptions);
+                            View isReporterOptions = markerInfoView.findViewById(R.id.isUserOptions);
                             CheckBox favorite = (CheckBox) markerInfoView.findViewById(R.id.Favorite);
-                            Button leaveButton = (Button) markerInfoView.findViewById(R.id.leaveButton);
-                            Button messageButton = (Button) markerInfoView.findViewById(R.id.messageButton);
                             if (VitalizeApplication.currentUser.getFavoriteList().contains(markerScrim.getId())) {
                                 favorite.setChecked(true);
                             }
@@ -151,68 +143,15 @@ public class MapsActivity extends TouchActivity implements OnMapReadyCallback, O
                             });
                             //if current users is the creator of the even
                             if (markerScrim.getCreator().equals(VitalizeApplication.currentUser.username)) {
-                                //hide request
-                                requestButton.setVisibility(View.INVISIBLE);
-                                //hide leave
-                                leaveButton.setVisibility(View.GONE);
+                                isReporterOptions.setVisibility(View.VISIBLE);
+                            } else {
+                                isReporterOptions.setVisibility(View.INVISIBLE);
+                            }
 
-                            }
-                            //
-                            else if (markerScrim.containsMember(firebaseDBHelper.getUserId())) {
-                                requestButton.setVisibility(View.INVISIBLE);
-                                markerInfoView.findViewById(R.id.leaveButton).setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        final User leavingUser =
-                                        markerScrim.getUsers().remove(markerScrim.getUsers().size()- 1);
-                                firebaseDBHelper.leaveEvent(markerScrim.getId(), leavingUser.id);
-                                markerInfoDialog.dismiss();
-                            }
-                        });
-                    } else if(markerScrim.containsPendingMember(firebaseDBHelper.getUserId())) {
-                         requestButton.setText("Request Sent");
-                         requestButton.setEnabled(false);
-                         markerInfoView.findViewById(R.id.membersAndInvitesButton).setVisibility(View.GONE);
-                         RelativeLayout.LayoutParams msgBtnParams = (RelativeLayout.LayoutParams)messageButton.getLayoutParams();
-                         msgBtnParams.setMargins(0,0,10,0);
-                         messageButton.setLayoutParams(msgBtnParams);
-                         inGroupOptions.setVisibility(View.INVISIBLE);
-                     }
-                    else {
-                                //firebase join
-                                markerInfoView.findViewById(R.id.membersAndInvitesButton).setVisibility(View.GONE);
-                                RelativeLayout.LayoutParams msgBtnParams = (RelativeLayout.LayoutParams) messageButton.getLayoutParams();
-                                msgBtnParams.setMargins(0, 0, 10, 0);
-                                messageButton.setLayoutParams(msgBtnParams);
-                                inGroupOptions.setVisibility(View.INVISIBLE);
-                                requestButton.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        requestButton.setText("Request Sent");
-                                        requestButton.setEnabled(false);
-                                        markerScrim.getPendingUsers().add(VitalizeApplication.currentUser);
-                                        firebaseDBHelper.requestToJoinEvent(markerScrim.getId());
-                                        markerInfoDialog.dismiss();
-                                    }
-                                });
-                            }
+
                             vitalizeAreaEditDialogManager.setDeleteClickListener(delete, marker, markerInfoDialog);
-                            markerInfoView.findViewById(R.id.membersAndInvitesButton).setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    Intent startMembersActivity = new Intent(MapsActivity.this, MembersAndInvitesActivity.class);
-                                    startMembersActivity.putExtra("index", VitalizeApplication.getAllAreas().indexOf(markerScrim));
-                                    MapsActivity.this.startActivity(startMembersActivity);
-                                }
-                            });
-                            markerInfoView.findViewById(R.id.messageButton).setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    Intent startChatActivity = new Intent(MapsActivity.this, ChatActivity.class);
-                                    startChatActivity.putExtra("index", VitalizeApplication.getAllAreas().indexOf(markerScrim));
-                                    MapsActivity.this.startActivity(startChatActivity);
-                                }
-                            });
+
+
                             markerInfoView.findViewById(R.id.editButton).setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -325,7 +264,7 @@ public class MapsActivity extends TouchActivity implements OnMapReadyCallback, O
                                     }
                                 } else {
                                     for (ScrimArea a : VitalizeApplication.getAllAreas()) {
-                                        a.getScrimMarker().setVisible(selectedTypes.contains(a.getType()) &&
+                                        a.getScrimMarker().setVisible(selectedTypes.contains(a.getTitle()) &&
                                                 VitalizeApplication.currentUser.getFavoriteList().contains(a.getId()));
                                     }
                                 }
@@ -341,7 +280,7 @@ public class MapsActivity extends TouchActivity implements OnMapReadyCallback, O
                                     }
                                 } else {
                                     for (ScrimArea a : VitalizeApplication.getAllAreas()) {
-                                        a.getScrimMarker().setVisible(selectedTypes.contains(a.getType()));
+                                        a.getScrimMarker().setVisible(selectedTypes.contains(a.getTitle()));
                                     }
                                 }
                             }

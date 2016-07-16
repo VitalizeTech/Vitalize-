@@ -1,8 +1,6 @@
 package com.chris.scrim;
 
 
-import android.app.Application;
-import android.util.Log;
 import android.widget.TextView;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -13,50 +11,53 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 /**
  * Created by chris on 2/4/2016.
  */
-@JsonIgnoreProperties(value = {"scrimMarker", "center", "users", "pendingUsers"}, ignoreUnknown = true)
+@JsonIgnoreProperties(value = {"scrimMarker", "center", "members"}, ignoreUnknown = true)
 public class ScrimArea {
     private static final String TAG = ScrimArea.class.getName();
-    private List<User> users;
-    private List<User> pendingUsers;
     private Marker scrimMarker;
     private String title;
-    private String additionalInfo;
-    private String type;
     private String creator;
-    private int numSpots;
-    private int typeImage;
-    private int markerImage;
+
     private LatLng center;
     private double latitude;
     private double longitude;
     private String id;
     private long date;
-    public ScrimArea(GoogleMap mMap, LatLng  center, String theName, String theAdditionalInfo,
-                     int markerImage, int typeImage, int numSpots, String type, Calendar date){
+    private int combatPower;
+    private int playerLevel;
+    public ScrimArea(GoogleMap mMap, LatLng  center, String theName, int combatPower, int playerLevel, long caughtTime){
         scrimMarker = mMap.addMarker(new MarkerOptions().position(center).title(getTitle()).
-                draggable(true).snippet(getAdditionalInfo()));
+                draggable(true).snippet(theName));
         this.center  = center;
         this.latitude = center.latitude;
         this.longitude = center.longitude;
-        users = new ArrayList<>();
-        pendingUsers = new ArrayList<>();
-        update(theName, theAdditionalInfo, typeImage, markerImage, numSpots, type, date.getTimeInMillis());
+        update(theName, combatPower, playerLevel, caughtTime);
     }
 
-    public void setType(String type){
-        this.type = type;
-        markerImage = VitalizeApplication.getMarkerImage(type);
-        typeImage = VitalizeApplication.getTypeImage(type);
+
+    public void update(String title, int combatPower, int playerLevel, long date) {
+        this.title = title;
+        if(scrimMarker != null) {
+            scrimMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.abra));
+        }
+        this.combatPower = combatPower;
+        this.playerLevel = playerLevel;
+        this.date = date;
+    }
+
+    public void setPokemon(String pokemon){
+        this.title = title;
+        //markerImage = VitalizeApplication.getMarkerImage(type);
+        //typeImage = VitalizeApplication.getTypeImage(type);
     }
     public ScrimArea() {
-        users = new ArrayList<>();
+
     }
 
     public void populateDateText(TextView textView) {
@@ -70,46 +71,11 @@ public class ScrimArea {
         map.clear();
         // VitalizeApplication.removeAreaPassTimeLimit();
         for(ScrimArea area: VitalizeApplication.getAllAreas()) {
-                area.scrimMarker = map.addMarker(new MarkerOptions().position(area.getCenter()).title(area.getTitle()).draggable(true).snippet(area.getAdditionalInfo())
-                        .icon(BitmapDescriptorFactory.fromResource(area.getMarkerImage())));
-
-        }
-        VitalizeApplication.initWater();
-        for(LatLng point : VitalizeApplication.waterFountatins){
-            map.addMarker(new MarkerOptions()
-                    .position(point)
-                    .title("Water Fountain")
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.water_filter_marker)));
+                area.scrimMarker = map.addMarker(new MarkerOptions().position(area.getCenter()).title(area.getTitle()).draggable(true).snippet(area.getTitle())
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.abra)));
         }
     }
 
-    public boolean containsMember(String id) {
-        return containsId(id, users);
-    }
-
-    public boolean containsPendingMember(String id) {
-        return containsId(id, pendingUsers);
-    }
-    private boolean containsId(String id, List<User> users) {
-        for(User s: users) {
-            if(s != null && s.id != null && s.id.equals(id)) {
-                return true;
-            }
-        }
-        return false;
-    }
-    public void update(String title, String theAdditionalInfo, int typeImage, int markerImage, int numSpots, String type, long date) {
-        this.title = title;
-        this.additionalInfo = theAdditionalInfo;
-        this.markerImage = markerImage;
-        if(scrimMarker != null) {
-            scrimMarker.setIcon(BitmapDescriptorFactory.fromResource(markerImage));
-        }
-        this.numSpots = numSpots;
-        this.type = type;
-        this.typeImage = typeImage;
-        this.date = date;
-    }
     public Marker getScrimMarker () {
         return scrimMarker;
     }
@@ -152,46 +118,20 @@ public class ScrimArea {
         return title;
     }
 
-    public String getAdditionalInfo() {
-        return additionalInfo;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public int getNumSpots() {
-        return numSpots;
-    }
-
-    public int getTypeImage() {
-        return typeImage;
-    }
-
-    public int getMarkerImage() {
-        return markerImage;
-    }
-
     public String getId() {
         return id;
     }
 
+    public int getCombatPower() {
+        return combatPower;
+    }
+
+    public int getPlayerLevel() {
+        return playerLevel;
+    }
+
     public long getDate() {
         return date;
-    }
-
-    public List<User> getUsers() {
-        if (users == null) {
-            users = new ArrayList<>();
-        }
-        return users;
-    }
-
-    public List<User> getPendingUsers() {
-        if (pendingUsers == null) {
-            pendingUsers = new ArrayList<>();
-        }
-        return pendingUsers;
     }
 
     public LatLng getCenter() {
@@ -210,11 +150,6 @@ public class ScrimArea {
     public String toString() {
         return "Area{" +
                 "title='" + title + '\'' +
-                ", additionalInfo='" + additionalInfo + '\'' +
-                ", type='" + type + '\'' +
-                ", numSpots=" + numSpots +
-                ", typeImage=" + typeImage +
-                ", markerImage=" + markerImage +
                 ", center=" + center +
                 ", id=" + id +
                 ", date=" + date +

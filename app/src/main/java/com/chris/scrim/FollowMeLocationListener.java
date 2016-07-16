@@ -42,7 +42,7 @@ public class FollowMeLocationListener implements LocationSource, LocationListene
         mMap = theMap;
         float lastKnownLatitude = lastKnownLocation.getFloat(LAST_KNOWN_LOCATION_LAT, NO_LAST_KNOWN_LOCATION);
         if(lastKnownLatitude == NO_LAST_KNOWN_LOCATION) {
-            waitToReceiveCurLoc = ProgressDialog.show(theContext, "Loading", "Please Wait", true);
+        //   waitToReceiveCurLoc = ProgressDialog.show(theContext, "Loading", "Please Wait", true);
         } else {
             float lastKnownLongitude = lastKnownLocation.getFloat(LAST_KNOWN_LOCATION_LAT, NO_LAST_KNOWN_LOCATION);
             moveToCurrentLocation(mMap, new LatLng(lastKnownLatitude, lastKnownLongitude));

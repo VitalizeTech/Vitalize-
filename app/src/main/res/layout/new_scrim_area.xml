@@ -6,7 +6,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/title"
+        android:text="Pokemon"
         android:id="@+id/titleView"
         android:layout_marginTop="20dp"
         android:layout_marginLeft="20dp"
@@ -23,40 +23,34 @@
         />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/type"
-        android:id="@+id/typeTitle"
-        android:layout_marginLeft = "20dp"
-        android:layout_marginTop = "40dp"
-        android:layout_below="@id/titleView"
-         />
-
-    <Spinner
         android:layout_width="150dp"
-        android:layout_height="75dp"
-        android:id="@+id/typeSpinner"
-        android:layout_toRightOf="@+id/typeTitle"
-        android:layout_below="@id/titleEdit"
-        android:layout_marginRight="15dp"
-        android:layout_marginLeft="30dp"
-         />
+        android:layout_height="wrap_content"
+        android:text="Combat Power: "
+        android:id="@+id/combatPowerTxt"
+        android:layout_below="@id/titleView"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"/>
 
-    <ImageView
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:id="@+id/imageForType"
-        android:src="@drawable/football"
-        android:layout_alignTop="@+id/typeTitle"
-        android:layout_toRightOf="@id/typeSpinner" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/combatPowerEdit"
+        android:inputType="number"
+        android:layout_toRightOf="@id/combatPowerTxt"
+        android:layout_below="@id/titleView"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="10dp"
+        />
 
     <TextView
         android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:text="@string/num_people"
-        android:id="@+id/numPplTxt"
-        android:layout_marginTop="10dp"
-        android:layout_below="@id/typeSpinner"
+        android:text="Player Level: "
+        android:id="@+id/playerLvlTxt"
+        android:layout_below="@id/combatPowerTxt"
+        android:layout_marginTop="30dp"
         android:layout_marginLeft="20dp"/>
 
     <EditText
@@ -64,75 +58,35 @@
         android:layout_height="wrap_content"
         android:inputType="number"
         android:ems="10"
-        android:id="@+id/editPpl"
+        android:id="@+id/editPlayerLvl"
+        android:layout_below="@id/combatPowerTxt"
         android:text="1"
+        android:layout_marginTop="20dp"
         android:gravity="center"
-        android:layout_below="@+id/typeSpinner"
-        android:layout_toRightOf="@+id/cancelBtn"
-        android:layout_toEndOf="@+id/cancelBtn" />
+        android:layout_toRightOf="@+id/playerLvlTxt" />
 
     <Button
-        android:layout_width="150dp"
-        android:layout_height="50dp"
-        android:text="@string/pick_start"
-        android:id="@+id/pickStartTime"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="20dp"
-        android:textSize="10dp"
-        android:layout_below="@id/numPplTxt" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/startDisplay"
-        android:gravity="center"
-        android:layout_alignTop="@id/pickStartTime"
-        android:layout_marginTop="20dp"
-        android:layout_toRightOf="@id/pickStartTime"
-        android:layout_marginLeft="10dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/addit_info"
-        android:id="@+id/additInfoView"
-        android:layout_below="@id/pickStartTime"
-        android:layout_marginTop="10dp"
-        android:layout_centerVertical="true"
-        android:layout_alignLeft="@+id/editAdditInfo"
-        android:layout_alignStart="@+id/editAdditInfo" />
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/editAdditInfo"
-        android:layout_below="@+id/additInfoView"
-        android:layout_alignLeft="@+id/typeTitle"
-        android:layout_alignStart="@+id/typeTitle" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="30dp"
         android:text="Cancel"
+        android:layout_below="@id/playerLvlTxt"
         android:id="@+id/cancelBtn"
-        android:layout_alignLeft="@id/numPplTxt"
+        android:layout_alignLeft="@id/playerLvlTxt"
         android:layout_marginLeft="80dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="25dp"
         android:layout_marginBottom="15dp"
-        android:background="#c3c3c3"
-
-        android:layout_below="@id/editAdditInfo"/>
+        android:background="#c3c3c3" />
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="30dp"
         android:text="Create"
         android:id="@+id/createBtn"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="25dp"
         android:layout_marginBottom="15dp"
         android:background="#FFC128"
+        android:layout_below="@id/playerLvlTxt"
         android:layout_marginLeft="10dp"
-        android:layout_toRightOf="@id/cancelBtn"
-        android:layout_below="@id/editAdditInfo"/>
+        android:layout_toRightOf="@id/cancelBtn" />
 
 </RelativeLayout>

@@ -128,8 +128,6 @@ public class DBHelper extends SQLiteOpenHelper {
                 ScrimArea fromDatabase = new ScrimArea();
                 Calendar calInMillis = Calendar.getInstance();
                 calInMillis.setTimeInMillis(dateInMillis);
-                fromDatabase.update(title, additionalInfo, VitalizeApplication.getTypeImage(type), VitalizeApplication.getMarkerImage(type),
-                        numSpots, type, calInMillis.getTimeInMillis());
                 fromDatabase.setId(id+ "");
                 fromDatabase.setCenter(new LatLng(locationLatitude, locationLongitude));
                 allAreas.add(fromDatabase);

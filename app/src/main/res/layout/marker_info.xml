@@ -4,121 +4,68 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF"
     >
-    <Button
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:id="@+id/messageButton"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="70dp"
-        android:background="@drawable/messages_icon"
-        />
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/messageButton"
-        android:background="@drawable/member_button_shape"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="10dp"
-        android:id="@+id/relativeLayout">
-        <Button
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:id="@+id/membersAndInvitesButton"
-            android:background="@drawable/members"/>
-    </RelativeLayout>
-
 
     <ImageView
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:id="@+id/typeImage"
-        android:layout_marginTop="35dp"
-        android:layout_marginLeft="20dp"/>
+        android:layout_marginLeft="20dp"
+        android:src="@drawable/abra"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Text"
+        android:text="Squirtle"
         android:id="@+id/titleText"
         android:layout_marginLeft="10dp"
         android:layout_toRightOf="@id/typeImage"
         android:layout_alignTop="@id/typeImage"  />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Football"
-        android:id="@+id/typeText"
-        android:layout_toRightOf="@id/typeImage"
-        android:layout_marginTop="5dp"
-        android:layout_marginLeft="10dp"
+        android:text="Combat Power: 172"
+        android:id="@+id/combatPowerTxt"
         android:layout_below="@id/titleText"
-       />
+        android:layout_toRightOf="@id/typeImage"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Player Level: 15"
+        android:layout_below="@id/combatPowerTxt"
+        android:layout_toRightOf="@id/typeImage"
+        android:id="@+id/playerLvlTxt" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Reported By: kevin"
+        android:id="@+id/createdBy"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="10dp"
+        android:layout_below="@id/playerLvlTxt"
+        />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="2/19 6:00P.M"
         android:id="@+id/dateText"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="15dp"
         android:layout_marginLeft="10dp"
-        android:layout_below="@+id/typeText"
-        android:layout_toRightOf="@+id/typeImage"
+        android:layout_below="@id/playerLvlTxt"
+        android:layout_toRightOf="@id/createdBy"
         />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:id="@+id/spotsLeft"
-        android:layout_alignTop="@id/dateText"
-        android:layout_toRightOf="@id/typeImage"
-        android:layout_marginLeft="140dp"
-        />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/spot"
-        android:id="@+id/spotsText"
-        android:layout_below="@+id/spotsLeft"
-        android:layout_alignLeft="@+id/spotsLeft"
-        android:layout_alignStart="@+id/spotsLeft" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Created By: kevin"
-        android:id="@+id/createdBy"
-        android:layout_marginTop="5dp"
-        android:layout_toLeftOf="@id/spotsText"
-        android:layout_below="@id/spotsText"
-        android:layout_alignLeft="@id/typeImage"
-        />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/addit_info"
-        android:id="@+id/additInfoTitle"
-        android:layout_marginTop="25dp"
-        android:layout_below="@id/spotsText"
-        android:layout_alignLeft="@id/typeImage"
-        />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:id="@+id/additInfoText"
-        android:layout_below="@+id/additInfoTitle"
-        android:layout_alignLeft="@+id/additInfoTitle"
-        android:layout_marginTop="4dp" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/additInfoText"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
         android:orientation="horizontal"
-        android:id="@+id/inGroupOptions">
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/createdBy"
+        android:id="@+id/isUserOptions">
 
         <Button
             android:layout_width="0dp"
@@ -132,31 +79,16 @@
             android:layout_height="wrap_content"
             android:text="@string/edit"
             android:id="@+id/editButton" />
-        <Button
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:text="Leave"
-            android:id="@+id/leaveButton" />
     </LinearLayout>
 
-    <Button
-        android:layout_width="500dp"
-        android:layout_height="wrap_content"
-        android:text="Request to Join"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:id="@+id/requestJoin"
-        android:layout_below="@+id/additInfoText"
-        />
     <CheckBox
-        android:layout_width="wrap_content"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:text="Favorite"
         android:id="@+id/Favorite"
         android:checked="false"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/typeImage"
-        android:layout_toEndOf="@+id/typeImage" />
+        android:layout_alignParentRight="true"
+ />
 
 </RelativeLayout>

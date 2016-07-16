@@ -24,11 +24,14 @@ public class VitalizeApplication extends Application {
 
     public static User currentUser;
 
+<<<<<<< HEAD
     private List pokemonList;
     private PokemonAdapter pokemonAdapter;
     //hard coded water fountains
     public static List<LatLng> waterFountatins;
 
+=======
+>>>>>>> refactor entire app ui for pokemon
     //events should be removed 1 hour after start time
     private static final int HOUR_LIMIT = 60;
 
@@ -112,18 +115,6 @@ public class VitalizeApplication extends Application {
 
             }
         });
-    }
-
-    public static void initWater(){
-        //hard coded water fountains
-        waterFountatins = new ArrayList<>();
-        waterFountatins.add(new LatLng(47.60716766591516,-122.34217495572273));
-        waterFountatins.add(new LatLng(47.60998102778082,-122.34346883451454));
-        waterFountatins.add(new LatLng(47.601904818586874,-122.33084331974763));
-        waterFountatins.add(new LatLng(47.60193064798332, -122.33374165540452));
-        waterFountatins.add(new LatLng(47.59847719073838, -122.3252200897582));
-        waterFountatins.add(new LatLng(47.60196940796257,-122.33080311508432));
-        waterFountatins.add(new LatLng(47.6119015830845,-122.32538313556415));
     }
 
     public static int getMarkerImage(String type) {
